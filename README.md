@@ -1,6 +1,6 @@
 # RioneRoboCup
 
-## masterへのpush、ダメ！絶対！！！
+## masterへのpush、ダメ！絶対！！！!
 
 # [重要] commitメッセージの書き方
 
@@ -23,4 +23,4 @@
 
 `[fix] #18 Hogehoge.pyを修正`
 
-(意味) issue18通りにHogehoge.pyのバグを修正したよ
+(意味) issue18通りにHogehoge.pyのバグを修正したよ?
