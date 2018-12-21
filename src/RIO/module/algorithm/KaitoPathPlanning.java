@@ -1,4 +1,4 @@
-package adf.sample.module.algorithm;
+package RIO.module.algorithm;
 
 import adf.agent.communication.MessageManager;
 import adf.agent.develop.DevelopData;
