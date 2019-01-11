@@ -42,6 +42,14 @@ public class RioneGMM extends StaticClustering {
     private boolean assignAgentsFlag;
 
     private Map<EntityID, Set<EntityID>> shortestPathGraph;
+    
+    //GMM param
+    private List<Pair<Integer,Integer>> centerXYList;
+    private List<Pair<Double,Double>> mus;
+    private List<Pair<Double,Double>> sigmas;
+    private List<Pair<Double,Double>> pis;
+    
+    
 
     public RioneGMM(AgentInfo ai, WorldInfo wi, ScenarioInfo si, ModuleManager moduleManager, DevelopData developData) {
         super(ai, wi, si, moduleManager, developData);
