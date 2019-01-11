@@ -32,8 +32,8 @@ public class RioneGMM extends StaticClustering {
 
     private Collection<StandardEntity> entities;
 
-    private List<StandardEntity> centerList;
-    private List<EntityID> centerIDs;
+//    private List<StandardEntity> centerList;
+//    private List<EntityID> centerIDs;
     private Map<Integer, List<StandardEntity>> clusterEntitiesList;
     private List<List<EntityID>> clusterEntityIDsList;
 
@@ -44,11 +44,10 @@ public class RioneGMM extends StaticClustering {
     private Map<EntityID, Set<EntityID>> shortestPathGraph;
     
     //GMM param
-    private List<Pair<Integer,Integer>> centerXYList;
-    private List<Pair<Double,Double>> mus;
-    private List<Pair<Double,Double>> sigmas;
-    private List<Pair<Double,Double>> pis;
-    
+    private List<StandardEntity> initList;
+    private double[] pis;
+    private Point2D[] mus;
+    private double[][][] sigs;
     
 
     public RioneGMM(AgentInfo ai, WorldInfo wi, ScenarioInfo si, ModuleManager moduleManager, DevelopData developData) {
@@ -58,9 +57,9 @@ public class RioneGMM extends StaticClustering {
         this.clusterSize = developData.getInteger("sample.module.SampleKMeans.clusterSize", 10);
         this.assignAgentsFlag = developData.getBoolean("sample.module.SampleKMeans.assignAgentsFlag", true);
         this.clusterEntityIDsList = new ArrayList<>();
-        this.centerIDs = new ArrayList<>();
+//        this.centerIDs = new ArrayList<>();
         this.clusterEntitiesList = new HashMap<>();
-        this.centerList = new ArrayList<>();
+//        this.centerList = new ArrayList<>();
         this.entities = wi.getEntitiesOfType(
                 StandardEntityURN.ROAD,
                 StandardEntityURN.HYDRANT,
@@ -71,6 +70,11 @@ public class RioneGMM extends StaticClustering {
                 StandardEntityURN.FIRE_STATION,
                 StandardEntityURN.POLICE_OFFICE
         );
+        this.initList = new ArrayList<>();
+        this.pis = new double[this.clusterSize];
+        this.mus = new Point2D[this.clusterSize];
+        this.sigs = new double[this.clusterSize][2][2];
+        
     }
 
     @Override
@@ -79,7 +83,8 @@ public class RioneGMM extends StaticClustering {
         if(this.getCountUpdateInfo() >= 2) {
             return this;
         }
-        this.centerList.clear();
+//        this.centerList.clear();
+        this.initList.clear();
         this.clusterEntitiesList.clear();
         return this;
     }
@@ -94,7 +99,7 @@ public class RioneGMM extends StaticClustering {
         this.entities = null;
         // write
         precomputeData.setInteger(KEY_CLUSTER_SIZE, this.clusterSize);
-        precomputeData.setEntityIDList(KEY_CLUSTER_CENTER, this.centerIDs);
+//        precomputeData.setEntityIDList(KEY_CLUSTER_CENTER, this.centerIDs);
         for(int i = 0; i < this.clusterSize; i++) {
             precomputeData.setEntityIDList(KEY_CLUSTER_ENTITY + i, this.clusterEntityIDsList.get(i));
         }
@@ -111,7 +116,7 @@ public class RioneGMM extends StaticClustering {
         this.entities = null;
         // read
         this.clusterSize = precomputeData.getInteger(KEY_CLUSTER_SIZE);
-        this.centerIDs = new ArrayList<>(precomputeData.getEntityIDList(KEY_CLUSTER_CENTER));
+//        this.centerIDs = new ArrayList<>(precomputeData.getEntityIDList(KEY_CLUSTER_CENTER));
         this.clusterEntityIDsList = new ArrayList<>(this.clusterSize);
         for(int i = 0; i < this.clusterSize; i++) {
             this.clusterEntityIDsList.add(i, precomputeData.getEntityIDList(KEY_CLUSTER_ENTITY + i));
@@ -138,7 +143,7 @@ public class RioneGMM extends StaticClustering {
     }
 
     @Override
-    public int getClusterIndex(StandardEntity entity) {
+    public int getClusterIndex(StandardEntity entity){
         return this.getClusterIndex(entity.getID());
     }
 
@@ -167,7 +172,7 @@ public class RioneGMM extends StaticClustering {
     }
 
     @Override
-    public Collection<EntityID> getClusterEntityIDs(int index) {
+    public Collection<EntityID> getClusterEntityIDs(int index){
         return this.clusterEntityIDsList.get(index);
     }
 
@@ -180,33 +185,68 @@ public class RioneGMM extends StaticClustering {
         this.initShortestPath(this.worldInfo);
 
         List<StandardEntity> entityList = new ArrayList<>(this.entities);
-        this.centerList = new ArrayList<>(this.clusterSize);
+//        this.centerList = new ArrayList<>(this.clusterSize);
         this.clusterEntitiesList = new HashMap<>(this.clusterSize);
-
+    
+        this.pis = new double[this.clusterSize];
+        this.mus = new Point2D[this.clusterSize];
+        this.sigs = new double[this.clusterSize][2][2];
+        
         //init list
         for (int index = 0; index < this.clusterSize; index++) {
             this.clusterEntitiesList.put(index, new ArrayList<>());
-            this.centerList.add(index, entityList.get(0));
+//            this.centerList.add(index, entityList.get(0));
+            this.pis[index] = 0;
+            this.mus[index] = new Point2D(0, 0);
+            this.sigs[index][0][0] = 0.1;
+            this.sigs[index][0][1] = 0;
+            this.sigs[index][1][0] = 0;
+            this.sigs[index][1][1] = 0.1;
         }
         System.out.println("[" + this.getClass().getSimpleName() + "] Cluster : " + this.clusterSize);
         //init center
-        for (int index = 0; index < this.clusterSize; index++) {
-            StandardEntity centerEntity;
+//        for (int index = 0; index < this.clusterSize; index++) {
+//            StandardEntity centerEntity;
+//            do {
+//                centerEntity = getInitEntity(entityList);
+//            } while (this.centerList.contains(centerEntity));
+//            this.centerList.set(index, centerEntity);
+//        }
+        
+        //init parameters
+        Random random = new Random();
+        
+        double piSum = 0;
+        for (int index = 0; index < this.clusterSize; index++){
+            StandardEntity initEntity;
             do {
-                centerEntity = getInitEntity(entityList);
-            } while (this.centerList.contains(centerEntity));
-            this.centerList.set(index, centerEntity);
+                initEntity = entityList.get(Math.abs(random.nextInt()) % entityList.size());
+            } while (this.initList.contains(initEntity));
+            
+            if(index == this.clusterSize - 1){
+                this.pis[index] = 1 - piSum;
+            }else{
+                this.pis[index] = 1/this.clusterSize;
+                piSum += this.pis[index];
+            }
+            this.mus[index] = getPoint2D(worldInfo.getLocation(initEntity));
+            this.sigs[index][0][0] = 0.1;
+            this.sigs[index][0][1] = 0;
+            this.sigs[index][1][0] = 0;
+            this.sigs[index][1][1] = 0.1;
         }
+        
+        
         //calc center
         for (int i = 0; i < repeat; i++) {
             this.clusterEntitiesList.clear();
             for (int index = 0; index < this.clusterSize; index++) {
                 this.clusterEntitiesList.put(index, new ArrayList<>());
             }
-            for (StandardEntity entity : entityList) {
-                StandardEntity tmp = this.getNearEntityByLine(this.worldInfo, this.centerList, entity);
-                this.clusterEntitiesList.get(this.centerList.indexOf(tmp)).add(entity);
-            }
+//            for (StandardEntity entity : entityList) {
+//                StandardEntity tmp = this.getNearEntityByLine(this.worldInfo, this.centerList, entity);
+//                this.clusterEntitiesList.get(this.centerList.indexOf(tmp)).add(entity);
+//            }
             for (int index = 0; index < this.clusterSize; index++) {
                 int sumX = 0, sumY = 0;
                 for (StandardEntity entity : this.clusterEntitiesList.get(index)) {
@@ -217,15 +257,21 @@ public class RioneGMM extends StaticClustering {
                 int centerX = sumX / this.clusterEntitiesList.get(index).size();
                 int centerY = sumY / this.clusterEntitiesList.get(index).size();
                 StandardEntity center = this.getNearEntityByLine(this.worldInfo, this.clusterEntitiesList.get(index), centerX, centerY);
-                if(center instanceof Area) {
-                    this.centerList.set(index, center);
-                }
-                else if(center instanceof Human) {
-                    this.centerList.set(index, this.worldInfo.getEntity(((Human) center).getPosition()));
-                }
-                else if(center instanceof Blockade) {
-                    this.centerList.set(index, this.worldInfo.getEntity(((Blockade) center).getPosition()));
-                }
+//                if(center instanceof Area) {
+//                    this.centerList.set(index, center);
+//                }
+//                else if(center instanceof Human) {
+//                    this.centerList.set(index, this.worldInfo.getEntity(((Human) center).getPosition()));
+//                }
+//                else if(center instanceof Blockade) {
+//                    this.centerList.set(index, this.worldInfo.getEntity(((Blockade) center).getPosition()));
+//                }
+            
+                double gamma = pis[index];
+                //TODO ここから
+                
+            
+            
             }
             if  (scenarioInfo.isDebugMode()) { System.out.print("*"); }
         }
@@ -237,10 +283,10 @@ public class RioneGMM extends StaticClustering {
         for (int index = 0; index < this.clusterSize; index++) {
             this.clusterEntitiesList.put(index, new ArrayList<>());
         }
-        for (StandardEntity entity : entityList) {
-            StandardEntity tmp = this.getNearEntityByLine(this.worldInfo, this.centerList, entity);
-            this.clusterEntitiesList.get(this.centerList.indexOf(tmp)).add(entity);
-        }
+//        for (StandardEntity entity : entityList) {
+//            StandardEntity tmp = this.getNearEntityByLine(this.worldInfo, this.centerList, entity);
+//            this.clusterEntitiesList.get(this.centerList.indexOf(tmp)).add(entity);
+//        }
 
         //this.clusterEntitiesList.sort(comparing(List::size, reverseOrder()));
 
@@ -254,10 +300,10 @@ public class RioneGMM extends StaticClustering {
             this.assignAgents(this.worldInfo, ambulanceteamList);
         }
 
-        this.centerIDs = new ArrayList<>();
-        for(int i = 0; i < this.centerList.size(); i++) {
-            this.centerIDs.add(i, this.centerList.get(i).getID());
-        }
+//        this.centerIDs = new ArrayList<>();
+//        for(int i = 0; i < this.centerList.size(); i++) {
+//            this.centerIDs.add(i, this.centerList.get(i).getID());
+//        }
         for (int index = 0; index < this.clusterSize; index++) {
             List<StandardEntity> entities = this.clusterEntitiesList.get(index);
             List<EntityID> list = new ArrayList<>(entities.size());
@@ -272,23 +318,23 @@ public class RioneGMM extends StaticClustering {
         this.initShortestPath(this.worldInfo);
 
         List<StandardEntity> entityList = new ArrayList<>(this.entities);
-        this.centerList = new ArrayList<>(this.clusterSize);
+//        this.centerList = new ArrayList<>(this.clusterSize);
         this.clusterEntitiesList = new HashMap<>(this.clusterSize);
 
         for (int index = 0; index < this.clusterSize; index++) {
             this.clusterEntitiesList.put(index, new ArrayList<>());
-            this.centerList.add(index, entityList.get(0));
+//            this.centerList.add(index, entityList.get(0));
         }
         
         //rechose
         //init center again
-        for (int index = 0; index < this.clusterSize; index++) {
-            StandardEntity centerEntity;
-            do {
-                centerEntity = getInitEntity(entityList);
-            } while (this.centerList.contains(centerEntity));
-            this.centerList.set(index, centerEntity);
-        }
+//        for (int index = 0; index < this.clusterSize; index++) {
+//            StandardEntity centerEntity;
+//            do {
+//                centerEntity = getInitEntity(entityList);
+//            } while (this.centerList.contains(centerEntity));
+//            this.centerList.set(index, centerEntity);
+//        }
         
         //calc center again
         for (int i = 0; i < repeat; i++) {
@@ -296,10 +342,10 @@ public class RioneGMM extends StaticClustering {
             for (int index = 0; index < this.clusterSize; index++) {
                 this.clusterEntitiesList.put(index, new ArrayList<>());
             }
-            for (StandardEntity entity : entityList) {
-                StandardEntity tmp = this.getNearEntity(this.worldInfo, this.centerList, entity);
-                this.clusterEntitiesList.get(this.centerList.indexOf(tmp)).add(entity);
-            }
+//            for (StandardEntity entity : entityList) {
+//                StandardEntity tmp = this.getNearEntity(this.worldInfo, this.centerList, entity);
+//                this.clusterEntitiesList.get(this.centerList.indexOf(tmp)).add(entity);
+//            }
             for (int index = 0; index < this.clusterSize; index++) {
                 int sumX = 0, sumY = 0;
                 for (StandardEntity entity : this.clusterEntitiesList.get(index)) {
@@ -312,13 +358,13 @@ public class RioneGMM extends StaticClustering {
 
                 //this.centerList.set(index, getNearEntity(this.worldInfo, this.clusterEntitiesList.get(index), centerX, centerY));
                 StandardEntity center = this.getNearEntity(this.worldInfo, this.clusterEntitiesList.get(index), centerX, centerY);
-                if (center instanceof Area) {
-                    this.centerList.set(index, center);
-                } else if (center instanceof Human) {
-                    this.centerList.set(index, this.worldInfo.getEntity(((Human) center).getPosition()));
-                } else if (center instanceof Blockade) {
-                    this.centerList.set(index, this.worldInfo.getEntity(((Blockade) center).getPosition()));
-                }
+//                if (center instanceof Area) {
+//                    this.centerList.set(index, center);
+//                } else if (center instanceof Human) {
+//                    this.centerList.set(index, this.worldInfo.getEntity(((Human) center).getPosition()));
+//                } else if (center instanceof Blockade) {
+//                    this.centerList.set(index, this.worldInfo.getEntity(((Blockade) center).getPosition()));
+//                }
             }
             if  (scenarioInfo.isDebugMode()) { System.out.print("*"); }
         }
@@ -329,10 +375,10 @@ public class RioneGMM extends StaticClustering {
         for (int index = 0; index < this.clusterSize; index++) {
             this.clusterEntitiesList.put(index, new ArrayList<>());
         }
-        for (StandardEntity entity : entityList) {
-            StandardEntity tmp = this.getNearEntity(this.worldInfo, this.centerList, entity);
-            this.clusterEntitiesList.get(this.centerList.indexOf(tmp)).add(entity);
-        }
+//        for (StandardEntity entity : entityList) {
+//            StandardEntity tmp = this.getNearEntity(this.worldInfo, this.centerList, entity);
+//            this.clusterEntitiesList.get(this.centerList.indexOf(tmp)).add(entity);
+//        }
         //this.clusterEntitiesList.sort(comparing(List::size, reverseOrder()));
         if (this.assignAgentsFlag) {
             List<StandardEntity> fireBrigadeList = new ArrayList<>(this.worldInfo.getEntitiesOfType(StandardEntityURN.FIRE_BRIGADE));
@@ -343,10 +389,10 @@ public class RioneGMM extends StaticClustering {
             this.assignAgents(this.worldInfo, ambulanceTeamList);
         }
 
-        this.centerIDs = new ArrayList<>();
-        for(int i = 0; i < this.centerList.size(); i++) {
-            this.centerIDs.add(i, this.centerList.get(i).getID());
-        }
+//        this.centerIDs = new ArrayList<>();
+//        for(int i = 0; i < this.centerList.size(); i++) {
+//            this.centerIDs.add(i, this.centerList.get(i).getID());
+//        }
         for (int index = 0; index < this.clusterSize; index++) {
             List<StandardEntity> entities = this.clusterEntitiesList.get(index);
             List<EntityID> list = new ArrayList<>(entities.size());
@@ -356,7 +402,7 @@ public class RioneGMM extends StaticClustering {
             this.clusterEntityIDsList.add(index, list);
         }
     }
-    
+    /*
     private StandardEntity getInitEntity(List<StandardEntity> entities){
     	Random random = new Random();
 
@@ -401,13 +447,15 @@ public class RioneGMM extends StaticClustering {
 		}
 		
     	return null;
-    }
+    }*/
     
     
 
+    
+    //TODO fix to fit GMM
     private void assignAgents(WorldInfo world, List<StandardEntity> agentList) {
         int clusterIndex = 0;
-        while (agentList.size() > 0) {
+        /*while (agentList.size() > 0) {
             StandardEntity center = this.centerList.get(clusterIndex);
             StandardEntity agent = this.getNearAgent(world, agentList, center);
             this.clusterEntitiesList.get(clusterIndex).add(agent);
@@ -416,7 +464,7 @@ public class RioneGMM extends StaticClustering {
             if (clusterIndex >= this.clusterSize) {
                 clusterIndex = 0;
             }
-        }
+        }*/
     }
 
     private StandardEntity getNearEntityByLine(WorldInfo world, List<StandardEntity> srcEntityList, StandardEntity targetEntity) {
@@ -460,6 +508,15 @@ public class RioneGMM extends StaticClustering {
         Point2D start = edge.getStart();
         Point2D end = edge.getEnd();
         return new Point2D(((start.getX() + end.getX()) / 2.0D), ((start.getY() + end.getY()) / 2.0D));
+    }
+    
+    private Point2D getPoint2D(Pair<Integer, Integer> pair){
+        if(pair == null){
+            return null;
+        }else if(pair.first() == null || pair.second() == null){
+            return new Point2D(0, 0);
+        }
+        return new Point2D(pair.first(), pair.second());
     }
 
 
