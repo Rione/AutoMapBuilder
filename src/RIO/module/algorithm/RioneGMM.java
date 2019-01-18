@@ -18,6 +18,8 @@ import rescuecore2.worldmodel.EntityID;
 
 import java.util.*;
 
+import static java.util.Comparator.reverseOrder;
+
 //import static java.util.Comparator.comparing;
 //import static java.util.Comparator.reverseOrder;
 
@@ -51,6 +53,7 @@ public class RioneGMM extends StaticClustering {
     private Point2D[] mus;
     private double[][][] sigs;
     private double[][] gammas;
+    private double[] gammaSums;
     
 
     public RioneGMM(AgentInfo ai, WorldInfo wi, ScenarioInfo si, ModuleManager moduleManager, DevelopData developData) {
@@ -78,6 +81,7 @@ public class RioneGMM extends StaticClustering {
         this.mus = new Point2D[this.clusterSize];
         this.sigs = new double[this.clusterSize][2][2];
         this.gammas = new double[this.entities.size()][this.clusterSize];
+        this.gammaSums = new double[this.clusterSize];
         
     }
 
@@ -195,6 +199,7 @@ public class RioneGMM extends StaticClustering {
         this.mus = new Point2D[this.clusterSize];
         this.sigs = new double[this.clusterSize][2][2];
         this.gammas = new double[this.entities.size()][this.clusterSize];
+        this.gammaSums = new double[this.clusterSize];
         
         //init list
         for (int index = 0; index < this.clusterSize; index++) {
@@ -207,9 +212,12 @@ public class RioneGMM extends StaticClustering {
             this.sigs[index][1][1] = 0.1;
         }
         System.out.println("[" + this.getClass().getSimpleName() + "] Cluster : " + this.clusterSize);
+        for (int indexE = 0; indexE < this.entities.size(); indexE++){
+            gammaSums[indexE] = 0;
+        }
+        
         //init parameters
         Random random = new Random();
-        
         double piSum = 0;
         for (int index = 0; index < this.clusterSize; index++){
             StandardEntity initEntity;
@@ -231,23 +239,46 @@ public class RioneGMM extends StaticClustering {
         }
         
         
-        //calc center
+        //calc Gaussian
         for (int i = 0; i < repeat; i++) {
-            this.clusterEntitiesList.clear();
             for (int index = 0; index < this.clusterSize; index++) {
-                this.clusterEntitiesList.put(index, new ArrayList<>());
-            }
-            for (int index = 0; index < this.clusterSize; index++) {
-                double a = this.sigs[index][0][0];
-                double b = this.sigs[index][0][1];
-                double c = this.sigs[index][1][0];
-                double d = this.sigs[index][1][1];
-                double[][] sig = {{a, b}, {c, d}};
-                
+                double[][] sig = sigs[index];
                 nd = new NormalDistribution(mus[index], sig);
                 
-                double gamma = pis[index] ;
+                for (int indexE = 0; indexE < this.entities.size(); indexE++){
+                    gammas[indexE][index] = pis[index] * nd.getProb(getPoint2D(this.worldInfo.getLocation(entityList.get(indexE))));
+                    gammaSums[index] += gammas[indexE][index];
+                }
             }
+            
+            for (int index = 0; index < this.clusterSize; index++) {
+                Point2D mus2 = new Point2D(0, 0);
+                double[][] sigs2 = new double[][]{{0, 0}, {0,0}};
+                double Nk = 0;
+                
+                for (int indexE = 0; indexE < this.entities.size(); indexE++){
+                    Point2D x = getPoint2D(this.worldInfo.getLocation(entityList.get(indexE)));
+                    double gamma = gammas[indexE][index]/gammaSums[index];
+                    
+                    mus2.translate(gamma*x.getX(), gamma*x.getY());
+                    
+                    double d1 = x.getX() - mus[index].getX();
+                    double d2 = x.getY() - mus[index].getY();
+                    sigs2[0][0] += gamma*d1*d1;
+                    sigs2[0][1] += gamma*d1*d2;
+                    sigs2[1][0] += gamma*d2*d1;
+                    sigs2[1][1] += gamma*d2*d2;
+                
+                    Nk += gamma;
+                }
+                
+                mus[index] = new Point2D(mus2.getX()/Nk, mus2.getY()/Nk);
+                sigs[index] = new double[][]{{sigs2[0][0]/Nk, sigs2[0][1]/Nk},
+                                            {sigs2[1][0]/Nk, sigs2[1][1]/Nk}};
+                pis[index] = Nk/this.entities.size();
+            }
+            
+            
             if  (scenarioInfo.isDebugMode()) { System.out.print("*"); }
         }
 
@@ -258,13 +289,10 @@ public class RioneGMM extends StaticClustering {
         for (int index = 0; index < this.clusterSize; index++) {
             this.clusterEntitiesList.put(index, new ArrayList<>());
         }
-//        for (StandardEntity entity : entityList) {
-//            StandardEntity tmp = this.getNearEntityByLine(this.worldInfo, this.centerList, entity);
-//            this.clusterEntitiesList.get(this.centerList.indexOf(tmp)).add(entity);
-//        }
-
-        //this.clusterEntitiesList.sort(comparing(List::size, reverseOrder()));
-
+        for (StandardEntity entity : entityList) {
+            this.clusterEntitiesList.get(getMostIndex(worldInfo, entity)).add(entity);
+        }
+        
         if(this.assignAgentsFlag) {
             List<StandardEntity> firebrigadeList = new ArrayList<>(this.worldInfo.getEntitiesOfType(StandardEntityURN.FIRE_BRIGADE));
             List<StandardEntity> policeforceList = new ArrayList<>(this.worldInfo.getEntitiesOfType(StandardEntityURN.POLICE_FORCE));
@@ -275,10 +303,6 @@ public class RioneGMM extends StaticClustering {
             this.assignAgents(this.worldInfo, ambulanceteamList);
         }
 
-//        this.centerIDs = new ArrayList<>();
-//        for(int i = 0; i < this.centerList.size(); i++) {
-//            this.centerIDs.add(i, this.centerList.get(i).getID());
-//        }
         for (int index = 0; index < this.clusterSize; index++) {
             List<StandardEntity> entities = this.clusterEntitiesList.get(index);
             List<EntityID> list = new ArrayList<>(entities.size());
@@ -290,84 +314,117 @@ public class RioneGMM extends StaticClustering {
     }
 
     private void calcPathBased(int repeat) {
-        this.initShortestPath(this.worldInfo);
-
         List<StandardEntity> entityList = new ArrayList<>(this.entities);
-//        this.centerList = new ArrayList<>(this.clusterSize);
         this.clusterEntitiesList = new HashMap<>(this.clusterSize);
-
+    
+        this.pis = new double[this.clusterSize];
+        this.mus = new Point2D[this.clusterSize];
+        this.sigs = new double[this.clusterSize][2][2];
+        this.gammas = new double[this.entities.size()][this.clusterSize];
+        this.gammaSums = new double[this.clusterSize];
+    
+        //init list
         for (int index = 0; index < this.clusterSize; index++) {
             this.clusterEntitiesList.put(index, new ArrayList<>());
-//            this.centerList.add(index, entityList.get(0));
+            this.pis[index] = 0;
+            this.mus[index] = new Point2D(0, 0);
+            this.sigs[index][0][0] = 0.1;
+            this.sigs[index][0][1] = 0;
+            this.sigs[index][1][0] = 0;
+            this.sigs[index][1][1] = 0.1;
         }
+        System.out.println("[" + this.getClass().getSimpleName() + "] Cluster : " + this.clusterSize);
+        for (int indexE = 0; indexE < this.entities.size(); indexE++){
+            gammaSums[indexE] = 0;
+        }
+    
+        //init parameters
+        Random random = new Random();
+        double piSum = 0;
+        for (int index = 0; index < this.clusterSize; index++){
+            StandardEntity initEntity;
+            do {
+                initEntity = entityList.get(Math.abs(random.nextInt()) % entityList.size());
+            } while (this.initList.contains(initEntity));
         
-        //rechose
-        //init center again
-//        for (int index = 0; index < this.clusterSize; index++) {
-//            StandardEntity centerEntity;
-//            do {
-//                centerEntity = getInitEntity(entityList);
-//            } while (this.centerList.contains(centerEntity));
-//            this.centerList.set(index, centerEntity);
-//        }
-        
-        //calc center again
+            if(index == this.clusterSize - 1){
+                this.pis[index] = 1 - piSum;
+            }else{
+                this.pis[index] = 1/this.clusterSize;
+                piSum += this.pis[index];
+            }
+            this.mus[index] = getPoint2D(worldInfo.getLocation(initEntity));
+            this.sigs[index][0][0] = 0.1;
+            this.sigs[index][0][1] = 0;
+            this.sigs[index][1][0] = 0;
+            this.sigs[index][1][1] = 0.1;
+        }
+    
+    
+        //calc Gaussian
         for (int i = 0; i < repeat; i++) {
-            this.clusterEntitiesList.clear();
             for (int index = 0; index < this.clusterSize; index++) {
-                this.clusterEntitiesList.put(index, new ArrayList<>());
-            }
-//            for (StandardEntity entity : entityList) {
-//                StandardEntity tmp = this.getNearEntity(this.worldInfo, this.centerList, entity);
-//                this.clusterEntitiesList.get(this.centerList.indexOf(tmp)).add(entity);
-//            }
-            for (int index = 0; index < this.clusterSize; index++) {
-                int sumX = 0, sumY = 0;
-                for (StandardEntity entity : this.clusterEntitiesList.get(index)) {
-                    Pair<Integer, Integer> location = this.worldInfo.getLocation(entity);
-                    sumX += location.first();
-                    sumY += location.second();
+                double[][] sig = sigs[index];
+                nd = new NormalDistribution(mus[index], sig);
+            
+                for (int indexE = 0; indexE < this.entities.size(); indexE++){
+                    gammas[indexE][index] = pis[index] * nd.getProb(getPoint2D(this.worldInfo.getLocation(entityList.get(indexE))));
+                    gammaSums[index] += gammas[indexE][index];
                 }
-                int centerX = sumX / clusterEntitiesList.get(index).size();
-                int centerY = sumY / clusterEntitiesList.get(index).size();
-
-                //this.centerList.set(index, getNearEntity(this.worldInfo, this.clusterEntitiesList.get(index), centerX, centerY));
-                StandardEntity center = this.getNearEntity(this.worldInfo, this.clusterEntitiesList.get(index), centerX, centerY);
-//                if (center instanceof Area) {
-//                    this.centerList.set(index, center);
-//                } else if (center instanceof Human) {
-//                    this.centerList.set(index, this.worldInfo.getEntity(((Human) center).getPosition()));
-//                } else if (center instanceof Blockade) {
-//                    this.centerList.set(index, this.worldInfo.getEntity(((Blockade) center).getPosition()));
-//                }
             }
+        
+            for (int index = 0; index < this.clusterSize; index++) {
+                Point2D mus2 = new Point2D(0, 0);
+                double[][] sigs2 = new double[][]{{0, 0}, {0,0}};
+                double Nk = 0;
+            
+                for (int indexE = 0; indexE < this.entities.size(); indexE++){
+                    Point2D x = getPoint2D(this.worldInfo.getLocation(entityList.get(indexE)));
+                    double gamma = gammas[indexE][index]/gammaSums[index];
+                
+                    mus2.translate(gamma*x.getX(), gamma*x.getY());
+                
+                    double d1 = x.getX() - mus[index].getX();
+                    double d2 = x.getY() - mus[index].getY();
+                    sigs2[0][0] += gamma*d1*d1;
+                    sigs2[0][1] += gamma*d1*d2;
+                    sigs2[1][0] += gamma*d2*d1;
+                    sigs2[1][1] += gamma*d2*d2;
+                
+                    Nk += gamma;
+                }
+            
+                mus[index] = new Point2D(mus2.getX()/Nk, mus2.getY()/Nk);
+                sigs[index] = new double[][]{{sigs2[0][0]/Nk, sigs2[0][1]/Nk},
+                        {sigs2[1][0]/Nk, sigs2[1][1]/Nk}};
+                pis[index] = Nk/this.entities.size();
+            }
+        
+        
             if  (scenarioInfo.isDebugMode()) { System.out.print("*"); }
         }
-
+    
         if  (scenarioInfo.isDebugMode()) { System.out.println(); }
-
+    
+        //set entity
         this.clusterEntitiesList.clear();
         for (int index = 0; index < this.clusterSize; index++) {
             this.clusterEntitiesList.put(index, new ArrayList<>());
         }
-//        for (StandardEntity entity : entityList) {
-//            StandardEntity tmp = this.getNearEntity(this.worldInfo, this.centerList, entity);
-//            this.clusterEntitiesList.get(this.centerList.indexOf(tmp)).add(entity);
-//        }
-        //this.clusterEntitiesList.sort(comparing(List::size, reverseOrder()));
-        if (this.assignAgentsFlag) {
-            List<StandardEntity> fireBrigadeList = new ArrayList<>(this.worldInfo.getEntitiesOfType(StandardEntityURN.FIRE_BRIGADE));
-            List<StandardEntity> policeForceList = new ArrayList<>(this.worldInfo.getEntitiesOfType(StandardEntityURN.POLICE_FORCE));
-            List<StandardEntity> ambulanceTeamList = new ArrayList<>(this.worldInfo.getEntitiesOfType(StandardEntityURN.AMBULANCE_TEAM));
-            this.assignAgents(this.worldInfo, fireBrigadeList);
-            this.assignAgents(this.worldInfo, policeForceList);
-            this.assignAgents(this.worldInfo, ambulanceTeamList);
+        for (StandardEntity entity : entityList) {
+            this.clusterEntitiesList.get(getMostIndex(worldInfo, entity)).add(entity);
         }
-
-//        this.centerIDs = new ArrayList<>();
-//        for(int i = 0; i < this.centerList.size(); i++) {
-//            this.centerIDs.add(i, this.centerList.get(i).getID());
-//        }
+    
+        if(this.assignAgentsFlag) {
+            List<StandardEntity> firebrigadeList = new ArrayList<>(this.worldInfo.getEntitiesOfType(StandardEntityURN.FIRE_BRIGADE));
+            List<StandardEntity> policeforceList = new ArrayList<>(this.worldInfo.getEntitiesOfType(StandardEntityURN.POLICE_FORCE));
+            List<StandardEntity> ambulanceteamList = new ArrayList<>(this.worldInfo.getEntitiesOfType(StandardEntityURN.AMBULANCE_TEAM));
+        
+            this.assignAgents(this.worldInfo, firebrigadeList);
+            this.assignAgents(this.worldInfo, policeforceList);
+            this.assignAgents(this.worldInfo, ambulanceteamList);
+        }
+    
         for (int index = 0; index < this.clusterSize; index++) {
             List<StandardEntity> entities = this.clusterEntitiesList.get(index);
             List<EntityID> list = new ArrayList<>(entities.size());
@@ -377,85 +434,38 @@ public class RioneGMM extends StaticClustering {
             this.clusterEntityIDsList.add(index, list);
         }
     }
-    /*
-    private StandardEntity getInitEntity(List<StandardEntity> entities){
-    	Random random = new Random();
-
-		if(this.centerList.size() == 0){
-			return entities.get(Math.abs(random.nextInt()) % entities.size());
-		}
-    	
-		
-		ArrayList<Double> dists = new ArrayList<Double>();
-		Double cumSum = 0.0;
-		for(StandardEntity entity:entities){
-			Double minDist = Double.MAX_VALUE;
-			for(StandardEntity center:centerList){
-				Double curDist = this.getDistance(
-						this.worldInfo.getLocation(entity.getID()),this.worldInfo.getLocation(center.getID())); 
-				
-				curDist *= curDist;
-				
-				if (curDist <= minDist){
-					minDist = curDist;
-				}
-			}
-			dists.add(minDist);
-			cumSum+=minDist;
-		}
-		
-		ArrayList<Double> probabilities = new ArrayList<Double>();
-		for(Double dist:dists){
-			probabilities.add(dist/cumSum);
-		}
-		
-		Double num = random.nextDouble();
-		int i = 0;
-		
-		for(Double probability:probabilities){
-			num -= probability;
-			if(num < 0){
-				return entities.get(i);
-			}
-			
-			i++;
-		}
-		
-    	return null;
-    }*/
     
     
-
-    
-    //TODO fix to fit GMM
     private void assignAgents(WorldInfo world, List<StandardEntity> agentList) {
         int clusterIndex = 0;
-        /*while (agentList.size() > 0) {
-            StandardEntity center = this.centerList.get(clusterIndex);
-            StandardEntity agent = this.getNearAgent(world, agentList, center);
+        while (agentList.size() > 0) {
+            StandardEntity agent = this.getMostAgent(world, agentList, clusterIndex);
             this.clusterEntitiesList.get(clusterIndex).add(agent);
             agentList.remove(agent);
             clusterIndex++;
             if (clusterIndex >= this.clusterSize) {
                 clusterIndex = 0;
             }
-        }*/
+        }
     }
 
-    private StandardEntity getNearEntityByLine(WorldInfo world, List<StandardEntity> srcEntityList, StandardEntity targetEntity) {
-        Pair<Integer, Integer> location = world.getLocation(targetEntity);
-        return this.getNearEntityByLine(world, srcEntityList, location.first(), location.second());
-    }
-
-    private StandardEntity getNearEntityByLine(WorldInfo world, List<StandardEntity> srcEntityList, int targetX, int targetY) {
-        StandardEntity result = null;
-        for(StandardEntity entity : srcEntityList) {
-            result = ((result != null) ? this.compareLineDistance(world, targetX, targetY, result, entity) : entity);
+    
+    private int getMostIndex(WorldInfo world, StandardEntity entity) {
+        int result = 0;
+        double min = Double.MAX_VALUE;
+        for(int index = 0; index < this.clusterSize; index++) {
+            double[][] sig = sigs[index];
+            nd = new NormalDistribution(mus[index], sig);
+            double prob = nd.getProb(getPoint2D(world.getLocation(entity)));
+            if(prob < min){
+                result = index;
+                min = prob;
+            }
         }
         return result;
     }
 
-    private StandardEntity getNearAgent(WorldInfo worldInfo, List<StandardEntity> srcAgentList, StandardEntity targetEntity) {
+    private  StandardEntity getMostAgent(WorldInfo worldInfo, List<StandardEntity> srcAgentList,int clasterIndex){
         StandardEntity result = null;
         for (StandardEntity agent : srcAgentList) {
             Human human = (Human)agent;
@@ -463,13 +473,14 @@ public class RioneGMM extends StaticClustering {
                 result = agent;
             }
             else {
-                if (this.comparePathDistance(worldInfo, targetEntity, result, worldInfo.getPosition(human)).equals(worldInfo.getPosition(human))) {
+                if (this.compareProb(worldInfo, clasterIndex, result, worldInfo.getPosition(human)).equals(worldInfo.getPosition(human))) {
                     result = agent;
                 }
             }
         }
         return result;
     }
+    
 
     private StandardEntity getNearEntity(WorldInfo worldInfo, List<StandardEntity> srcEntityList, int targetX, int targetY) {
         StandardEntity result = null;
@@ -487,7 +498,7 @@ public class RioneGMM extends StaticClustering {
     
     private Point2D getPoint2D(Pair<Integer, Integer> pair){
         if(pair == null){
-            return null;
+            return new Point2D(0, 0);
         }else if(pair.first() == null || pair.second() == null){
             return new Point2D(0, 0);
         }
@@ -541,6 +552,14 @@ public class RioneGMM extends StaticClustering {
         double firstDistance = getPathDistance(worldInfo, shortestPath(target.getID(), first.getID()));
         double secondDistance = getPathDistance(worldInfo, shortestPath(target.getID(), second.getID()));
         return (firstDistance < secondDistance ? first : second);
+    }
+    
+    private StandardEntity compareProb(WorldInfo worldInfo, int index, StandardEntity first, StandardEntity second) {
+        double[][] sig = sigs[index];
+        nd = new NormalDistribution(mus[index], sig);
+        double firstProb = nd.getProb(getPoint2D(worldInfo.getLocation(first)));
+        double secondProb = nd.getProb(getPoint2D(worldInfo.getLocation(second)));
+        return (firstProb < secondProb ? first : second);
     }
 
     private double getPathDistance(WorldInfo worldInfo, List<EntityID> path) {
