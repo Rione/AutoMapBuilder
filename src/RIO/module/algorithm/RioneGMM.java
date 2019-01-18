@@ -199,7 +199,7 @@ public class RioneGMM extends StaticClustering {
         this.mus = new Point2D[this.clusterSize];
         this.sigs = new double[this.clusterSize][2][2];
         this.gammas = new double[this.entities.size()][this.clusterSize];
-        this.gammaSums = new double[this.clusterSize];
+        this.gammaSums = new double[this.entities.size()];
         
         //init list
         for (int index = 0; index < this.clusterSize; index++) {
