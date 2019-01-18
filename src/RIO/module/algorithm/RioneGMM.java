@@ -44,10 +44,13 @@ public class RioneGMM extends StaticClustering {
     private Map<EntityID, Set<EntityID>> shortestPathGraph;
     
     //GMM param
+    private NormalDistribution nd;
+    
     private List<StandardEntity> initList;
     private double[] pis;
     private Point2D[] mus;
     private double[][][] sigs;
+    private double[][] gammas;
     
 
     public RioneGMM(AgentInfo ai, WorldInfo wi, ScenarioInfo si, ModuleManager moduleManager, DevelopData developData) {
@@ -74,6 +77,7 @@ public class RioneGMM extends StaticClustering {
         this.pis = new double[this.clusterSize];
         this.mus = new Point2D[this.clusterSize];
         this.sigs = new double[this.clusterSize][2][2];
+        this.gammas = new double[this.entities.size()][this.clusterSize];
         
     }
 
@@ -185,17 +189,16 @@ public class RioneGMM extends StaticClustering {
         this.initShortestPath(this.worldInfo);
 
         List<StandardEntity> entityList = new ArrayList<>(this.entities);
-//        this.centerList = new ArrayList<>(this.clusterSize);
         this.clusterEntitiesList = new HashMap<>(this.clusterSize);
     
         this.pis = new double[this.clusterSize];
         this.mus = new Point2D[this.clusterSize];
         this.sigs = new double[this.clusterSize][2][2];
+        this.gammas = new double[this.entities.size()][this.clusterSize];
         
         //init list
         for (int index = 0; index < this.clusterSize; index++) {
             this.clusterEntitiesList.put(index, new ArrayList<>());
-//            this.centerList.add(index, entityList.get(0));
             this.pis[index] = 0;
             this.mus[index] = new Point2D(0, 0);
             this.sigs[index][0][0] = 0.1;
@@ -204,15 +207,6 @@ public class RioneGMM extends StaticClustering {
             this.sigs[index][1][1] = 0.1;
         }
         System.out.println("[" + this.getClass().getSimpleName() + "] Cluster : " + this.clusterSize);
-        //init center
-//        for (int index = 0; index < this.clusterSize; index++) {
-//            StandardEntity centerEntity;
-//            do {
-//                centerEntity = getInitEntity(entityList);
-//            } while (this.centerList.contains(centerEntity));
-//            this.centerList.set(index, centerEntity);
-//        }
-        
         //init parameters
         Random random = new Random();
         
@@ -243,35 +237,16 @@ public class RioneGMM extends StaticClustering {
             for (int index = 0; index < this.clusterSize; index++) {
                 this.clusterEntitiesList.put(index, new ArrayList<>());
             }
-//            for (StandardEntity entity : entityList) {
-//                StandardEntity tmp = this.getNearEntityByLine(this.worldInfo, this.centerList, entity);
-//                this.clusterEntitiesList.get(this.centerList.indexOf(tmp)).add(entity);
-//            }
             for (int index = 0; index < this.clusterSize; index++) {
-                int sumX = 0, sumY = 0;
-                for (StandardEntity entity : this.clusterEntitiesList.get(index)) {
-                    Pair<Integer, Integer> location = this.worldInfo.getLocation(entity);
-                    sumX += location.first();
-                    sumY += location.second();
-                }
-                int centerX = sumX / this.clusterEntitiesList.get(index).size();
-                int centerY = sumY / this.clusterEntitiesList.get(index).size();
-                StandardEntity center = this.getNearEntityByLine(this.worldInfo, this.clusterEntitiesList.get(index), centerX, centerY);
-//                if(center instanceof Area) {
-//                    this.centerList.set(index, center);
-//                }
-//                else if(center instanceof Human) {
-//                    this.centerList.set(index, this.worldInfo.getEntity(((Human) center).getPosition()));
-//                }
-//                else if(center instanceof Blockade) {
-//                    this.centerList.set(index, this.worldInfo.getEntity(((Blockade) center).getPosition()));
-//                }
-            
-                double gamma = pis[index];
-                //TODO ここから
+                double a = this.sigs[index][0][0];
+                double b = this.sigs[index][0][1];
+                double c = this.sigs[index][1][0];
+                double d = this.sigs[index][1][1];
+                double[][] sig = {{a, b}, {c, d}};
                 
-            
-            
+                nd = new NormalDistribution(mus[index], sig);
+                
+                double gamma = pis[index] ;
             }
             if  (scenarioInfo.isDebugMode()) { System.out.print("*"); }
         }
@@ -658,5 +633,85 @@ public class RioneGMM extends StaticClustering {
 
     private boolean isGoal(EntityID e, Collection<EntityID> test) {
         return test.contains(e);
+    }
+    
+    private class NormalDistribution{
+        private double[][] vcm;
+        private double[][] invVcm;
+        private Point2D means;
+     
+        NormalDistribution(Point2D means, double[][] vcm){
+            setVcm(vcm);
+            setInvVcm(getInv(vcm));
+            setMeans(means);
+        }
+        
+        NormalDistribution(){
+            this(null, null);
+        }
+    
+        public void setVcm(double[][] vcm){
+            this.vcm = vcm;
+        }
+    
+        public void setInvVcm(double[][] invVcm){
+            this.invVcm = invVcm;
+        }
+    
+        public void setMeans(Point2D means){
+            this.means = means;
+        }
+        
+        private double getProb(Point2D x){
+            if(x != null){
+                return Double.NaN;
+            }
+            
+            double a = Math.exp(dot2DTx2D(dot2DTx2M(prod2D(-0.5, subPoint2D(x, this.means)), this.invVcm), subPoint2D(x, this.means)));
+            double b = Math.PI*2 * Math.sqrt(getDet(this.vcm));
+            return a / b;
+        }
+        
+        public double[][] getInv(double[][] m){
+            double a = m[0][0];
+            double b = m[0][1];
+            double c = m[1][0];
+            double d = m[1][1];
+            
+            double s = a*d - b*c;
+            if(s == 0){
+                return null;
+            }
+    
+            return new double[][]{{d/s, -b/s}, {-c/s, a/s}};
+        }
+        
+        public double getDet(double[][] m){
+            double a = m[0][0];
+            double b = m[0][1];
+            double c = m[1][0];
+            double d = m[1][1];
+    
+            return a*d - b*c;
+        }
+        
+        public double[] subPoint2D(Point2D a, Point2D b){
+            return new double[]{a.getX() - b.getY(), a.getY() - b.getY()};
+        }
+        
+        public double[] prod2D(double k, double[] m){
+            double a = m[0];
+            double b = m[1];
+    
+            return new double[]{k*a, k*b};
+        }
+        
+        public double dot2DTx2D(double[] a, double[] b){
+            return a[0]*b[0] + a[1]*b[1];
+        }
+        
+        public double[] dot2DTx2M(double[] a, double[][] b){
+            return new double[]{a[0]*b[0][0] + a[1]*b[1][0], a[0]*b[0][1] + a[1]*b[1][1]};
+        }
     }
 }
