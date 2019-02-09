@@ -8,7 +8,7 @@ class Common:
         Y = node2[1] - node1[1]
         return math.sqrt(X ** 2 + Y ** 2)
 
-    def id_distance(self, first: int, end: int, nodes: list):
+    def node_distance(self, first: int, end: int, nodes: list):
         return self.distance(nodes[first - 1], nodes[end - 1])
 
     def sum_distance(self, route: list, nodes: list):
