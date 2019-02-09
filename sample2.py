@@ -1,7 +1,7 @@
 import sys
 
-from PatrolSalesman import GraphDrawer
-from PatrolSalesman import Common
+import GraphDrawer
+import Common
 
 drawer = GraphDrawer.GraphDrawer()
 common = Common.Common()

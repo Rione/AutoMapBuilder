@@ -1,8 +1,7 @@
 import sys
-
-from PatrolSalesman import GraphDrawer
-from PatrolSalesman import Common
-from PatrolSalesman import sample2
+import GraphDrawer
+import Common
+import sample2
 
 drawer = GraphDrawer.GraphDrawer()
 common = Common.Common()
@@ -15,7 +14,6 @@ def two_opt(nodes: list):
         for b in range(len(route)):
             if a == b or a + 1 == b:
                 continue
-            
 
             pass
 
