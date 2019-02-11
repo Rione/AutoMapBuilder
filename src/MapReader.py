@@ -1,6 +1,6 @@
 import xml.etree.ElementTree as ET
-import Node, Edge, Road, Building
-import WorldInfo
+from src.MapParts import Edge, Road, Node, Building
+from src import WorldInfo
 
 
 class MapReader:
@@ -53,6 +53,8 @@ class MapReader:
             self.roads.append(Road.Road(id, edge_ids, neighbour_ids))
 
         self.world_info = WorldInfo.WorldInfo(self.nodes, self.edges, self.buildings, self.roads)
+
+        print(self.world_info.building_data.get(9601))
 
 
 kobe = MapReader('kobe')

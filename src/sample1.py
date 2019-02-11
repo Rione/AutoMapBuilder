@@ -1,7 +1,7 @@
+import os
 import sys
 
-import GraphDrawer
-import Common
+from src import Common, GraphDrawer
 
 drawer = GraphDrawer.GraphDrawer()
 common = Common.Common()
@@ -21,7 +21,7 @@ def all_hands(nodes: list):
 
 
 def main():
-    nodes = common.read_data('./data3')
+    nodes = common.read_data(os.getcwd() + '/map/data3')
     route = all_hands(nodes)
     drawer.route_regist(route, nodes)
     drawer.nodes_regist(nodes)
