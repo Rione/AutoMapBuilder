@@ -1,5 +1,6 @@
 import xml.etree.ElementTree as ET
 import Node, Edge, Road, Building
+import WorldInfo
 
 
 class MapReader:
@@ -50,5 +51,9 @@ class MapReader:
                 if not neighbour_id == None:
                     neighbour_ids.append(int(neighbour_id))
             self.roads.append(Road.Road(id, edge_ids, neighbour_ids))
+
+        self.world_info = WorldInfo.WorldInfo(self.nodes, self.edges, self.buildings, self.roads)
+
+        print(self.world_info.building_data.get(9494).y)
 
 kobe = MapReader('kobe')
