@@ -54,7 +54,5 @@ class MapReader:
 
         self.world_info = WorldInfo.WorldInfo(self.nodes, self.edges, self.buildings, self.roads)
 
-        print(self.world_info.building_data.get(9494).y)
-
 
 kobe = MapReader('kobe')

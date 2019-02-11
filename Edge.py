@@ -12,7 +12,7 @@ class Edge:
         self.nodes = np.asarray([])
 
     # nodeデータと関連付け
-    def registry_data(self, first: Node, end: Node):
+    def registry_node(self, first: Node, end: Node):
         self.nodes = np.append(self.nodes, first)
         self.nodes = np.append(self.nodes, first)
         self.x = (first.x + end.x) / 2

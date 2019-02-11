@@ -23,5 +23,5 @@ class Building:
         self.y = sum_y / len(edges)
 
     def registry_neighbour(self, roads: list):
-        for neighbour in roads:
-            self.neighbour = np.append(self.neighbour, neighbour)
+        for road in roads:
+            self.neighbour = np.append(self.neighbour, road)
