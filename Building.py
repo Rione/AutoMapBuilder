@@ -1,4 +1,4 @@
-class Road:
+class Building:
     def __init__(self, id: int, edges: list, neighbour: list):
         self.id = id
         self.edges = edges
