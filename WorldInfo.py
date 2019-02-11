@@ -9,7 +9,7 @@ class WorldInfo:
 
         self.edge_data = {}
         for edge in edges:
-            edge.registry_data(self.node_data.get(edge.first_id), self.node_data.get(edge.end_id))
+            edge.registry_edge(self.node_data.get(edge.first_id), self.node_data.get(edge.end_id))
             self.edge_data.setdefault(edge.id, edge)
 
         self.building_data = {}
@@ -17,7 +17,7 @@ class WorldInfo:
             b_edges = []
             for edge_id in building.edge_ids:
                 b_edges.append(self.edge_data.get(edge_id))
-            building.registry_data(b_edges)
+            building.registry_edge(b_edges)
             self.building_data.setdefault(building.id, building)
 
         self.road_data = {}
@@ -25,5 +25,5 @@ class WorldInfo:
             r_edges = []
             for edge_id in road.edge_ids:
                 r_edges.append(self.edge_data.get(edge_id))
-                road.registry_data(r_edges)
+            road.registry_edge(r_edges)
             self.building_data.setdefault(road.id, road)

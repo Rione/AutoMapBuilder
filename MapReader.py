@@ -56,4 +56,5 @@ class MapReader:
 
         print(self.world_info.building_data.get(9494).y)
 
+
 kobe = MapReader('kobe')
