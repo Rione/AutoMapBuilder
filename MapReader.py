@@ -1,22 +1,54 @@
 import xml.etree.ElementTree as ET
-import Node
+import Node, Edge, Road, Building
 
 
 class MapReader:
     def __init__(self, map_name: str):
-        #nodes
-        self.nodes = []
         tree = ET.ElementTree(file='./map/' + map_name + '/map/map.gml')
         root = tree.getroot()
+
+        # nodes
+        self.nodes = []
         for nodes in root[0]:
-            id = nodes.attrib.get('{http://www.opengis.net/gml}id')
+            id = int(dict(nodes.attrib).get('{http://www.opengis.net/gml}id'))
             x = float(str(nodes[0][0][0].text).split(',')[0])
             y = float(str(nodes[0][0][0].text).split(',')[1])
             self.nodes.append(Node.Node(id, x, y))
 
+        # edges
+        self.edges = []
         for edges in root[1]:
-            id = dict(edges.attrib).get('{http://www.opengis.net/gml}id')
-            print(edges[1].attrib)
+            id = int(dict(edges.attrib).get('{http://www.opengis.net/gml}id'))
+            first_id = int(str(dict(edges[0].attrib).get('{http://www.w3.org/1999/xlink}href')).replace('#', ''))
+            end_id = int(str(dict(edges[1].attrib).get('{http://www.w3.org/1999/xlink}href')).replace('#', ''))
+            self.edges.append(Edge.Edge(id, first_id, end_id))
 
+        # building
+        self.buildings = []
+        for buildings in root[2]:
+            id = int(dict(buildings.attrib).get('{http://www.opengis.net/gml}id'))
+            edge_ids = []
+            neighbour_ids = []
+            for building in buildings[0]:
+                edge_ids.append(
+                    int(str(dict(building.attrib).get('{http://www.w3.org/1999/xlink}href')).replace('#', '')))
+                neighbour_id = dict(building.attrib).get('{urn:roborescue:map:gml}neighbour')
+                if not neighbour_id == None:
+                    neighbour_ids.append(int(neighbour_id))
+            self.buildings.append(Building.Building(id, edge_ids, neighbour_ids))
+
+        # roads
+        self.roads = []
+        for roads in root[3]:
+            id = int(dict(roads.attrib).get('{http://www.opengis.net/gml}id'))
+            edge_ids = []
+            neighbour_ids = []
+            for road in roads[0]:
+                edge_ids.append(
+                    int(str(dict(road.attrib).get('{http://www.w3.org/1999/xlink}href')).replace('#', '')))
+                neighbour_id = dict(road.attrib).get('{urn:roborescue:map:gml}neighbour')
+                if not neighbour_id == None:
+                    neighbour_ids.append(int(neighbour_id))
+            self.roads.append(Road.Road(id, edge_ids, neighbour_ids))
 
 kobe = MapReader('kobe')
