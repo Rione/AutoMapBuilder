@@ -2,6 +2,7 @@ import xml.etree.ElementTree as ET
 
 from src.Graph import G_Node
 from src.World import Edge, Road, Node, Building, WorldInfo
+from src import Stack
 
 
 class MapReader:
@@ -55,17 +56,17 @@ class MapReader:
 
         self.world_info = WorldInfo.WorldInfo(self.nodes, self.edges, self.buildings, self.roads)
 
-        print(self.world_info.building_data.get(9601))
+        print(self.world_info.road_data.get(36512))
 
     def build_graph(self):
-        nodes = []
+        stack = Stack.Stack()
         for id in self.world_info.building_data:
             building = self.world_info.building_data.get(id)
-            nodes.append(building)
+            stack.push(building)
         for id in self.world_info.road_data:
             road = self.world_info.road_data.get(id)
-            nodes.append(road)
-        print(nodes)
+            stack.push(road)
+        print(stack.pop().neighbour)
 
 
 kobe = MapReader('kobe')

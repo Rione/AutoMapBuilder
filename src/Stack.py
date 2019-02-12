@@ -7,5 +7,4 @@ class Stack:
         return self.stack
 
     def pop(self):
-        sEl = self.stack.pop()
-        return sEl, self.stack
+        return self.stack.pop()

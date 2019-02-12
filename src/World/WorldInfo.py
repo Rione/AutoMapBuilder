@@ -37,5 +37,8 @@ class WorldInfo:
         for road_id in self.road_data:
             neighbour_list = []
             for neighbour_id in self.road_data.get(road_id).neighbour_ids:
-                neighbour_list.append(self.building_data.get(neighbour_id))
+                neighbour = self.building_data.get(neighbour_id)
+                if neighbour == None:
+                    neighbour = self.road_data.get(neighbour_id)
+                neighbour_list.append(neighbour)
             self.road_data.get(road_id).registry_neighbour(neighbour_list)
