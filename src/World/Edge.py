@@ -1,4 +1,4 @@
-from src.MapParts import Node
+from src.World import Node
 import numpy as np
 
 

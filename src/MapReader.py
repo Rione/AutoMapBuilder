@@ -1,6 +1,5 @@
 import xml.etree.ElementTree as ET
-from src.MapParts import Edge, Road, Node, Building
-from src import WorldInfo
+from src.World import Edge, Road, Node, Building, WorldInfo
 
 
 class MapReader:
@@ -56,8 +55,8 @@ class MapReader:
 
         print(self.world_info.building_data.get(9601))
 
-
-
+    def build_graph(self):
+        pass
 
 
 kobe = MapReader('kobe')
