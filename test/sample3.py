@@ -1,6 +1,7 @@
 import os
 
-from src import Common, sample2, GraphDrawer
+from src import Common
+from test import sample2, GraphDrawer
 
 drawer = GraphDrawer.GraphDrawer()
 common = Common.Common()

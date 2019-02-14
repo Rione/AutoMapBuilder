@@ -5,6 +5,7 @@ import xml.etree.ElementTree as ET
 from src.Graph import G_Node, GraphInfo, Branch
 from src.World import Edge, Road, Node, Building, WorldInfo
 from src import Stack, Common
+from src import GraphDrawer
 
 
 class MapReader:
@@ -63,6 +64,7 @@ class MapReader:
 
     def build_graph(self):
         g_nodes = self.world_info.g_nodes
+        drawer = GraphDrawer.GraphDrawer(g_nodes)
 
         # グラフノード作成
         # 最初のノード選択
@@ -86,12 +88,12 @@ class MapReader:
                                                                                                     neighbour_id,
                                                                                                     g_nodes)))
 
-            graph_info.g_node_data.setdefault(target_id, copy.deepcopy(neighbour_branchs))
+            graph_info.branch_list.setdefault(target_id, copy.deepcopy(neighbour_branchs))
 
-        print(graph_info.g_node_data.get(8196))
-        for id in graph_info.g_node_data:
-            plt.scatter(g_nodes.get(id).x, g_nodes.get(id).y)
-        plt.show()
+        print(graph_info.branch_list.get(8196))
+        drawer.nodes_regist(graph_info.branch_list)
+        drawer.show_plt()
+
 
 
 kobe = MapReader('kobe')
