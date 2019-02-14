@@ -90,8 +90,7 @@ class MapReader:
 
             graph_info.branch_list.setdefault(target_id, copy.deepcopy(neighbour_branchs))
 
-        print(graph_info.branch_list.get(8196))
-        drawer.nodes_regist(graph_info.branch_list)
+        drawer.map_register(graph_info.branch_list)
         drawer.show_plt()
 
 

@@ -25,7 +25,7 @@ def main():
     nodes = common.read_data(os.getcwd() + '/map/data3')
     route = all_hands(nodes)
     drawer.route_regist(route, nodes)
-    drawer.nodes_regist(nodes)
+    drawer.map_register(nodes)
     drawer.show_plt()
 
 
