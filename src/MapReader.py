@@ -1,14 +1,17 @@
+import copy
+import matplotlib.pyplot as plt
 import xml.etree.ElementTree as ET
 
-from src.Graph import G_Node
+from src.Graph import G_Node, GraphInfo, Branch
 from src.World import Edge, Road, Node, Building, WorldInfo
-from src import Stack
+from src import Stack, Common
 
 
 class MapReader:
     def __init__(self, map_name: str):
         tree = ET.ElementTree(file='./map/' + map_name + '/map/map.gml')
         root = tree.getroot()
+        self.common = Common.Common()
 
         # nodes
         self.nodes = []
@@ -59,14 +62,36 @@ class MapReader:
         print(self.world_info.road_data.get(36512))
 
     def build_graph(self):
-        stack = Stack.Stack()
-        for id in self.world_info.building_data:
-            building = self.world_info.building_data.get(id)
-            stack.push(building)
-        for id in self.world_info.road_data:
-            road = self.world_info.road_data.get(id)
-            stack.push(road)
-        print(stack.pop().neighbour)
+        g_nodes = self.world_info.g_nodes
+
+        # グラフノード作成
+        # 最初のノード選択
+        open_list = Stack.Stack()
+        for id in g_nodes:
+            if len(g_nodes.get(id).neighbours) > 2:
+                open_list.push(id)
+                break
+
+        # 深さ優先探索
+        closed_list = Stack.Stack()
+        graph_info = GraphInfo.GraphInfo()
+        while not open_list.empty():
+            target_id = open_list.pop()
+            closed_list.push(target_id)
+            neighbour_branchs = []
+            for neighbour_id in g_nodes.get(target_id).neighbour_ids:
+                if not neighbour_id in closed_list.stack:
+                    open_list.push(neighbour_id)
+                    neighbour_branchs.append(Branch.Branch(neighbour_id, self.common.id_to_distance(target_id,
+                                                                                                    neighbour_id,
+                                                                                                    g_nodes)))
+
+            graph_info.g_node_data.setdefault(target_id, copy.deepcopy(neighbour_branchs))
+
+        print(graph_info.g_node_data.get(8196))
+        for id in graph_info.g_node_data:
+            plt.scatter(g_nodes.get(id).x, g_nodes.get(id).y)
+        plt.show()
 
 
 kobe = MapReader('kobe')

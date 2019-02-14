@@ -8,6 +8,11 @@ class Common:
         Y = node2[1] - node1[1]
         return math.sqrt(X ** 2 + Y ** 2)
 
+    def id_to_distance(self, first_id: int, end_id: int, nodes: dict):
+        first = nodes.get(first_id)
+        end = nodes.get(end_id)
+        return self.distance([first.x, first.y], [end.x, end.y])
+
     def node_distance(self, first: int, end: int, nodes: list):
         return self.distance(nodes[first - 1], nodes[end - 1])
 

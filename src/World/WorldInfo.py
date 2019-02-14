@@ -9,6 +9,8 @@ class WorldInfo:
             edge.registry_node(self.node_data.get(edge.first_id), self.node_data.get(edge.end_id))
             self.edge_data.setdefault(edge.id, edge)
 
+        self.g_nodes = {}
+
         self.building_data = {}
         for building in buildings:
             b_edges = []
@@ -16,6 +18,7 @@ class WorldInfo:
                 b_edges.append(self.edge_data.get(edge_id))
             building.registry_edge(b_edges)
             self.building_data.setdefault(building.id, building)
+            self.g_nodes.setdefault(building.id, building)
 
         self.road_data = {}
         for road in roads:
@@ -24,6 +27,7 @@ class WorldInfo:
                 r_edges.append(self.edge_data.get(edge_id))
             road.registry_edge(r_edges)
             self.road_data.setdefault(road.id, road)
+            self.g_nodes.setdefault(road.id, road)
 
         # neighbour登録
         # road

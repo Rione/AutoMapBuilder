@@ -3,8 +3,6 @@ import numpy as np
 
 
 class G_Node:
-    def __init__(self, id: int, x: float, y: float):
-        self.id = id
-        self.x = x
-        self.y = y
+    def __init__(self, element):
+        self.element = element
         self.branch = np.asarray([])

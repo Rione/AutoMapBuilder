@@ -9,7 +9,7 @@ class Road:
         self.x = 0
         self.y = 0
         self.edges = np.asarray([])
-        self.neighbour = np.asarray([])
+        self.neighbours = np.asarray([])
 
     def registry_edge(self, edges: list):
         # 重心
@@ -24,4 +24,4 @@ class Road:
 
     def registry_neighbour(self, buildings: list):
         for building in buildings:
-            self.neighbour = np.append(self.neighbour, building)
+            self.neighbours = np.append(self.neighbours, building)
