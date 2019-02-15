@@ -1,4 +1,7 @@
 import copy
+import os
+import sys
+
 import matplotlib.pyplot as plt
 import xml.etree.ElementTree as ET
 
@@ -10,7 +13,7 @@ from src import GraphDrawer
 
 class MapReader:
     def __init__(self, map_name: str):
-        tree = ET.ElementTree(file='./map/' + map_name + '/map/map.gml')
+        tree = ET.ElementTree(file=os.getcwd().replace('/src', '') + '/map/' + map_name + '/map/map.gml')
         root = tree.getroot()
         self.common = Common.Common()
 
@@ -77,9 +80,20 @@ class MapReader:
         # 深さ優先探索
         closed_list = Stack.Stack()
         graph_info = GraphInfo.GraphInfo()
+        total_count = 0
+        neighbour_number_count = 0
+        entrance = 0
         while not open_list.empty():
             target_id = open_list.pop()
             closed_list.push(target_id)
+            if 'Road' in str(type(g_nodes.get(target_id))):
+                total_count += 1
+                if len(g_nodes.get(target_id).neighbours) == 2:
+                    neighbour_number_count += 1
+                for neighbour in g_nodes.get(target_id).neighbours:
+                    if 'Building' in str(type(neighbour)):
+                        entrance += 1
+
             neighbour_branchs = []
             for neighbour_id in g_nodes.get(target_id).neighbour_ids:
                 if not neighbour_id in closed_list.stack:
@@ -90,10 +104,7 @@ class MapReader:
 
             graph_info.branch_list.setdefault(target_id, copy.deepcopy(neighbour_branchs))
 
-        drawer.map_register(graph_info.branch_list)
-        drawer.show_plt()
-
-
-
-kobe = MapReader('kobe')
-kobe.build_graph()
+        print(neighbour_number_count / total_count)
+        print(1 - (entrance / total_count))
+        # drawer.map_register(graph_info.branch_list)
+        # drawer.show_plt()
