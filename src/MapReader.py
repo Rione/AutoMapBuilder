@@ -104,7 +104,5 @@ class MapReader:
 
             graph_info.branch_list.setdefault(target_id, copy.deepcopy(neighbour_branchs))
 
-        print(neighbour_number_count / total_count)
-        print(1 - (entrance / total_count))
         # drawer.map_register(graph_info.branch_list)
         # drawer.show_plt()
