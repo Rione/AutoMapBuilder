@@ -1,8 +1,10 @@
-from src import MapReader, Astar
+from src import MapReader, Astar, ScenarioReader
 from src import GraphDrawer
 
 if __name__ == '__main__':
     map = MapReader.MapReader('sakae')
+    reader = ScenarioReader.ScenarioReader('sakae')
+    scenario = reader.scenario_reader()
     world_info = map.build_map()
     graph_info = map.build_graph()
 

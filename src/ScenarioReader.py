@@ -18,7 +18,3 @@ class ScenarioReader:
             result.append([name, location])
 
         return result
-
-
-reader = ScenarioReader('sakae')
-print(reader.scenario_reader())
