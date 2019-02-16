@@ -8,8 +8,11 @@ if __name__ == '__main__':
 
     drawer = GraphDrawer.GraphDrawer(world_info.g_nodes)
 
-    drawer.map_register(graph_info.branch_list)
-    drawer.show_plt()
-
     astar = Astar.Astar(map.world_info.g_nodes)
-    print(astar.calc_distance(200984, 199165))
+    result = astar.calc_distance(200984, 201752)
+
+    print(result[0])
+
+    drawer.map_register(graph_info.branch_list)
+    drawer.route_register(result[1])
+    drawer.show_plt()

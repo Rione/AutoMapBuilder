@@ -37,5 +37,15 @@ class GraphDrawer:
                              [self.g_nodes.get(id).y, neighbour.y], 'k-', color='black')
                     drawed[id].append(neighbour.id)
 
+    def route_register(self, route: list):
+        # routeIDからノードとエッジを描画
+        for i in range(len(route)):
+            ##ノード描画
+            plt.scatter(self.g_nodes.get(route[i]).x, self.g_nodes.get(route[i]).y, color='blue')
+            ##エッジ描画（ただし終端は除外）
+            if not i == len(route) - 1:
+                plt.plot([self.g_nodes.get(route[i]).x, self.g_nodes.get(route[i + 1]).x],
+                         [self.g_nodes.get(route[i]).y, self.g_nodes.get(route[i + 1]).y], 'k-', color='blue')
+
     def show_plt(self):
         plt.show()
