@@ -61,6 +61,7 @@ if __name__ == '__main__':
     route.append(route[0])
 
     print(route)
+    print(total_distance)
 
     # 描画用に道のりルートに変換
     result = []
@@ -69,8 +70,9 @@ if __name__ == '__main__':
     for i in range(len(route) - 1):
         # 最短ルート取得（最初と終端含む）
         a_route = astar.calc_distance(route[i], route[i + 1])[1]
-        for r in range(1, len(a_route) - 1):
+        for r in range(len(a_route) - 1):
             result.append(a_route[r])
+    result.append(route[-1])
 
     drawer.route_register(result)
     drawer.show_plt()
