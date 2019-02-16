@@ -26,6 +26,8 @@ class Astar:
         return math.sqrt(X ** 2 + Y ** 2)
 
     def calc_distance(self, first_id: int, end_id: int):
+        self.open_list = {}
+        self.closed_list = {}
         # 最初のノードを追加
         self.open_list.setdefault(first_id, A_Node(first_id, 0, self.distance(first_id, end_id), [first_id]))
         # openlistが空になるまでループ

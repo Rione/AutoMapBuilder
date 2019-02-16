@@ -10,6 +10,9 @@ class GraphDrawer:
     def reset_plt(self):
         plt.cla()
 
+    def node_register(self, id: int):
+        plt.scatter(self.g_nodes.get(id).x, self.g_nodes.get(id).y, color='blue')
+
     def map_register(self, branch_list: dict):
         for id in branch_list:
             # ノード
