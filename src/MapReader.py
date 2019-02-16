@@ -63,8 +63,6 @@ class MapReader:
 
         self.world_info = WorldInfo.WorldInfo(self.nodes, self.edges, self.buildings, self.roads)
 
-        print(self.world_info.road_data.get(36512))
-
     def build_graph(self):
         g_nodes = self.world_info.g_nodes
         drawer = GraphDrawer.GraphDrawer(g_nodes)
@@ -104,5 +102,5 @@ class MapReader:
 
             graph_info.branch_list.setdefault(target_id, copy.deepcopy(neighbour_branchs))
 
-        # drawer.map_register(graph_info.branch_list)
-        # drawer.show_plt()
+        drawer.map_register(graph_info.branch_list)
+        drawer.show_plt()
