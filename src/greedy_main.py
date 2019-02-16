@@ -60,9 +60,17 @@ if __name__ == '__main__':
 
     route.append(route[0])
 
+    print(route)
+
     # 描画用に道のりルートに変換
-    for i in range(len(route)):
-        
-        pass
-    drawer.route_register(route)
+    result = []
+    result.append(route[0])
+    # セールスマン問題の近似解を取り出す
+    for i in range(len(route) - 1):
+        # 最短ルート取得（最初と終端含む）
+        a_route = astar.calc_distance(route[i], route[i + 1])[1]
+        for r in range(1, len(a_route) - 1):
+            result.append(a_route[r])
+
+    drawer.route_register(result)
     drawer.show_plt()
