@@ -4,12 +4,12 @@ import sys
 
 
 class A_Node:
-    def __init__(self, node_id: int, cost: float, future_cost: float):
+    def __init__(self, node_id: int, cost: float, future_cost: float, route: list):
         self.id = node_id
         self.c = cost
         self.h = future_cost
         self.total = self.c + self.h
-        self.route = []
+        self.route = route
 
 
 class Astar:
@@ -27,10 +27,9 @@ class Astar:
 
     def calc_distance(self, first_id: int, end_id: int):
         # 最初のノードを追加
-        self.open_list.setdefault(first_id, A_Node(first_id, 0, self.distance(first_id, end_id)))
+        self.open_list.setdefault(first_id, A_Node(first_id, 0, self.distance(first_id, end_id), [first_id]))
         # openlistが空になるまでループ
         while not len(self.open_list) <= 0:
-            print(self.open_list)
             # コスト最小のターゲット選択
             min_id = 0
             min_cost = sys.float_info.max
@@ -39,11 +38,11 @@ class Astar:
                 if min_cost > node.total:
                     min_cost = node.total
                     min_id = id
-
             target = self.open_list.pop(min_id)
+
             # 目的地の場合
             if target.id == end_id:
-                return target.c
+                return target.c, target.route
 
             # closelistに突っ込む
             self.closed_list.setdefault(target.id, copy.deepcopy(target))
@@ -64,7 +63,10 @@ class Astar:
                         # 排除
                         self.open_list.pop(neighbour.id)
                         # 追加
-                        self.open_list.setdefault(neighbour.id, A_Node(neighbour.id, c, h))
+                        ##ルート更新
+                        target_route = copy.deepcopy(target.route)
+                        target_route.append(neighbour.id)
+                        self.open_list.setdefault(neighbour.id, A_Node(neighbour.id, c, h, target_route))
 
                 # closelistに含まれる場合
                 elif neighbour.id in self.closed_list:
@@ -73,9 +75,15 @@ class Astar:
                         # 排除
                         self.closed_list.pop(neighbour.id)
                         # 追加
-                        self.open_list.setdefault(neighbour.id, A_Node(neighbour.id, c, h))
+                        ##ルート更新
+                        target_route = copy.deepcopy(target.route)
+                        target_route.append(neighbour.id)
+                        self.open_list.setdefault(neighbour.id, A_Node(neighbour.id, c, h, target_route))
 
                 # openlist and closelist に含まれていない場合
                 else:
-                    self.open_list.setdefault(neighbour.id, A_Node(neighbour.id, c, h))
+                    ##ルート更新
+                    target_route = copy.deepcopy(target.route)
+                    target_route.append(neighbour.id)
+                    self.open_list.setdefault(neighbour.id, A_Node(neighbour.id, c, h, target_route))
         return None

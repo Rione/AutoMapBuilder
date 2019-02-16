@@ -5,4 +5,4 @@ if __name__ == '__main__':
     map.build_graph()
 
     astar = Astar.Astar(map.world_info.g_nodes)
-    print(astar.calc_distance(199165, 200984))
+    print(astar.calc_distance(200984, 199165))
