@@ -39,4 +39,3 @@ class GraphDrawer:
 
     def show_plt(self):
         plt.show()
-        plt.cla()

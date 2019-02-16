@@ -8,12 +8,14 @@ import xml.etree.ElementTree as ET
 from src.Graph import G_Node, GraphInfo, Branch
 from src.World import Edge, Road, Node, Building, WorldInfo
 from src import Stack, Common
-from src import GraphDrawer
 
 
 class MapReader:
     def __init__(self, map_name: str):
-        tree = ET.ElementTree(file=os.getcwd().replace('/src', '') + '/map/' + map_name + '/map/map.gml')
+        self.map_name = map_name
+
+    def build_map(self):
+        tree = ET.ElementTree(file=os.getcwd().replace('/src', '') + '/map/' + self.map_name + '/map/map.gml')
         root = tree.getroot()
         self.common = Common.Common()
 
@@ -62,10 +64,10 @@ class MapReader:
             self.roads.append(Road.Road(id, edge_ids, neighbour_ids))
 
         self.world_info = WorldInfo.WorldInfo(self.nodes, self.edges, self.buildings, self.roads)
+        return self.world_info
 
     def build_graph(self):
         g_nodes = self.world_info.g_nodes
-        drawer = GraphDrawer.GraphDrawer(g_nodes)
 
         # グラフノード作成
         # 最初のノード選択
@@ -75,9 +77,9 @@ class MapReader:
                 open_list.push(id)
                 break
 
+        self.graph_info = GraphInfo.GraphInfo()
         # 深さ優先探索
         closed_list = Stack.Stack()
-        graph_info = GraphInfo.GraphInfo()
         total_count = 0
         neighbour_number_count = 0
         entrance = 0
@@ -100,7 +102,6 @@ class MapReader:
                                                                                                     neighbour_id,
                                                                                                     g_nodes)))
 
-            graph_info.branch_list.setdefault(target_id, copy.deepcopy(neighbour_branchs))
+            self.graph_info.branch_list.setdefault(target_id, copy.deepcopy(neighbour_branchs))
 
-        drawer.map_register(graph_info.branch_list)
-        drawer.show_plt()
+        return self.graph_info
