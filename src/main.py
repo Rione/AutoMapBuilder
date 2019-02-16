@@ -9,7 +9,7 @@ if __name__ == '__main__':
     drawer = GraphDrawer.GraphDrawer(world_info.g_nodes)
 
     astar = Astar.Astar(map.world_info.g_nodes)
-    result = astar.calc_distance(200984, 201752)
+    result = astar.calc_distance(193109, 201403)
 
     print(result[0])
 

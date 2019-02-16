@@ -10,9 +10,15 @@ class ScenarioReader:
         tree = ET.ElementTree(file=os.getcwd().replace('/src', '') + '/map/' + self.map_name + '/map/scenario.xml')
         root = tree.getroot()
 
+        # シナリオを追加
+        result = []
         for element in root:
-            print(element)
+            name = str(element.tag).replace('{urn:roborescue:map:scenario}', '')
+            location = int(dict(element.attrib).get('{urn:roborescue:map:scenario}location'))
+            result.append([name, location])
+
+        return result
 
 
 reader = ScenarioReader('sakae')
-reader.scenario_reader()
+print(reader.scenario_reader())
