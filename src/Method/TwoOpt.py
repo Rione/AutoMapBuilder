@@ -9,47 +9,43 @@ class TwoOpt:
 
     def calc(self, route: list):
         # 入れ替えが一度もなくなるまでループ
-        flag = True
-        while flag:
-            flag = False
-            # 入れ替え対象ペアの先頭選択
-            for a in range(len(route)):
+        count = 1
+        total = 0
+        while count > 0:
+            count = 0
+            # 入れ替え対象ペアの先頭選択(ただし終端は除外)
+            for a in range(len(route) - 1):
                 print(a)
-                # 一度入れ替えられている場合はbreak
-                # if flag:
-                #    break
                 # 選択されたindex
                 a_first = a
                 a_end = a + 1
-                # 終端の場合は最初のノードを選択
-                if a_end == len(route):
-                    a_end = 0
 
                 # もう一方の入れ替え対象ペアの先頭を選択
-                for b in range(len(route)):
-                    # 一度入れ替えられている場合はbreak
-                    # if flag:
-                    #    break
+                for b in range(len(route) - 1):
+                    # 選択されたindex
                     b_first = b
                     b_end = b + 1
-                    # 終端の場合は最初のノードを選択
-                    if b_end == len(route):
-                        b_end = 0
 
                     # 同じペア、もしくは連続するペアの場合は除外
-                    if a == b or a_end == b_first or a_first == b_end:
+                    if a == b or a_end == b_first:
+                        continue
+                    # 先頭と終端が同じidの為、連続するケースを除外
+                    if a_end == len(route) - 1 and b_first == 0:
+                        continue
+                    if b_end == len(route) - 1 and a_first == 0:
                         continue
                     # 距離を比べる
-                    before = self.astar.calc_distance(route[a_first], route[a_end]) + self.astar.calc_distance(
-                        route[b_first], route[b_end])
-                    after = self.astar.calc_distance(route[a_first], route[b_first]) + self.astar.calc_distance(
-                        route[a_end], route[b_end])
+                    before = self.astar.calc_distance(route[a_first], route[a_end])[0] + \
+                             self.astar.calc_distance(route[b_first],
+                                                      route[b_end])[0]
+                    after = self.astar.calc_distance(route[a_first], route[b_first])[0] + \
+                            self.astar.calc_distance(route[a_end],
+                                                     route[b_end])[0]
+                    total += before
                     if before > after:
-                        flag = True
-                        print('debug')
+                        count += 1
                         # 入れ替え
-                        temp = route[a_end]
-                        route[a_end] = route[b_first]
-                        route[b_first] = temp
+                        new_path = route[a_end:b_first + 1]
+                        route[a_end:b_first + 1] = new_path[::-1]
 
-        return route
+        return total, route
