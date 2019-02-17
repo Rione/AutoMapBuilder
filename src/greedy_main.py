@@ -4,6 +4,8 @@ import sys
 from src import MapReader, ScenarioReader, GraphDrawer, Astar
 
 # よくばり法
+from src.Method import Greedy
+
 if __name__ == '__main__':
     map = MapReader.MapReader('sakae')
     reader = ScenarioReader.ScenarioReader('sakae')
@@ -13,8 +15,8 @@ if __name__ == '__main__':
     graph_info = map.build_graph()
 
     astar = Astar.Astar(map.world_info.g_nodes)
+    greedy = Greedy.Greedy(map.world_info)
     drawer = GraphDrawer.GraphDrawer(world_info.g_nodes)
-    drawer.map_register(graph_info.branch_list)
 
     # 市民の除くエージェント＆避難所をリストアップ
     location_ids = []
@@ -32,36 +34,9 @@ if __name__ == '__main__':
         if scenario[0] == 'ambulanceteam':
             location_ids.append(scenario[1])
 
-    # 一番近いノードに接続
-    # 全てのノードを登録するまでループ
-    route = []
-    # 未探索ノード登録(先頭は追加しない)
-    target_ids = set(copy.deepcopy(location_ids[1:]))
-    # スタートを登録
-    route.append(location_ids[0])
-    total_distance = 0
-    while len(target_ids) > 0:
-        print(len(route), len(target_ids))
-        min = sys.float_info.max
-        min_id = 0
-        for id in target_ids:
-            # 距離取得
-            distance = astar.calc_distance(route[-1], id)[0]
-            # 最小距離
-            if min > distance:
-                min = distance
-                min_id = id
-
-        # 接続済みのノードを登録
-        route.append(min_id)
-        # 未探索リストから除外
-        target_ids.discard(min_id)
-        total_distance += min
-
-    route.append(route[0])
-
-    print(route)
-    print(total_distance)
+    result = greedy.calc(location_ids)
+    print(result[0])
+    route = result[1]
 
     # 描画用に道のりルートに変換
     result = []
@@ -74,5 +49,6 @@ if __name__ == '__main__':
             result.append(a_route[r])
     result.append(route[-1])
 
+    drawer.map_register(graph_info.branch_list)
     drawer.route_register(result)
     drawer.show_plt()
