@@ -39,12 +39,11 @@ if __name__ == '__main__':
             location_ids.append(scenario[1])
 
     result = greedy.calc(location_ids)
-    route = result[1]
 
     with open(os.getcwd().replace('/src', '') + '/map/' + MAP_NAME + '/map/route', mode='w') as f:
-        f.write(str(route))
+        f.write(str(result))
 
-    route = drawer.interpolation(route, astar)
+    route = drawer.interpolation(result, astar)
     print(route[0])
     print(route[1])
     drawer.map_register(graph_info.branch_list)
