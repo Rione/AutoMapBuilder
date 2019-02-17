@@ -10,10 +10,8 @@ class TwoOpt:
     def calc(self, route: list):
         # 入れ替えが一度もなくなるまでループ
         count = 1
-        total = 0
         while count > 0:
             count = 0
-            total = 0
             # 入れ替え対象ペアの先頭選択(ただし終端は除外)
             for a in range(len(route) - 1):
                 print(a)
@@ -50,11 +48,10 @@ class TwoOpt:
                             self.astar.distance(route[a_end],
                                                 route[b_end])
                                                 '''
-                    total += before
                     if before > after:
                         count += 1
                         # 入れ替え
                         new_path = route[a_end:b_first + 1]
                         route[a_end:b_first + 1] = new_path[::-1]
 
-        return total, route
+        return route

@@ -12,15 +12,17 @@ class GraphDrawer:
     def interpolation(self, route: list, astar: Astar):
         # 描画用に道のりルートに変換
         result = []
-        result.append(route[0])
+        total = 0
+        # result.append(route[0])
         # セールスマン問題の近似解を取り出す
         for i in range(len(route) - 1):
             # 最短ルート取得（最初と終端含む）
-            a_route = astar.calc_distance(route[i], route[i + 1])[1]
-            for r in range(len(a_route) - 1):
-                result.append(a_route[r])
+            a_route = astar.calc_distance(route[i], route[i + 1])
+            total += a_route[0]
+            for r in range(len(a_route[1]) - 1):
+                result.append(a_route[1][r])
         result.append(route[-1])
-        return result
+        return total, result
 
     def reset_plt(self):
         plt.cla()

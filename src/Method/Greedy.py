@@ -18,15 +18,14 @@ class Greedy:
         target_ids = set(copy.deepcopy(targets[1:]))
         # スタートを登録
         route.append(targets[0])
-        total_distance = 0
         while len(target_ids) > 0:
             print(len(route), len(target_ids))
             min = sys.float_info.max
             min_id = 0
             for id in target_ids:
                 # 距離取得
-                #distance = self.astar.calc_distance(route[-1], id)[0]
-                distance = self.astar.distance(route[-1], id)
+                distance = self.astar.calc_distance(route[-1], id)[0]
+                #distance = self.astar.distance(route[-1], id)
                 # 最小距離
                 if min > distance:
                     min = distance
@@ -36,8 +35,7 @@ class Greedy:
             route.append(min_id)
             # 未探索リストから除外
             target_ids.discard(min_id)
-            total_distance += min
 
         route.append(route[0])
 
-        return total_distance, route
+        return route

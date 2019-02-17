@@ -8,7 +8,7 @@ from src import MapReader, ScenarioReader, GraphDrawer, Astar
 # よくばり法
 from src.Method import Greedy
 
-MAP_NAME = 'vc'
+MAP_NAME = 'kobe'
 
 if __name__ == '__main__':
     map = MapReader.MapReader(MAP_NAME)
@@ -39,16 +39,16 @@ if __name__ == '__main__':
             location_ids.append(scenario[1])
 
     result = greedy.calc(location_ids)
-    print(result[0])
     route = result[1]
 
     with open(os.getcwd().replace('/src', '') + '/map/' + MAP_NAME + '/map/route', mode='w') as f:
         f.write(str(route))
 
     route = drawer.interpolation(route, astar)
-
+    print(route[0])
+    print(route[1])
     drawer.map_register(graph_info.branch_list)
-    drawer.route_register(route)
+    drawer.route_register(route[1])
     for id in location_ids:
         drawer.node_register(id)
     drawer.show_plt()

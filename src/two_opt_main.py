@@ -40,9 +40,9 @@ if __name__ == '__main__':
 
     two_opt = TwoOpt.TwoOpt(map.world_info)
     result = two_opt.calc(route)
-    print(result[0])
-    route = drawer.interpolation(result[1], astar)
-
+    route = drawer.interpolation(result, astar)
+    print(route[0])
+    print(route[1])
     drawer.map_register(graph_info.branch_list)
-    drawer.route_register(route)
+    drawer.route_register(route[1])
     drawer.show_plt()
