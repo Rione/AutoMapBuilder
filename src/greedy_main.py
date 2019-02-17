@@ -8,7 +8,7 @@ from src import MapReader, ScenarioReader, GraphDrawer, Astar
 # よくばり法
 from src.Method import Greedy
 
-MAP_NAME = 'sakae'
+MAP_NAME = 'vc'
 
 if __name__ == '__main__':
     map = MapReader.MapReader(MAP_NAME)

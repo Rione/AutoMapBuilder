@@ -30,19 +30,16 @@ class WorldInfo:
             self.g_nodes.setdefault(road.id, road)
 
         # neighbour登録
-        # road
+        # building
         for building_id in self.building_data:
             neighbour_list = []
             for neighbour_id in self.building_data.get(building_id).neighbour_ids:
-                neighbour_list.append(self.road_data.get(neighbour_id))
+                neighbour_list.append(self.g_nodes.get(neighbour_id))
             self.building_data.get(building_id).registry_neighbour(neighbour_list)
 
-        # building
+        # road
         for road_id in self.road_data:
             neighbour_list = []
             for neighbour_id in self.road_data.get(road_id).neighbour_ids:
-                neighbour = self.building_data.get(neighbour_id)
-                if neighbour == None:
-                    neighbour = self.road_data.get(neighbour_id)
-                neighbour_list.append(neighbour)
+                neighbour_list.append(self.g_nodes.get(neighbour_id))
             self.road_data.get(road_id).registry_neighbour(neighbour_list)
