@@ -47,6 +47,8 @@ if __name__ == '__main__':
 
     route = drawer.interpolation(route, astar)
 
-    # drawer.map_register(graph_info.branch_list)
-    # drawer.route_register(route)
-    # drawer.show_plt()
+    drawer.map_register(graph_info.branch_list)
+    drawer.route_register(route)
+    for id in location_ids:
+        drawer.node_register(id)
+    drawer.show_plt()

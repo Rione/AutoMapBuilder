@@ -13,6 +13,7 @@ class TwoOpt:
         total = 0
         while count > 0:
             count = 0
+            total = 0
             # 入れ替え対象ペアの先頭選択(ただし終端は除外)
             for a in range(len(route) - 1):
                 print(a)
@@ -21,7 +22,7 @@ class TwoOpt:
                 a_end = a + 1
 
                 # もう一方の入れ替え対象ペアの先頭を選択
-                for b in range(len(route) - 1):
+                for b in range(a + 2, len(route) - 1):
                     # 選択されたindex
                     b_first = b
                     b_end = b + 1
@@ -41,6 +42,14 @@ class TwoOpt:
                     after = self.astar.calc_distance(route[a_first], route[b_first])[0] + \
                             self.astar.calc_distance(route[a_end],
                                                      route[b_end])[0]
+                    '''
+                    before = self.astar.distance(route[a_first], route[a_end]) + \
+                             self.astar.distance(route[b_first],
+                                                 route[b_end])
+                    after = self.astar.distance(route[a_first], route[b_first]) + \
+                            self.astar.distance(route[a_end],
+                                                route[b_end])
+                                                '''
                     total += before
                     if before > after:
                         count += 1
