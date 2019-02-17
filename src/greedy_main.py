@@ -1,4 +1,5 @@
 import copy
+import os
 import sys
 import time
 
@@ -7,9 +8,11 @@ from src import MapReader, ScenarioReader, GraphDrawer, Astar
 # よくばり法
 from src.Method import Greedy
 
+MAP_NAME = 'sakae'
+
 if __name__ == '__main__':
-    map = MapReader.MapReader('sakae')
-    reader = ScenarioReader.ScenarioReader('sakae')
+    map = MapReader.MapReader(MAP_NAME)
+    reader = ScenarioReader.ScenarioReader(MAP_NAME)
 
     scenarios = reader.scenario_reader()
     world_info = map.build_map()
@@ -39,8 +42,11 @@ if __name__ == '__main__':
     print(result[0])
     route = result[1]
 
+    with open(os.getcwd().replace('/src', '') + '/map/' + MAP_NAME + '/map/route', mode='w') as f:
+        f.write(str(route))
+
     route = drawer.interpolation(route, astar)
 
-    drawer.map_register(graph_info.branch_list)
-    drawer.route_register(route)
-    drawer.show_plt()
+    # drawer.map_register(graph_info.branch_list)
+    # drawer.route_register(route)
+    # drawer.show_plt()
