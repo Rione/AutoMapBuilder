@@ -1,4 +1,6 @@
-import os
+import os, sys
+
+sys.path.append(os.getcwd().replace('/src', ''))
 
 from src import Astar, GraphDrawer, ScenarioReader, MapReader
 from src.Method import Greedy, TwoOpt

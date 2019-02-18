@@ -1,6 +1,8 @@
 import copy
-import os
-import sys
+import os, sys
+
+sys.path.append(os.getcwd().replace('/src', ''))
+
 import time
 
 from src import MapReader, ScenarioReader, GraphDrawer, Astar
