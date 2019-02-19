@@ -9,7 +9,7 @@ import numpy as np
 
 T = 1000
 M = 10
-MUTANT_RATE = 0.09
+MUTANT_RATE = 0.3
 MAX_ROUTE = 0
 
 
