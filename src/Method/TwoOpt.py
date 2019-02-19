@@ -7,7 +7,7 @@ class TwoOpt:
         self.world_info = world_info
         self.astar = Astar.Astar(self.world_info.g_nodes)
 
-    def calc(self, route: list):
+    def calc(self, route: list, method: str):
         # 入れ替えが一度もなくなるまでループ
         count = 1
         while count > 0:
@@ -34,20 +34,20 @@ class TwoOpt:
                     if b_end == len(route) - 1 and a_first == 0:
                         continue
                     # 距離を比べる
-                    before = self.astar.calc_distance(route[a_first], route[a_end])[0] + \
-                             self.astar.calc_distance(route[b_first],
-                                                      route[b_end])[0]
-                    after = self.astar.calc_distance(route[a_first], route[b_first])[0] + \
-                            self.astar.calc_distance(route[a_end],
-                                                     route[b_end])[0]
-                    '''
-                    before = self.astar.distance(route[a_first], route[a_end]) + \
-                             self.astar.distance(route[b_first],
-                                                 route[b_end])
-                    after = self.astar.distance(route[a_first], route[b_first]) + \
-                            self.astar.distance(route[a_end],
-                                                route[b_end])
-                                                '''
+                    if method == 'aster':
+                        before = self.astar.calc_distance(route[a_first], route[a_end])[0] + \
+                                 self.astar.calc_distance(route[b_first],
+                                                          route[b_end])[0]
+                        after = self.astar.calc_distance(route[a_first], route[b_first])[0] + \
+                                self.astar.calc_distance(route[a_end],
+                                                         route[b_end])[0]
+                    else:
+                        before = self.astar.distance(route[a_first], route[a_end]) + \
+                                 self.astar.distance(route[b_first],
+                                                     route[b_end])
+                        after = self.astar.distance(route[a_first], route[b_first]) + \
+                                self.astar.distance(route[a_end],
+                                                    route[b_end])
                     if before > after:
                         count += 1
                         # 入れ替え

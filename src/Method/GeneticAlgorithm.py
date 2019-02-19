@@ -8,9 +8,10 @@ from src import Astar
 from src.World import WorldInfo
 import numpy as np
 
-T = 100000
+T = 1000
+t = 0
 M = 10
-MUTANT_RATE = 0.4
+MUTANT_RATE = 0.3
 MAX_ROUTE = 0
 
 
@@ -39,12 +40,15 @@ class GeneticAlgorithm:
         # ルートを閉じる
         sample.append(sample[0])
         # 道のり計算
-        ## Aster
-        # total = self.astar.interpolation(sample)[0]
-        ## ユークリッド距離計算
-        total = 0
-        for i in range(len(sample) - 1):
-            total += self.astar.distance(sample[i], sample[i + 1])
+        if t % 100 == 0:
+            ## Aster
+            total = self.astar.interpolation(sample)[0]
+            print(total)
+        else:
+            ## ユークリッド距離計算
+            total = 0
+            for i in range(len(sample) - 1):
+                total += self.astar.distance(sample[i], sample[i + 1])
         return total
 
     def get_genome_data(self, genomes):
@@ -78,7 +82,7 @@ class GeneticAlgorithm:
                     result.append(genome[1])
         return result
 
-    def fusion(self, sample1, sample2):
+    def one_order_fusion(self, sample1, sample2):
         # 切断箇所設定
         limit1 = random.randint(0, len(sample1))
         # sample1から残す順路を選択
@@ -95,6 +99,10 @@ class GeneticAlgorithm:
                 result.append(route)
 
         return result
+
+    def greedy_fusion(self, sample1, sample2):
+
+        pass
 
     def mutation(self, genome, probability):
         # 変異確率
@@ -120,11 +128,12 @@ class GeneticAlgorithm:
         while len(next_genomes) < M:
             if np.random.choice([1, 0], p=[0.5, 0.5]):  # 交配確率
                 sample = random.sample(selected, 2)
-                result = self.fusion(sample[0], sample[1])
+                result = self.one_order_fusion(sample[0], sample[1])
                 next_genomes.append(self.mutation(result, MUTANT_RATE))
         return next_genomes
 
     def calc(self, targets: list):
+        global t
         # 重複を削る
         targets = list(set(targets))
         # sample = copy.deepcopy(targets)
@@ -138,7 +147,8 @@ class GeneticAlgorithm:
         max_g = []
         ave_g = []
         # T世代ループ
-        for t in range(T):
+        while t < T:
+            t += 1
             print(t)
             sorted_genomes = self.sort_genome(genomes)
             genomes = self.generate_next(sorted_genomes)

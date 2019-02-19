@@ -8,7 +8,7 @@ import time
 from src import MapReader, ScenarioReader, GraphDrawer, Astar
 
 # よくばり法
-from src.Method import Greedy
+from src.Method import Greedy, TwoOpt
 from src.Method import GeneticAlgorithm
 
 MAP_NAME = 'sakae'
@@ -41,14 +41,19 @@ if __name__ == '__main__':
         if scenario[0] == 'ambulanceteam':
             location_ids.append(scenario[1])
 
-    result = greedy.calc(location_ids)
+    result = greedy.calc(location_ids, '')
 
     # 遺伝的アルゴリズム
     genetic = GeneticAlgorithm.GeneticAlgorithm(map.world_info)
-    opt_route = genetic.calc(location_ids)
-    route = astar.interpolation(opt_route)
+    genetic_route = genetic.calc(location_ids)
+
+    # 2-opt法
+    #two_opt = TwoOpt.TwoOpt(map.world_info)
+    #two_opt_route = two_opt.calc(genetic_route, '')
+
+    route = astar.interpolation(genetic_route)
     print(route[0])
-    #print(route[1])
+    # print(route[1])
     drawer.map_register(graph_info.branch_list)
     drawer.route_register(route[1])
     for id in location_ids:

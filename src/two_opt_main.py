@@ -20,12 +20,8 @@ if __name__ == '__main__':
     drawer = GraphDrawer.GraphDrawer(world_info.g_nodes)
 
     # 市民の除くエージェント＆避難所をリストアップ
-    route = []
-    with open(os.getcwd().replace('/src', '') + '/map/' + MAP_NAME + '/map/route') as f:
-        for s_line in f:
-            route = eval(s_line)
-    '''
-        for scenario in scenarios:
+    location_ids = []
+    for scenario in scenarios:
         # 避難所
         if scenario[0] == 'refuge':
             location_ids.append(scenario[1])
@@ -38,13 +34,16 @@ if __name__ == '__main__':
         # AT
         if scenario[0] == 'ambulanceteam':
             location_ids.append(scenario[1])
-    '''
+
+    greedy_route = greedy.calc(location_ids, '')
 
     two_opt = TwoOpt.TwoOpt(map.world_info)
-    result = two_opt.calc(route)
+    result = two_opt.calc(greedy_route, '')
     route = astar.interpolation(result)
     print(route[0])
     print(route[1])
     drawer.map_register(graph_info.branch_list)
     drawer.route_register(route[1])
+    for id in location_ids:
+        drawer.node_register(id)
     drawer.show_plt()
