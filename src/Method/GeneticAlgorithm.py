@@ -146,12 +146,12 @@ class GeneticAlgorithm:
             max_g.append(result[0])
             ave_g.append(result[1])
             min_g.append(result[2])
-        plt.plot(max_g, label='max')
-        plt.plot(ave_g, label='average')
-        plt.plot(min_g, label='min')
+        # plt.plot(max_g, label='max')
+        # plt.plot(ave_g, label='average')
+        # plt.plot(min_g, label='min')
         # plt.show()
-        plt.savefig('./image/test' + datetime.now().strftime("%Y%m%d-%H%M%S") + '.png')
-        plt.cla()
+        # plt.savefig('./image/test' + datetime.now().strftime("%Y%m%d-%H%M%S") + '.png')
+        # plt.cla()
 
         result = self.sort_genome(genomes)[0][1]
         result.append(result[0])

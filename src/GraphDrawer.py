@@ -53,5 +53,5 @@ class GraphDrawer:
                          [self.g_nodes.get(route[i]).y, self.g_nodes.get(route[i + 1]).y], 'k-', color='blue')
 
     def show_plt(self):
-        # plt.show()
-        plt.savefig('./image/test' + datetime.now().strftime("%Y%m%d-%H%M%S") + '.png')
+        plt.show()
+        #plt.savefig('./image/test' + datetime.now().strftime("%Y%m%d-%H%M%S") + '.png')
