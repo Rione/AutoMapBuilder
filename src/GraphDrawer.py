@@ -1,3 +1,4 @@
+from datetime import datetime
 import matplotlib.pyplot as plt
 from collections import defaultdict
 
@@ -52,4 +53,5 @@ class GraphDrawer:
                          [self.g_nodes.get(route[i]).y, self.g_nodes.get(route[i + 1]).y], 'k-', color='blue')
 
     def show_plt(self):
-        plt.show()
+        # plt.show()
+        plt.savefig('./image/test' + datetime.now().strftime("%Y%m%d-%H%M%S") + '.png')

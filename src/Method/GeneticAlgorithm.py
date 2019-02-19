@@ -1,4 +1,5 @@
 import copy
+from datetime import datetime
 import random
 import sys
 import matplotlib.pyplot as plt
@@ -7,9 +8,9 @@ from src import Astar
 from src.World import WorldInfo
 import numpy as np
 
-T = 1000
+T = 100000
 M = 10
-MUTANT_RATE = 0.3
+MUTANT_RATE = 0.4
 MAX_ROUTE = 0
 
 
@@ -148,7 +149,9 @@ class GeneticAlgorithm:
         plt.plot(max_g, label='max')
         plt.plot(ave_g, label='average')
         plt.plot(min_g, label='min')
-        plt.show()
+        # plt.show()
+        plt.savefig('./image/test' + datetime.now().strftime("%Y%m%d-%H%M%S") + '.png')
+        plt.cla()
 
         result = self.sort_genome(genomes)[0][1]
         result.append(result[0])

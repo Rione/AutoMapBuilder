@@ -48,7 +48,7 @@ if __name__ == '__main__':
     opt_route = genetic.calc(location_ids)
     route = astar.interpolation(opt_route)
     print(route[0])
-    print(route[1])
+    #print(route[1])
     drawer.map_register(graph_info.branch_list)
     drawer.route_register(route[1])
     for id in location_ids:
