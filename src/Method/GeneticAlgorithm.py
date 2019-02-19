@@ -77,13 +77,33 @@ class GeneticAlgorithm:
         return result
 
     def fusion(self, sample1, sample2):
-        limit = random.randint(0, len(sample1))
-        tmp1 = copy.copy(sample1)
-        tmp2 = copy.copy(sample2)
-        for i in range(limit):
-            tmp1[i] = sample2[i]
-            # tmp2[i] = sample1[i]
-        return tmp1
+        # 切断箇所設定
+        ##最初の切断箇所
+        limit1 = random.randint(0, len(sample1) - 1)
+        ##ふたつ目の切断箇所
+        limit2 = random.randint(limit1 + 1, len(sample1))
+
+        # sample1から残す順路を選択
+        cut_route = sample1[limit1:limit2]
+        # sample2から残りの順路を選択
+        insert_route = list(copy.deepcopy(sample2))
+        # sample2から選択された順路からcut_routeに含まれるものを除く
+        for c in cut_route:
+            if c in insert_route:
+                insert_route.remove(c)
+        # 残したパスを避けながら順番にリストに追加
+        result = list(copy.deepcopy(sample1))
+        i = 0
+        while len(insert_route) > 0:
+            # 要素数を超えた場合は先頭へ
+            if i >= len(result):
+                i = 0
+
+            # insert_listを挿入
+
+            i += 1
+
+        return result
 
     def mutation(self, genome, probability):
         for i in range(len(genome)):
@@ -93,13 +113,16 @@ class GeneticAlgorithm:
 
     def generate_next(self, current_genomes):
         next_genomes = []
+        # 遺伝子選択
         selected = self.select_genomes(current_genomes)
+        # エリート優遇
         next_genomes.append(selected[0])
+        # M個体できるまでループ
         while len(next_genomes) < M:
             if np.random.choice([1, 0], p=[0.5, 0.5]):  # 交配確率
                 sample = random.sample(selected, 2)
-                result1 = self.fusion(sample[0], sample[1])
-                next_genomes.append(self.mutation(result1, MUTANT_RATE))
+                result = self.fusion(sample[0], sample[1])
+                next_genomes.append(self.mutation(result, MUTANT_RATE))
         return next_genomes
 
     def calc(self, targets: list):
