@@ -42,7 +42,7 @@ if __name__ == '__main__':
 
     two_opt = TwoOpt.TwoOpt(map.world_info)
     result = two_opt.calc(route)
-    route = drawer.interpolation(result, astar)
+    route = astar.interpolation(result)
     print(route[0])
     print(route[1])
     drawer.map_register(graph_info.branch_list)

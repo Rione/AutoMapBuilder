@@ -89,3 +89,18 @@ class Astar:
                     target_route.append(neighbour.id)
                     self.open_list.setdefault(neighbour.id, A_Node(neighbour.id, c, h, target_route))
         return None
+
+    def interpolation(self, route: list):
+        # 描画用に道のりルートに変換
+        result = []
+        total = 0
+        # result.append(route[0])
+        # セールスマン問題の近似解を取り出す
+        for i in range(len(route) - 1):
+            # 最短ルート取得（最初と終端含む）
+            a_route = self.calc_distance(route[i], route[i + 1])
+            total += a_route[0]
+            for r in range(len(a_route[1]) - 1):
+                result.append(a_route[1][r])
+        result.append(route[-1])
+        return total, result

@@ -1,28 +1,11 @@
 import matplotlib.pyplot as plt
 from collections import defaultdict
 
-from src import Astar
-
 
 class GraphDrawer:
 
     def __init__(self, g_nodes: dict):
         self.g_nodes = g_nodes
-
-    def interpolation(self, route: list, astar: Astar):
-        # 描画用に道のりルートに変換
-        result = []
-        total = 0
-        # result.append(route[0])
-        # セールスマン問題の近似解を取り出す
-        for i in range(len(route) - 1):
-            # 最短ルート取得（最初と終端含む）
-            a_route = astar.calc_distance(route[i], route[i + 1])
-            total += a_route[0]
-            for r in range(len(a_route[1]) - 1):
-                result.append(a_route[1][r])
-        result.append(route[-1])
-        return total, result
 
     def reset_plt(self):
         plt.cla()

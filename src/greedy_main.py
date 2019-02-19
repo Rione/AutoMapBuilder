@@ -10,7 +10,7 @@ from src import MapReader, ScenarioReader, GraphDrawer, Astar
 # よくばり法
 from src.Method import Greedy
 
-MAP_NAME = 'kobe'
+MAP_NAME = 'sakae'
 
 if __name__ == '__main__':
     map = MapReader.MapReader(MAP_NAME)
@@ -45,7 +45,7 @@ if __name__ == '__main__':
     with open(os.getcwd().replace('/src', '') + '/map/' + MAP_NAME + '/map/route', mode='w') as f:
         f.write(str(result))
 
-    route = drawer.interpolation(result, astar)
+    route = astar.interpolation(result)
     print(route[0])
     print(route[1])
     drawer.map_register(graph_info.branch_list)
