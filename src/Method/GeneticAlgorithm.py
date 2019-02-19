@@ -58,27 +58,22 @@ class GeneticAlgorithm:
 
         return max, sum / len(genomes), min
 
-    def select_elite(self, genomes, rate):
+    def select_genomes(self, sorted_genomes: list):
         # ルーレット
-        list = []
         G = 0
-        for genome in genomes:
-            ach = self.achievement(genome)
-            list.append(ach)
-            G += ach
-
-        for i in range(len(list)):
-            list[i] = list[i] / G
+        for genome in sorted_genomes:
+            G += genome[0]
 
         result = []
-        result.append(genomes[0])
-        i = 0
-        while len(result) < len(genomes):
-            if np.random.choice([True, False], p=[list[i], 1 - list[i]]):
-                result.append(genomes[i])
-            i += 1
-            if len(genomes) <= i:
-                i = 0
+        # エリートを格納(遺伝子のみ)
+        result.append(sorted_genomes[0][1])
+        while len(result) < len(sorted_genomes):
+            for genome in sorted_genomes:
+                # 選択割合
+                ach = genome[0] / G
+                print(1 - ach)
+                if np.random.choice([True, False], p=[1 - ach, ach]):
+                    result.append(genome[1])
         return result
 
     def fusion(self, sample1, sample2):
@@ -98,11 +93,11 @@ class GeneticAlgorithm:
 
     def generate_next(self, current_genomes):
         next_genomes = []
-        elites = self.select_elite(current_genomes, 0.3)
-        next_genomes.append(elites[0])
+        selected = self.select_genomes(current_genomes)
+        next_genomes.append(selected[0])
         while len(next_genomes) < M:
             if np.random.choice([1, 0], p=[0.5, 0.5]):  # 交配確率
-                sample = random.sample(elites, 2)
+                sample = random.sample(selected, 2)
                 result1 = self.fusion(sample[0], sample[1])
                 next_genomes.append(self.mutation(result1, MUTANT_RATE))
         return next_genomes
