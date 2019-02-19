@@ -1,13 +1,16 @@
 import copy
 import random
+import sys
+import matplotlib.pyplot as plt
 
 from src import Astar
 from src.World import WorldInfo
 import numpy as np
 
-T = 100
+T = 1000
 M = 10
-MUTANT_RATE = 0.009
+MUTANT_RATE = 0.09
+MAX_ROUTE = 0
 
 
 class GeneticAlgorithm:
@@ -30,9 +33,8 @@ class GeneticAlgorithm:
         sorted_genomes = sorted(target_genomes)
         return sorted_genomes
 
-    def achievement(self, sample: list):
-        # 重複を削る
-        sample = list(set(sample))
+    def achievement(self, target: list):
+        sample = list(copy.deepcopy(target))
         # ルートを閉じる
         sample.append(sample[0])
         # 道のり計算
@@ -47,7 +49,7 @@ class GeneticAlgorithm:
     def get_genome_data(self, genomes):
         sum = 0
         max = 0
-        min = 1
+        min = sys.float_info.max
         for genome in genomes:
             ach = self.achievement(genome)
             sum += ach
@@ -71,7 +73,6 @@ class GeneticAlgorithm:
             for genome in sorted_genomes:
                 # 選択割合
                 ach = genome[0] / G
-                print(1 - ach)
                 if np.random.choice([True, False], p=[1 - ach, ach]):
                     result.append(genome[1])
         return result
@@ -98,8 +99,8 @@ class GeneticAlgorithm:
         # 変異確率
         if np.random.choice([True, False], p=[probability, 1 - probability]):
             # 交換するインデックスを決定
-            i1 = random.randint(0, len(genome))
-            i2 = random.randint(0, len(genome))
+            i1 = random.randint(0, len(genome) - 1)
+            i2 = random.randint(0, len(genome) - 1)
 
             # 入れ替え
             tmp = genome[i1]
@@ -123,13 +124,32 @@ class GeneticAlgorithm:
         return next_genomes
 
     def calc(self, targets: list):
+        # 重複を削る
+        targets = list(set(targets))
+        # sample = copy.deepcopy(targets)
+        # 経路を閉じる
+        # sample.append(sample[0])
+        # self.astar.interpolation(sample)
         # 遺伝子生成
         genomes = self.set_genome(targets)
         result = []
+        min_g = []
+        max_g = []
+        ave_g = []
         # T世代ループ
         for t in range(T):
+            print(t)
             sorted_genomes = self.sort_genome(genomes)
             genomes = self.generate_next(sorted_genomes)
             result = self.get_genome_data(genomes)
+            max_g.append(result[0])
+            ave_g.append(result[1])
+            min_g.append(result[2])
+        plt.plot(max_g, label='max')
+        plt.plot(ave_g, label='average')
+        plt.plot(min_g, label='min')
+        plt.show()
 
+        result = self.sort_genome(genomes)[0][1]
+        result.append(result[0])
         return result

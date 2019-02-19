@@ -45,5 +45,12 @@ if __name__ == '__main__':
 
     # 遺伝的アルゴリズム
     genetic = GeneticAlgorithm.GeneticAlgorithm(map.world_info)
-    opt_route = genetic.calc(list(set(location_ids)))
-    print(opt_route)
+    opt_route = genetic.calc(location_ids)
+    route = astar.interpolation(opt_route)
+    print(route[0])
+    print(route[1])
+    drawer.map_register(graph_info.branch_list)
+    drawer.route_register(route[1])
+    for id in location_ids:
+        drawer.node_register(id)
+    drawer.show_plt()

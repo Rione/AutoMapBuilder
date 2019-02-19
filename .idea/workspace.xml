@@ -2,13 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e903902d-282f-4469-bb0d-c8c0c82a4f6c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/test/ga_test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Astar.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/Astar.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GraphDrawer.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/GraphDrawer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Method/Greedy.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/Method/Greedy.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/greedy_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/greedy_main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/two_opt_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/two_opt_main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Method/GeneticAlgorithm.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/Method/GeneticAlgorithm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ga_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ga_main.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -33,8 +29,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Method/Greedy.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="207">
-              <caret line="26" column="17" selection-start-line="26" selection-start-column="17" selection-end-line="26" selection-end-column="17" />
+            <state relative-caret-position="414">
+              <caret line="18" selection-start-line="18" selection-end-line="18" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -45,8 +41,20 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Astar.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="441">
-              <caret line="106" lean-forward="true" selection-start-line="106" selection-end-line="106" />
+            <state relative-caret-position="269">
+              <caret line="103" column="32" lean-forward="true" selection-start-line="103" selection-start-column="32" selection-end-line="103" selection-end-column="32" />
+              <folding>
+                <element signature="e#0#11#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Method/GeneticAlgorithm.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="234">
+              <caret line="154" column="21" lean-forward="true" selection-start-line="154" selection-start-column="21" selection-end-line="154" selection-end-column="21" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -55,10 +63,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/greedy_main.py">
+        <entry file="file://$PROJECT_DIR$/src/ga_main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="248">
-              <caret line="46" lean-forward="true" selection-start-line="46" selection-end-line="46" />
+            <state relative-caret-position="1196">
+              <caret line="52" column="35" lean-forward="true" selection-start-line="52" selection-start-column="35" selection-end-line="52" selection-end-column="35" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -67,12 +75,12 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/GraphDrawer.py">
+        <entry file="file://$PROJECT_DIR$/test/ga_test.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="322">
-              <caret line="14" column="41" selection-start-line="14" selection-start-column="41" selection-end-line="14" selection-end-column="41" />
+            <state relative-caret-position="24">
+              <caret line="110" column="31" lean-forward="true" selection-start-line="110" selection-start-column="31" selection-end-line="110" selection-end-column="31" />
               <folding>
-                <element signature="e#0#31#0" expanded="true" />
+                <element signature="e#0#13#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -81,17 +89,20 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/two_opt_main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="294">
-              <caret line="43" column="32" lean-forward="true" selection-start-line="43" selection-start-column="32" selection-end-line="43" selection-end-column="32" />
+            <state relative-caret-position="142">
+              <caret line="48" column="35" lean-forward="true" selection-start-line="48" selection-start-column="35" selection-end-line="48" selection-end-column="35" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/test/ga_test.py">
+        <entry file="file://$PROJECT_DIR$/src/greedy_main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="363">
-              <caret line="119" column="34" lean-forward="true" selection-start-line="119" selection-start-column="34" selection-end-line="119" selection-end-column="34" />
+            <state relative-caret-position="138">
+              <caret line="49" column="19" lean-forward="true" selection-start-line="49" selection-start-column="19" selection-end-line="49" selection-end-column="19" />
+              <folding>
+                <element signature="e#0#11#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -117,6 +128,9 @@
       <find>200983</find>
       <find>neighbour_ids</find>
       <find>53536</find>
+      <find>targets</find>
+      <find>get_genome_data</find>
+      <find>select_geno</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -156,20 +170,22 @@
         <option value="$PROJECT_DIR$/src/MapReader.py" />
         <option value="$PROJECT_DIR$/src/World/WorldInfo.py" />
         <option value="$PROJECT_DIR$/src/Method/TwoOpt.py" />
-        <option value="$PROJECT_DIR$/test/ga_test.py" />
-        <option value="$PROJECT_DIR$/src/Astar.py" />
         <option value="$PROJECT_DIR$/src/GraphDrawer.py" />
         <option value="$PROJECT_DIR$/src/greedy_main.py" />
-        <option value="$PROJECT_DIR$/src/two_opt_main.py" />
         <option value="$PROJECT_DIR$/src/Method/Greedy.py" />
+        <option value="$PROJECT_DIR$/src/Astar.py" />
+        <option value="$PROJECT_DIR$/test/ga_test.py" />
+        <option value="$PROJECT_DIR$/src/Method/GeneticAlgorithm.py" />
+        <option value="$PROJECT_DIR$/src/two_opt_main.py" />
+        <option value="$PROJECT_DIR$/src/ga_main.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="1365" />
-    <option name="y" value="-779" />
-    <option name="width" value="1368" />
-    <option name="height" value="780" />
+    <option name="x" value="1366" />
+    <option name="y" value="-4" />
+    <option name="width" value="1366" />
+    <option name="height" value="772" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -231,8 +247,8 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.greedy_main">
-    <configuration name="TwoOpt" type="PythonConfigurationType" factoryName="Python" temporary="true">
+  <component name="RunManager" selected="Python.ga_main">
+    <configuration name="GeneticAlgorithm" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="rionerescue" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -244,7 +260,28 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/Method/TwoOpt.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/Method/GeneticAlgorithm.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="ga_main" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="rionerescue" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/ga_main.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -295,27 +332,6 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="rionerescue" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test/testmain.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration name="two_opt_main" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="rionerescue" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -339,11 +355,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.ga_main" />
+        <item itemvalue="Python.GeneticAlgorithm" />
         <item itemvalue="Python.greedy_main" />
         <item itemvalue="Python.ga_test" />
         <item itemvalue="Python.two_opt_main" />
-        <item itemvalue="Python.TwoOpt" />
-        <item itemvalue="Python.main" />
       </list>
     </recent_temporary>
   </component>
@@ -361,15 +377,15 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-1" y="-11" width="1368" height="780" extended-state="6" />
+    <frame x="0" y="-4" width="1366" height="772" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.12658228" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.12658228" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32868218" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.19224806" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.41395348" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -408,6 +424,10 @@
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/test/testmain.py</url>
           <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/test/ga_test.py</url>
+          <option name="timeStamp" value="3" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -616,40 +636,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/GraphDrawer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="322">
-          <caret line="14" column="41" selection-start-line="14" selection-start-column="41" selection-end-line="14" selection-end-column="41" />
-          <folding>
-            <element signature="e#0#31#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/ga_test.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="363">
-          <caret line="119" column="34" lean-forward="true" selection-start-line="119" selection-start-column="34" selection-end-line="119" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Astar.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="441">
-          <caret line="106" lean-forward="true" selection-start-line="106" selection-end-line="106" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/two_opt_main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="294">
-          <caret line="43" column="32" lean-forward="true" selection-start-line="43" selection-start-column="32" selection-end-line="43" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/MapReader.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="671">
@@ -660,10 +646,40 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/GraphDrawer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="69">
+          <caret line="3" lean-forward="true" selection-start-line="3" selection-end-line="3" />
+          <folding>
+            <element signature="e#0#31#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/Method/Greedy.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="207">
-          <caret line="26" column="17" selection-start-line="26" selection-start-column="17" selection-end-line="26" selection-end-column="17" />
+        <state relative-caret-position="414">
+          <caret line="18" selection-start-line="18" selection-end-line="18" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Astar.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="269">
+          <caret line="103" column="32" lean-forward="true" selection-start-line="103" selection-start-column="32" selection-end-line="103" selection-end-column="32" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Method/GeneticAlgorithm.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="234">
+          <caret line="154" column="21" lean-forward="true" selection-start-line="154" selection-start-column="21" selection-end-line="154" selection-end-column="21" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
@@ -672,8 +688,35 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/greedy_main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="248">
-          <caret line="46" lean-forward="true" selection-start-line="46" selection-end-line="46" />
+        <state relative-caret-position="138">
+          <caret line="49" column="19" lean-forward="true" selection-start-line="49" selection-start-column="19" selection-end-line="49" selection-end-column="19" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/two_opt_main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="142">
+          <caret line="48" column="35" lean-forward="true" selection-start-line="48" selection-start-column="35" selection-end-line="48" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/ga_test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="24">
+          <caret line="110" column="31" lean-forward="true" selection-start-line="110" selection-start-column="31" selection-end-line="110" selection-end-column="31" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ga_main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1196">
+          <caret line="52" column="35" lean-forward="true" selection-start-line="52" selection-start-column="35" selection-end-line="52" selection-end-column="35" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
