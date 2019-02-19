@@ -94,7 +94,6 @@ class Astar:
         # 描画用に道のりルートに変換
         result = []
         total = 0
-        # result.append(route[0])
         # セールスマン問題の近似解を取り出す
         for i in range(len(route) - 1):
             # 最短ルート取得（最初と終端含む）

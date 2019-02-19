@@ -45,4 +45,5 @@ if __name__ == '__main__':
 
     # 遺伝的アルゴリズム
     genetic = GeneticAlgorithm.GeneticAlgorithm(map.world_info)
-    opt_route = genetic.calc(result)
+    opt_route = genetic.calc(list(set(location_ids)))
+    print(opt_route)

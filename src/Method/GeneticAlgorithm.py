@@ -22,13 +22,27 @@ class GeneticAlgorithm:
         return sample
 
     def sort_genome(self, genomes):
-        sorted_genomes = sorted(genomes, key=lambda genomes: sum(genomes[:]), reverse=True)
+        target_genomes = []
+        # 評価値と遺伝子を統合
+        for genome in genomes:
+            target_genomes.append([self.achievement(genome), genome])
+        # sorted_genomes = sorted(genomes, key=lambda genomes: self.achievement(genomes[:]))
+        sorted_genomes = sorted(target_genomes)
         return sorted_genomes
 
-    def achievement(self, sample):
-        # すべての要素が1であれば1.0を返す
-        # 平均
-        return sum(sample) / len(sample)
+    def achievement(self, sample: list):
+        # 重複を削る
+        sample = list(set(sample))
+        # ルートを閉じる
+        sample.append(sample[0])
+        # 道のり計算
+        ## Aster
+        # total = self.astar.interpolation(sample)[0]
+        ## ユークリッド距離計算
+        total = 0
+        for i in range(len(sample) - 1):
+            total += self.astar.distance(sample[i], sample[i + 1])
+        return total
 
     def get_genome_data(self, genomes):
         sum = 0
@@ -96,9 +110,11 @@ class GeneticAlgorithm:
     def calc(self, targets: list):
         # 遺伝子生成
         genomes = self.set_genome(targets)
-
+        result = []
         # T世代ループ
         for t in range(T):
             sorted_genomes = self.sort_genome(genomes)
             genomes = self.generate_next(sorted_genomes)
             result = self.get_genome_data(genomes)
+
+        return result
