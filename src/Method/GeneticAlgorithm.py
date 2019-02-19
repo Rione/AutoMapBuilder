@@ -95,9 +95,17 @@ class GeneticAlgorithm:
         return result
 
     def mutation(self, genome, probability):
-        for i in range(len(genome)):
-            if np.random.choice([True, False], p=[probability, 1 - probability]):
-                genome[i] = 2 + ~genome[i]  # not演算
+        # 変異確率
+        if np.random.choice([True, False], p=[probability, 1 - probability]):
+            # 交換するインデックスを決定
+            i1 = random.randint(0, len(genome))
+            i2 = random.randint(0, len(genome))
+
+            # 入れ替え
+            tmp = genome[i1]
+            genome[i1] = genome[i2]
+            genome[i2] = tmp
+
         return genome
 
     def generate_next(self, current_genomes):
