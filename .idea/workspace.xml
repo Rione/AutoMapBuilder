@@ -3,10 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="e903902d-282f-4469-bb0d-c8c0c82a4f6c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/src/Method/GeneticAlgorithm.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/Method/GeneticAlgorithm.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Method/Greedy.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/Method/Greedy.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Method/TwoOpt.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/Method/TwoOpt.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ga_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ga_main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/two_opt_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/two_opt_main.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -67,8 +63,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Method/GeneticAlgorithm.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="53">
-              <caret line="103" lean-forward="true" selection-start-line="103" selection-end-line="103" />
+            <state relative-caret-position="191">
+              <caret line="127" column="36" lean-forward="true" selection-start-line="127" selection-start-column="36" selection-end-line="127" selection-end-column="36" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -186,7 +182,7 @@
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="1366" />
-    <option name="y" value="-772" />
+    <option name="y" value="-4" />
     <option name="width" value="1366" />
     <option name="height" value="772" />
   </component>
@@ -380,7 +376,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1366" y="-772" width="1366" height="772" extended-state="6" />
+    <frame x="0" y="-4" width="1366" height="772" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.12658228" />
@@ -699,8 +695,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Method/GeneticAlgorithm.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="53">
-          <caret line="103" lean-forward="true" selection-start-line="103" selection-end-line="103" />
+        <state relative-caret-position="191">
+          <caret line="127" column="36" lean-forward="true" selection-start-line="127" selection-start-column="36" selection-end-line="127" selection-end-column="36" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>

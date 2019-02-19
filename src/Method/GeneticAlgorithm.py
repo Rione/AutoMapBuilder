@@ -126,9 +126,10 @@ class GeneticAlgorithm:
         next_genomes.append(selected[0])
         # M個体できるまでループ
         while len(next_genomes) < M:
-            if np.random.choice([1, 0], p=[0.5, 0.5]):  # 交配確率
-                sample = random.sample(selected, 2)
-                result = self.one_order_fusion(sample[0], sample[1])
+            if np.random.choice([True, False], p=[0.5, 0.5]):  # 交配確率
+                i1 = random.randint(0, len(selected))
+                i2 = random.randint(i1, len(selected))
+                result = self.one_order_fusion(selected[i1], selected[i2])
                 next_genomes.append(self.mutation(result, MUTANT_RATE))
         return next_genomes
 
