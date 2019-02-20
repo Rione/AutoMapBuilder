@@ -100,8 +100,33 @@ class GeneticAlgorithm:
 
         return result
 
-    def partially_mapped_fusion(self):
-        pass
+    def partially_mapped_fusion(self, sample1: list, sample2: list):
+        # 切断箇所を決定
+        limit1 = random.randint(0, len(sample1))
+        limit2 = random.randint(limit1, len(sample1))
+
+        # 切断箇所を抽出
+        cut_list1 = sample1[limit1:limit2]
+        cut_list2 = sample2[limit1:limit2]
+
+        # 変換セット
+        table = {}
+        for i in range(len(cut_list1)):
+            table.setdefault(cut_list1[i], cut_list2[i])
+
+        # result
+        result = []
+        for i in range(len(sample1)):
+            # 切断箇所内の場合
+            if i >= limit1 and i < limit2:
+                result.append(sample1[i])
+            else:
+                insert = sample2[i]
+                # 変換が終わるまでループ
+                while insert in table:
+                    insert = table[insert]
+                result.append(insert)
+        return result
 
     def greedy_fusion(self, sample1, sample2):
 
