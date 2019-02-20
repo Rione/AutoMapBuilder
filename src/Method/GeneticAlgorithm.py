@@ -40,7 +40,7 @@ class GeneticAlgorithm:
         # ルートを閉じる
         sample.append(sample[0])
         # 道のり計算
-        if t % 100 == 0:
+        if 0*t % 100 == 1:
             ## Aster
             total = self.astar.interpolation(sample)[0]
             print(total)
@@ -104,6 +104,35 @@ class GeneticAlgorithm:
 
         pass
 
+    def character_fusion(self, sample1: list, sample2: list):
+        cut_list = []
+        insert_list = []
+        # 同じペアを探索
+        for a in range(len(sample1) - 1):
+            for b in range(len(sample2) - 1):
+                # 比較
+                ##setに入れる
+                sample_set = set()
+                sample_set.add(sample1[a])
+                sample_set.add(sample1[a + 1])
+                sample_set.add(sample2[b])
+                sample_set.add(sample2[b + 1])
+                ##同じペアの場合は要素が2になる
+                if len(sample_set) == 2:
+                    cut_list.append(sample_set.pop())
+                    cut_list.append(sample_set.pop())
+        # 残りの要素を探索
+        for s in sample2:
+            if not s in cut_list:
+                insert_list.append(s)
+        # 結合
+        result = copy.deepcopy(sample1)
+        for i in range(len(result)):
+            if not result[i] in cut_list:
+                result[i] = insert_list.pop(0)
+
+        return result
+
     def mutation(self, genome, probability):
         # 変異確率
         if np.random.choice([True, False], p=[probability, 1 - probability]):
@@ -129,6 +158,7 @@ class GeneticAlgorithm:
             if np.random.choice([1, 0], p=[0.5, 0.5]):  # 交配確率
                 sample = random.sample(selected, 2)
                 result = self.one_order_fusion(sample[0], sample[1])
+                #result = self.character_fusion(sample[0], sample[1])
                 next_genomes.append(self.mutation(result, MUTANT_RATE))
         return next_genomes
 
@@ -156,10 +186,10 @@ class GeneticAlgorithm:
             max_g.append(result[0])
             ave_g.append(result[1])
             min_g.append(result[2])
-        # plt.plot(max_g, label='max')
-        # plt.plot(ave_g, label='average')
-        # plt.plot(min_g, label='min')
-        # plt.show()
+        plt.plot(max_g, label='max')
+        plt.plot(ave_g, label='average')
+        plt.plot(min_g, label='min')
+        plt.show()
         # plt.savefig('./image/test' + datetime.now().strftime("%Y%m%d-%H%M%S") + '.png')
         # plt.cla()
 
