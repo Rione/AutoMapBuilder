@@ -82,7 +82,7 @@ class GeneticAlgorithm:
                     result.append(genome[1])
         return result
 
-    def one_order_fusion(self, sample1, sample2):
+    def one_order_fusion(self, sample1: list, sample2: list):
         # 切断箇所設定
         limit1 = random.randint(0, len(sample1))
         # sample1から残す順路を選択
@@ -100,9 +100,38 @@ class GeneticAlgorithm:
 
         return result
 
-    def greedy_fusion(self, sample1, sample2):
+    def greedy_fusion(self, sample1: list, sample2: list):
 
         pass
+
+    def character_fusion(self, sample1: list, sample2: list):
+        cut_list = []
+        insert_list = []
+        # 同じペアを探索
+        for a in range(len(sample1) - 1):
+            for b in range(len(sample2) - 1):
+                # 比較
+                ##setに入れる
+                sample_set = set()
+                sample_set.add(sample1[a])
+                sample_set.add(sample1[a + 1])
+                sample_set.add(sample2[b])
+                sample_set.add(sample2[b + 1])
+                ##同じペアの場合は要素が2になる
+                if len(sample_set) == 2:
+                    cut_list.append(sample_set.pop())
+                    cut_list.append(sample_set.pop())
+        # 残りの要素を探索
+        for s in sample2:
+            if not s in cut_list:
+                insert_list.append(s)
+        # 結合
+        result = copy.deepcopy(sample1)
+        for i in range(len(result)):
+            if not result[i] in cut_list:
+                result[i] = insert_list.pop(0)
+
+        return result
 
     def mutation(self, genome, probability):
         # 変異確率
