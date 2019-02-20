@@ -55,7 +55,7 @@ if __name__ == '__main__':
         route = astar.interpolation(two_opt_route)
         print(route[0])
         r_list.append(route[0])
-        with open('./t_char_two', mode='a') as f:
+        with open('./t_oder_two', mode='a') as f:
             f.writelines(str(route[0]) + '\n')
 '''
 
