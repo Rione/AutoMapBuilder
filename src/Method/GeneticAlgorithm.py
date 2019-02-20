@@ -77,7 +77,7 @@ class GeneticAlgorithm:
         while len(result) < len(sorted_genomes):
             for genome in sorted_genomes:
                 # 選択割合
-                ach = genome[0] / G
+                ach = (G - genome[0]) / G
                 if np.random.choice([True, False], p=[1 - ach, ach]):
                     result.append(genome[1])
         return result
@@ -220,8 +220,8 @@ class GeneticAlgorithm:
         plt.plot(ave_g, label='average')
         plt.plot(min_g, label='min')
         #plt.show()
-        #plt.savefig('./image/test' + datetime.now().strftime("%Y%m%d-%H%M%S") + '.png')
-        #plt.cla()
+        # plt.savefig('./image/test' + datetime.now().strftime("%Y%m%d-%H%M%S") + '.png')
+        # plt.cla()
 
         result = self.sort_genome(genomes)[0][1]
         result.append(result[0])
