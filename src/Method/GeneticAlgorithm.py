@@ -100,6 +100,9 @@ class GeneticAlgorithm:
 
         return result
 
+    def partially_mapped_fusion(self):
+        pass
+
     def greedy_fusion(self, sample1, sample2):
 
         pass

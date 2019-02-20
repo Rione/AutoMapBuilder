@@ -49,10 +49,10 @@ if __name__ == '__main__':
         genetic_route = genetic.calc(location_ids)
 
         # 2-opt法
-        two_opt = TwoOpt.TwoOpt(map.world_info)
-        two_opt_route = two_opt.calc(genetic_route, '')
+        # two_opt = TwoOpt.TwoOpt(map.world_info)
+        # two_opt_route = two_opt.calc(genetic_route, '')
 
-        route = astar.interpolation(two_opt_route)
+        route = astar.interpolation(genetic_route)
         print(route[0])
         r_list.append(route[0])
         with open('./t_oder_two', mode='a') as f:
