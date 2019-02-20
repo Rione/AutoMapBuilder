@@ -40,7 +40,7 @@ class GeneticAlgorithm:
         # ルートを閉じる
         sample.append(sample[0])
         # 道のり計算
-        if t % 100 == 0:
+        if 0 * t % 100 == 1:
             ## Aster
             total = self.astar.interpolation(sample)[0]
             print(total)
@@ -186,10 +186,10 @@ class GeneticAlgorithm:
             max_g.append(result[0])
             ave_g.append(result[1])
             min_g.append(result[2])
-        # plt.plot(max_g, label='max')
-        # plt.plot(ave_g, label='average')
-        # plt.plot(min_g, label='min')
-        # plt.show()
+        plt.plot(max_g, label='max')
+        plt.plot(ave_g, label='average')
+        plt.plot(min_g, label='min')
+        plt.show()
         # plt.savefig('./image/test' + datetime.now().strftime("%Y%m%d-%H%M%S") + '.png')
         # plt.cla()
 
