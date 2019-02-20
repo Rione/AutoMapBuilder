@@ -40,7 +40,7 @@ class GeneticAlgorithm:
         # ルートを閉じる
         sample.append(sample[0])
         # 道のり計算
-        if 0*t % 100 == 1:
+        if 0 * t % 100 == 1:
             ## Aster
             total = self.astar.interpolation(sample)[0]
             print(total)
@@ -158,12 +158,13 @@ class GeneticAlgorithm:
             if np.random.choice([1, 0], p=[0.5, 0.5]):  # 交配確率
                 sample = random.sample(selected, 2)
                 result = self.one_order_fusion(sample[0], sample[1])
-                #result = self.character_fusion(sample[0], sample[1])
+                # result = self.character_fusion(sample[0], sample[1])
                 next_genomes.append(self.mutation(result, MUTANT_RATE))
         return next_genomes
 
     def calc(self, targets: list):
         global t
+        t = 0
         # 重複を削る
         targets = list(set(targets))
         # sample = copy.deepcopy(targets)
@@ -182,14 +183,14 @@ class GeneticAlgorithm:
             print(t)
             sorted_genomes = self.sort_genome(genomes)
             genomes = self.generate_next(sorted_genomes)
-            result = self.get_genome_data(genomes)
-            max_g.append(result[0])
-            ave_g.append(result[1])
-            min_g.append(result[2])
-        plt.plot(max_g, label='max')
-        plt.plot(ave_g, label='average')
-        plt.plot(min_g, label='min')
-        plt.show()
+            # result = self.get_genome_data(genomes)
+            # max_g.append(result[0])
+            # ave_g.append(result[1])
+            # min_g.append(result[2])
+        # plt.plot(max_g, label='max')
+        # plt.plot(ave_g, label='average')
+        # plt.plot(min_g, label='min')
+        # plt.show()
         # plt.savefig('./image/test' + datetime.now().strftime("%Y%m%d-%H%M%S") + '.png')
         # plt.cla()
 

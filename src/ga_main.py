@@ -41,21 +41,28 @@ if __name__ == '__main__':
         if scenario[0] == 'ambulanceteam':
             location_ids.append(scenario[1])
 
-    result = greedy.calc(location_ids, '')
+    # result = greedy.calc(location_ids, '')
+    r_list = []
+    for i in range(10):
+        # 遺伝的アルゴリズム
+        genetic = GeneticAlgorithm.GeneticAlgorithm(map.world_info)
+        genetic_route = genetic.calc(location_ids)
 
-    # 遺伝的アルゴリズム
-    genetic = GeneticAlgorithm.GeneticAlgorithm(map.world_info)
-    genetic_route = genetic.calc(location_ids)
+        # 2-opt法
+        # two_opt = TwoOpt.TwoOpt(map.world_info)
+        # two_opt_route = two_opt.calc(genetic_route, '')
 
-    # 2-opt法
-    #two_opt = TwoOpt.TwoOpt(map.world_info)
-    #two_opt_route = two_opt.calc(genetic_route, '')
+        route = astar.interpolation(genetic_route)
+        print(route[0])
+        r_list.append(route[0])
+        with open('./t_oder', mode='a') as f:
+            f.writelines(str(route[0]) + '\n')
+'''
 
-    route = astar.interpolation(genetic_route)
-    print(route[0])
-    # print(route[1])
     drawer.map_register(graph_info.branch_list)
     drawer.route_register(route[1])
     for id in location_ids:
         drawer.node_register(id)
     drawer.show_plt()
+
+'''
