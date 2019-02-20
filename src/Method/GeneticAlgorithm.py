@@ -128,8 +128,8 @@ class GeneticAlgorithm:
                 result.append(insert)
         return result
 
-    def greedy_fusion(self, sample1, sample2):
-
+    def greedy_fusion(self, sample1: list, sample2: list):
+        
         pass
 
     def character_fusion(self, sample1: list, sample2: list):
@@ -219,7 +219,7 @@ class GeneticAlgorithm:
         plt.plot(max_g, label='max')
         plt.plot(ave_g, label='average')
         plt.plot(min_g, label='min')
-        #plt.show()
+        # plt.show()
         # plt.savefig('./image/test' + datetime.now().strftime("%Y%m%d-%H%M%S") + '.png')
         # plt.cla()
 
