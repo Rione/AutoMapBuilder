@@ -40,7 +40,7 @@ if __name__ == '__main__':
         if scenario[0] == 'ambulanceteam':
             location_ids.append(scenario[1])
 
-    result = greedy.calc(location_ids)
+    result = greedy.calc(location_ids, '')
 
     with open(os.getcwd().replace('/src', '') + '/map/' + MAP_NAME + '/map/route', mode='w') as f:
         f.write(str(result))
