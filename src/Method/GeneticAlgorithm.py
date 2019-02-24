@@ -217,7 +217,7 @@ class GeneticAlgorithm:
     def mutation(self, genome, probability):
         # 変異確率
         if np.random.choice([True, False], p=[probability, 1 - probability]):
-            '''
+            # '''
             # 交換するインデックスを決定
             i1 = random.randint(0, len(genome) - 1)
             i2 = random.randint(0, len(genome) - 1)
@@ -226,8 +226,8 @@ class GeneticAlgorithm:
             tmp = genome[i1]
             genome[i1] = genome[i2]
             genome[i2] = tmp
-            '''
-            return self.two_opt.calc(genome, '')
+            # '''
+            # return self.two_opt.calc(genome, '')
         return genome
 
     def generate_next(self, current_genomes):
@@ -241,7 +241,7 @@ class GeneticAlgorithm:
             if np.random.choice([1, 0], p=[0.5, 0.5]):  # 交配確率
                 sample = random.sample(selected, 2)
                 # result = self.greedy_fusion(sample[0], sample[1])
-                #result = self.partially_mapped_fusion(sample[0], sample[1])
+                # result = self.partially_mapped_fusion(sample[0], sample[1])
                 result = self.one_order_fusion(sample[0], sample[1])
                 # result = self.character_fusion(sample[0], sample[1])
                 next_genomes.append(self.mutation(result, MUTANT_RATE))
