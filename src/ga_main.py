@@ -55,8 +55,9 @@ if __name__ == '__main__':
         route = astar.interpolation(genetic_route)
         print(route[0])
         r_list.append(route[0])
-        with open('./t_pmx', mode='a') as f:
-            f.writelines(str(route[0]) + '\n')
+        e
+        #with open('./t_pmx', mode='a') as f:
+        #    f.writelines(str(route[0]) + '\n')
 '''
 
     drawer.map_register(graph_info.branch_list)

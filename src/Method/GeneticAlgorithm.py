@@ -5,13 +5,14 @@ import sys
 import matplotlib.pyplot as plt
 
 from src import Astar
+from src.Method import TwoOpt
 from src.World import WorldInfo
 import numpy as np
 
 T = 1000
 t = 0
 M = 10
-MUTANT_RATE = 0.3
+MUTANT_RATE = 0.01
 MAX_ROUTE = 0
 
 
@@ -19,6 +20,7 @@ class GeneticAlgorithm:
     def __init__(self, world_info: WorldInfo):
         self.world_info = world_info
         self.astar = Astar.Astar(self.world_info.g_nodes)
+        self.two_opt = TwoOpt.TwoOpt(self.world_info)
 
     def set_genome(self, target_ids: list):
         sample = []
@@ -129,8 +131,59 @@ class GeneticAlgorithm:
         return result
 
     def greedy_fusion(self, sample1: list, sample2: list):
-        
-        pass
+        # 接続ノードを返す関数
+        print(sample1, sample2)
+
+        def connect_nodes(target_id: int):
+            samples = [sample1, sample2]
+            result = set()
+            target_index = [sample1.index(target_id), sample2.index(target_id)]
+
+            for i in range(len(target_index)):
+                if target_index[i] - 1 < 0:
+                    result.add(samples[i][-1])
+                else:
+                    result.add(samples[i][target_index[i] - 1])
+
+                if target_index[i] + 1 >= len(samples[0]):
+                    result.add(samples[i][0])
+                else:
+                    result.add(samples[i][target_index[i] + 1])
+
+            return result
+
+        # 距離-選択確率テーブルを作成
+        table = {}
+        for i in range(len(sample1)):
+            node_set = connect_nodes(sample1[i])
+            result = []
+            total = 0
+            for n in node_set:
+                distance = self.astar.distance(sample1[i], n)
+                total += distance
+                result.append([n, distance])
+            # 選択確率に変換
+            for j in range(len(result)):
+                result[j][1] = (result[j][1]) / total
+            table.setdefault(sample1[i], result)
+
+        # ランダムにスタート地点を選択
+        start_index = random.randint(0, len(sample1))
+        result = []
+        result.append(sample1[start_index])
+        for i in range(len(sample1)):
+            data_list = table[result[-1]]
+            data_list = sorted(data_list, key=lambda data_list: data_list[1])
+            # 確率依存選択
+            while True:
+                for a in range(len(data_list)):
+                    print(data_list[a][1])
+                    if np.random.choice([True, False], p=[1 - data_list[a][1], data_list[a][1]]):
+                        result.append(data_list.pop(a)[0])
+                        print(a)
+                        break
+
+        return result
 
     def character_fusion(self, sample1: list, sample2: list):
         cut_list = []
@@ -164,6 +217,7 @@ class GeneticAlgorithm:
     def mutation(self, genome, probability):
         # 変異確率
         if np.random.choice([True, False], p=[probability, 1 - probability]):
+            '''
             # 交換するインデックスを決定
             i1 = random.randint(0, len(genome) - 1)
             i2 = random.randint(0, len(genome) - 1)
@@ -172,7 +226,8 @@ class GeneticAlgorithm:
             tmp = genome[i1]
             genome[i1] = genome[i2]
             genome[i2] = tmp
-
+            '''
+            return self.two_opt.calc(genome, '')
         return genome
 
     def generate_next(self, current_genomes):
@@ -185,8 +240,9 @@ class GeneticAlgorithm:
         while len(next_genomes) < M:
             if np.random.choice([1, 0], p=[0.5, 0.5]):  # 交配確率
                 sample = random.sample(selected, 2)
-                result = self.partially_mapped_fusion(sample[0], sample[1])
-                # result = self.one_order_fusion(sample[0], sample[1])
+                # result = self.greedy_fusion(sample[0], sample[1])
+                #result = self.partially_mapped_fusion(sample[0], sample[1])
+                result = self.one_order_fusion(sample[0], sample[1])
                 # result = self.character_fusion(sample[0], sample[1])
                 next_genomes.append(self.mutation(result, MUTANT_RATE))
         return next_genomes
@@ -202,6 +258,12 @@ class GeneticAlgorithm:
         # self.astar.interpolation(sample)
         # 遺伝子生成
         genomes = self.set_genome(targets)
+        '''
+        # 2-optを通す
+        for i in range(len(genomes)):
+            genomes[i].append(genomes[i][0])
+            genomes[i] = list(set(two_opt.calc(genomes[i], '')))
+            '''
         result = []
         min_g = []
         max_g = []
@@ -219,7 +281,7 @@ class GeneticAlgorithm:
         plt.plot(max_g, label='max')
         plt.plot(ave_g, label='average')
         plt.plot(min_g, label='min')
-        # plt.show()
+        plt.show()
         # plt.savefig('./image/test' + datetime.now().strftime("%Y%m%d-%H%M%S") + '.png')
         # plt.cla()
 
