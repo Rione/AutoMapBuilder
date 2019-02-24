@@ -241,9 +241,9 @@ class GeneticAlgorithm:
             if np.random.choice([1, 0], p=[0.5, 0.5]):  # 交配確率
                 sample = random.sample(selected, 2)
                 # result = self.greedy_fusion(sample[0], sample[1])
-                result = self.partially_mapped_fusion(sample[0], sample[1])
+                #result = self.partially_mapped_fusion(sample[0], sample[1])
                 #result = self.one_order_fusion(sample[0], sample[1])
-                # result = self.character_fusion(sample[0], sample[1])
+                result = self.character_fusion(sample[0], sample[1])
                 next_genomes.append(self.mutation(result, MUTANT_RATE))
         return next_genomes
 
