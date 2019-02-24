@@ -43,8 +43,6 @@ def main():
     two_opt = TwoOpt.TwoOpt(map.world_info)
     result = two_opt.calc(greedy_route, '')
     route = astar.interpolation(result)
-    print(route[0])
-    print(route[1])
 
     return route
 

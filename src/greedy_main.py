@@ -40,8 +40,7 @@ def main():
 
     result = greedy.calc(location_ids, '')
     route = astar.interpolation(result)
-    print(route[0])
-    print(route[1])
+
     return route
 
 

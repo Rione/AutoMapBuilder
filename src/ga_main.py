@@ -50,8 +50,6 @@ def main():
     # two_opt_route = two_opt.calc(genetic_route, '')
 
     route = astar.interpolation(genetic_route)
-    print(route[0])
-    print(route[1])
     return route
 
 
