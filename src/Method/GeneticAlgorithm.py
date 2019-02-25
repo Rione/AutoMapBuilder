@@ -132,12 +132,15 @@ class GeneticAlgorithm:
 
     def greedy_fusion(self, sample1: list, sample2: list):
         # 接続ノードを返す関数
-        print(sample1, sample2)
+        print(sample1)
+        print(sample2)
 
         def connect_nodes(target_id: int):
             samples = [sample1, sample2]
             result = set()
-            target_index = [sample1.index(target_id), sample2.index(target_id)]
+            s1 = sample1.index(target_id)
+            s2 = sample2.index(target_id)
+            target_index = [s1, s2]
 
             for i in range(len(target_index)):
                 if target_index[i] - 1 < 0:
@@ -168,20 +171,25 @@ class GeneticAlgorithm:
             table.setdefault(sample1[i], result)
 
         # ランダムにスタート地点を選択
-        start_index = random.randint(0, len(sample1))
+        start_index = random.randint(0, len(sample1) - 1)
         result = []
         result.append(sample1[start_index])
-        for i in range(len(sample1)):
-            data_list = table[result[-1]]
-            data_list = sorted(data_list, key=lambda data_list: data_list[1])
+        for i in range(len(sample1) - 1):
+            # つながっているノード一覧をnpリストに突っ込む
+            data_list = np.asarray(table[result[-1]])
+            # sort
+            data_list = np.sort(data_list, axis=1)
+            # 確率とIDを分割
+            ids = []
+            rate = []
+            for j in range(len(data_list)):
+                ids.append(data_list[j][1])
+                rate.append(data_list[j][0])
             # 確率依存選択
-            while True:
-                for a in range(len(data_list)):
-                    print(data_list[a][1])
-                    if np.random.choice([True, False], p=[1 - data_list[a][1], data_list[a][1]]):
-                        result.append(data_list.pop(a)[0])
-                        print(a)
-                        break
+            choice = int(np.random.choice(ids, p=rate))
+            delete_index = list(table[result[-1]]).index(choice)
+            table[result[-1]].pop(delete_index)
+            result.append(choice)
 
         return result
 
@@ -240,10 +248,10 @@ class GeneticAlgorithm:
         while len(next_genomes) < M:
             if np.random.choice([1, 0], p=[0.5, 0.5]):  # 交配確率
                 sample = random.sample(selected, 2)
-                # result = self.greedy_fusion(sample[0], sample[1])
-                #result = self.partially_mapped_fusion(sample[0], sample[1])
-                #result = self.one_order_fusion(sample[0], sample[1])
-                result = self.character_fusion(sample[0], sample[1])
+                result = self.greedy_fusion(sample[0], sample[1])
+                # result = self.partially_mapped_fusion(sample[0], sample[1])
+                # result = self.one_order_fusion(sample[0], sample[1])
+                # result = self.character_fusion(sample[0], sample[1])
                 next_genomes.append(self.mutation(result, MUTANT_RATE))
         return next_genomes
 
