@@ -40,11 +40,11 @@ def main():
         if scenario[0] == 'ambulanceteam':
             location_ids.append(scenario[1])
 
-    astar.create_cost_table(MAP_NAME, location_ids)
+    cost_table = astar.create_cost_table(MAP_NAME, location_ids)
 
     # result = greedy.calc(location_ids, '')
     # 遺伝的アルゴリズム
-    genetic = GeneticAlgorithm.GeneticAlgorithm(map.world_info)
+    genetic = GeneticAlgorithm.GeneticAlgorithm(map.world_info, cost_table)
     genetic_route = genetic.calc(location_ids)
 
     # 2-opt法

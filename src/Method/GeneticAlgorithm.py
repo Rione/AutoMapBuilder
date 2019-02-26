@@ -9,7 +9,7 @@ from src.Method import TwoOpt
 from src.World import WorldInfo
 import numpy as np
 
-T = 1000
+T = 10000
 t = 0
 M = 10
 MUTANT_RATE = 0.01
@@ -17,10 +17,11 @@ MAX_ROUTE = 0
 
 
 class GeneticAlgorithm:
-    def __init__(self, world_info: WorldInfo):
+    def __init__(self, world_info: WorldInfo, cost_table: dict):
         self.world_info = world_info
         self.astar = Astar.Astar(self.world_info.g_nodes)
         self.two_opt = TwoOpt.TwoOpt(self.world_info)
+        self.cost_table = cost_table
 
     def set_genome(self, target_ids: list):
         sample = []
@@ -42,15 +43,9 @@ class GeneticAlgorithm:
         # ルートを閉じる
         sample.append(sample[0])
         # 道のり計算
-        if 0 * t % 100 == 1:
-            ## Aster
-            total = self.astar.interpolation(sample)[0]
-            print(total)
-        else:
-            ## ユークリッド距離計算
-            total = 0
-            for i in range(len(sample) - 1):
-                total += self.astar.raw_distance(sample[i], sample[i + 1])
+        total = 0
+        for i in range(len(sample) - 1):
+            total += self.astar.get_cost(self.cost_table, sample[i], sample[i + 1])
         return total
 
     def get_genome_data(self, genomes):
@@ -290,7 +285,7 @@ class GeneticAlgorithm:
         plt.plot(ave_g, label='average')
         plt.plot(min_g, label='min')
         plt.savefig('./image/test' + datetime.now().strftime("%Y%m%d-%H%M%S") + '.png')
-        # plt.show()
+        plt.show()
         plt.cla()
 
         result = self.sort_genome(genomes)[0][1]

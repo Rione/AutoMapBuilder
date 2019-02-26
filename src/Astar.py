@@ -18,7 +18,6 @@ class Astar:
         self.nodes = nodes
         self.open_list = {}
         self.closed_list = {}
-        self.cost_table = {}
 
     def raw_distance(self, first_id: int, end_id: int):
         first = self.nodes.get(first_id)
@@ -113,6 +112,7 @@ class Astar:
             return 10 ** len(str(end)) * start + end
 
     def create_cost_table(self, map_name: str, location_ids: list):
+        cost_table = {}
         if not os.path.exists(os.getcwd().replace('/src', '') + '/map/' + map_name + '/map/cost_table'):
             for i in range(len(location_ids)):
                 print(i)
@@ -123,16 +123,16 @@ class Astar:
                     # hashsetのkey生成
                     key = self.get_key(location_ids[i], location_ids[j])
                     # すでに探索済みであれば除外
-                    if key in self.cost_table:
+                    if key in cost_table:
                         continue
                     # Aster計算
                     distance = self.calc_distance(location_ids[i], location_ids[j])[0]
-                    self.cost_table.setdefault(key, distance)
+                    cost_table.setdefault(key, distance)
             # file書き出し
             f = open(os.getcwd().replace('/src', '') + '/map/' + map_name + '/map/cost_table', 'a')
             # dictを展開
-            for k in self.cost_table:
-                c = self.cost_table[k]
+            for k in cost_table:
+                c = cost_table[k]
                 f.write(str(k) + ':' + str(c) + '\n')
             f.close()
         else:
@@ -140,8 +140,10 @@ class Astar:
             f = open(os.getcwd().replace('/src', '') + '/map/' + map_name + '/map/cost_table', 'r')
             for line in f:
                 data = line.replace('\n', '').split(':')
-                self.cost_table.setdefault(data[0], data[1])
+                cost_table.setdefault(int(data[0]), float(data[1]))
+            f.close()
+        return cost_table
 
-    def get_cost(self, start: int, end: int):
+    def get_cost(self, cost_table: dict, start: int, end: int):
         key = self.get_key(start, end)
-        return self.cost_table[key]
+        return cost_table[key]
