@@ -138,6 +138,9 @@ class Astar:
         else:
             # file読み込み
             f = open(os.getcwd().replace('/src', '') + '/map/' + map_name + '/map/cost_table', 'r')
+            for line in f:
+                data = line.replace('\n', '').split(':')
+                self.cost_table.setdefault(data[0], data[1])
 
     def get_cost(self, start: int, end: int):
         key = self.get_key(start, end)
