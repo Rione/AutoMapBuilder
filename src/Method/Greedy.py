@@ -6,11 +6,12 @@ from src.World import WorldInfo
 
 
 class Greedy:
-    def __init__(self, world_info: WorldInfo):
+    def __init__(self, world_info: WorldInfo, cost_table: dict):
         self.world_info = world_info
         self.astar = Astar.Astar(self.world_info.g_nodes)
+        self.cost_table = cost_table
 
-    def calc(self, targets: list, method: str):
+    def calc(self, targets: list):
         # 一番近いノードに接続
         # 全てのノードを登録するまでループ
         route = []
@@ -24,10 +25,8 @@ class Greedy:
             min_id = 0
             for id in target_ids:
                 # 距離取得
-                if method == 'aster':
-                    distance = self.astar.calc_distance(route[-1], id)[0]
-                else:
-                    distance = self.astar.raw_distance(route[-1], id)
+                distance = self.astar.get_cost(self.cost_table, route[-1], id)
+
                 # 最小距離
                 if min > distance:
                     min = distance

@@ -21,7 +21,6 @@ location_ids = []
 def main():
     scenarios = reader.scenario_reader()
     astar = Astar.Astar(map.world_info.g_nodes)
-    greedy = Greedy.Greedy(map.world_info)
 
     # 市民の除くエージェント＆避難所をリストアップ
     for scenario in scenarios:
@@ -38,9 +37,13 @@ def main():
         if scenario[0] == 'ambulanceteam':
             location_ids.append(scenario[1])
 
-    result = greedy.calc(location_ids, '')
-    route = astar.interpolation(result)
+    cost_table = astar.create_cost_table(MAP_NAME, location_ids)
 
+    greedy = Greedy.Greedy(map.world_info, cost_table)
+
+    result = greedy.calc(location_ids)
+    route = astar.interpolation(result)
+    print(route[0])
     return route
 
 

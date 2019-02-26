@@ -3,7 +3,7 @@ from src.World import WorldInfo
 
 
 class TwoOpt:
-    def __init__(self, world_info: WorldInfo):
+    def __init__(self, world_info: WorldInfo, cost_table: dict):
         self.world_info = world_info
         self.astar = Astar.Astar(self.world_info.g_nodes)
 
