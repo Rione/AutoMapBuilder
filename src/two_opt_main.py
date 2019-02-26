@@ -44,9 +44,9 @@ def main():
     greedy_route = greedy.calc(location_ids)
 
     two_opt = TwoOpt.TwoOpt(map.world_info, cost_table)
-    result = two_opt.calc(greedy_route, '')
+    result = two_opt.calc(greedy_route)
     route = astar.interpolation(result)
-
+    print(route[0])
     return route
 
 
