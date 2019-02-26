@@ -27,7 +27,7 @@ class Greedy:
                 if method == 'aster':
                     distance = self.astar.calc_distance(route[-1], id)[0]
                 else:
-                    distance = self.astar.distance(route[-1], id)
+                    distance = self.astar.raw_distance(route[-1], id)
                 # 最小距離
                 if min > distance:
                     min = distance

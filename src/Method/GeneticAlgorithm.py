@@ -50,7 +50,7 @@ class GeneticAlgorithm:
             ## ユークリッド距離計算
             total = 0
             for i in range(len(sample) - 1):
-                total += self.astar.distance(sample[i], sample[i + 1])
+                total += self.astar.raw_distance(sample[i], sample[i + 1])
         return total
 
     def get_genome_data(self, genomes):
@@ -162,7 +162,7 @@ class GeneticAlgorithm:
             result = []
             total = 0
             for n in node_set:
-                distance = self.astar.distance(sample1[i], n)
+                distance = self.astar.raw_distance(sample1[i], n)
                 total += distance
                 result.append([n, distance])
             # 選択確率に変換

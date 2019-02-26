@@ -42,12 +42,12 @@ class TwoOpt:
                                 self.astar.calc_distance(route[a_end],
                                                          route[b_end])[0]
                     else:
-                        before = self.astar.distance(route[a_first], route[a_end]) + \
-                                 self.astar.distance(route[b_first],
-                                                     route[b_end])
-                        after = self.astar.distance(route[a_first], route[b_first]) + \
-                                self.astar.distance(route[a_end],
-                                                    route[b_end])
+                        before = self.astar.raw_distance(route[a_first], route[a_end]) + \
+                                 self.astar.raw_distance(route[b_first],
+                                                         route[b_end])
+                        after = self.astar.raw_distance(route[a_first], route[b_first]) + \
+                                self.astar.raw_distance(route[a_end],
+                                                        route[b_end])
                     if before > after:
                         count += 1
                         # 入れ替え

@@ -1,5 +1,6 @@
 import copy
 import math
+import os
 import sys
 
 
@@ -17,8 +18,9 @@ class Astar:
         self.nodes = nodes
         self.open_list = {}
         self.closed_list = {}
+        self.cost_table = {}
 
-    def distance(self, first_id: int, end_id: int):
+    def raw_distance(self, first_id: int, end_id: int):
         first = self.nodes.get(first_id)
         end = self.nodes.get(end_id)
         X = end.x - first.x
@@ -29,7 +31,7 @@ class Astar:
         self.open_list = {}
         self.closed_list = {}
         # 最初のノードを追加
-        self.open_list.setdefault(first_id, A_Node(first_id, 0, self.distance(first_id, end_id), [first_id]))
+        self.open_list.setdefault(first_id, A_Node(first_id, 0, self.raw_distance(first_id, end_id), [first_id]))
         # openlistが空になるまでループ
         while not len(self.open_list) <= 0:
             # コスト最小のターゲット選択
@@ -52,10 +54,10 @@ class Astar:
             for neighbour in self.nodes.get(target.id).neighbours:
                 # コスト計算
                 ## 予測コスト
-                h = self.distance(neighbour.id, end_id)
+                h = self.raw_distance(neighbour.id, end_id)
 
                 ## 蓄積コスト
-                c = target.c + self.distance(target.id, neighbour.id)
+                c = target.c + self.raw_distance(target.id, neighbour.id)
 
                 # openlistに含まれる場合
                 if neighbour.id in self.open_list:
@@ -103,3 +105,40 @@ class Astar:
                 result.append(a_route[1][r])
         result.append(route[-1])
         return total, result
+
+    def get_key(self, start: int, end: int):
+        if start > end:
+            return 10 ** len(str(start)) * end + start
+        else:
+            return 10 ** len(str(end)) * start + end
+
+    def create_cost_table(self, map_name: str, location_ids: list):
+        if not os.path.exists(os.getcwd().replace('/src', '') + '/map/' + map_name + '/map/cost_table'):
+            for i in range(len(location_ids)):
+                print(i)
+                for j in range(len(location_ids)):
+                    # 同じIDは除外
+                    if i == j:
+                        continue
+                    # hashsetのkey生成
+                    key = self.get_key(location_ids[i], location_ids[j])
+                    # すでに探索済みであれば除外
+                    if key in self.cost_table:
+                        continue
+                    # Aster計算
+                    distance = self.calc_distance(location_ids[i], location_ids[j])[0]
+                    self.cost_table.setdefault(key, distance)
+            # file書き出し
+            f = open(os.getcwd().replace('/src', '') + '/map/' + map_name + '/map/cost_table', 'a')
+            # dictを展開
+            for k in self.cost_table:
+                c = self.cost_table[k]
+                f.write(str(k) + ':' + str(c) + '\n')
+            f.close()
+        else:
+            # file読み込み
+            f = open(os.getcwd().replace('/src', '') + '/map/' + map_name + '/map/cost_table', 'r')
+
+    def get_cost(self, start: int, end: int):
+        key = self.get_key(start, end)
+        return self.cost_table[key]
