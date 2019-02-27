@@ -9,7 +9,7 @@ from src.Method import TwoOpt
 from src.World import WorldInfo
 import numpy as np
 
-T = 100000
+T = 1000
 t = 0
 M = 10
 MUTANT_RATE = 0.01
@@ -230,7 +230,8 @@ class GeneticAlgorithm:
             genome[i1] = genome[i2]
             genome[i2] = tmp
             # '''
-            # return self.two_opt.calc(genome, '')
+        if t % 100 == 0:
+            genome = self.two_opt.calc(genome)
         return genome
 
     def generate_next(self, current_genomes):
@@ -244,8 +245,8 @@ class GeneticAlgorithm:
             if np.random.choice([1, 0], p=[0.5, 0.5]):  # 交配確率
                 sample = random.sample(selected, 2)
                 # result = self.greedy_fusion(sample[0], sample[1])
-                # result = self.partially_mapped_fusion(sample[0], sample[1])
-                result = self.one_order_fusion(sample[0], sample[1])
+                result = self.partially_mapped_fusion(sample[0], sample[1])
+                # result = self.one_order_fusion(sample[0], sample[1])
                 # result = self.character_fusion(sample[0], sample[1])
                 next_genomes.append(self.mutation(result, MUTANT_RATE))
         return next_genomes
