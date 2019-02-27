@@ -1,5 +1,6 @@
 from src import Astar
 from src.World import WorldInfo
+import numpy as np
 
 
 class Annealing:
@@ -12,10 +13,13 @@ class Annealing:
 
     def calc(self, route: list):
         # 冷えるまで
-        while self.temperature > 0:
+        good = 0
+        bud = 0
+        while self.temperature > 0.01:
+            print(self.temperature)
             # 入れ替え対象ペアの先頭選択(ただし終端は除外)
             for a in range(len(route) - 1):
-                print(a)
+                # print(a)
                 # 選択されたindex
                 a_first = a
                 a_end = a + 1
@@ -38,10 +42,28 @@ class Annealing:
                              self.astar.get_cost(self.cost_table, route[b_first], route[b_end])
                     after = self.astar.get_cost(self.cost_table, route[a_first], route[b_first]) + \
                             self.astar.get_cost(self.cost_table, route[a_end], route[b_end])
+                    # 確率選択
+                    # 温度が高いほど距離が大きくなるように選択される
+                    if np.random.choice([True, False], p=[1 - self.temperature, self.temperature]):
+                        good += 1
+                        # 入れ替えた方が距離が小さくなるようにする
+                        if before > after:
+                            # 入れ替え
+                            new_path = route[a_end:b_first + 1]
+                            route[a_end:b_first + 1] = new_path[::-1]
+                    else:
+                        bud += 1
+                        # 入れ替えた方が距離が大きくなるようにする
+                        if before < after:
+                            # 入れ替え
+                            new_path = route[a_end:b_first + 1]
+                            route[a_end:b_first + 1] = new_path[::-1]
 
-                    if before > after:
-                        # 入れ替え
-                        new_path = route[a_end:b_first + 1]
-                        route[a_end:b_first + 1] = new_path[::-1]
+            # 温度を下げる
+            ##単純比例減少
+            self.temperature -= 0.001
+            print(good, bud)
+            good = 0
+            bud = 0
 
         return route
