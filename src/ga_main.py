@@ -23,7 +23,6 @@ location_ids = []
 def main():
     astar = Astar.Astar(map.world_info.g_nodes)
     scenarios = reader.scenario_reader()
-    greedy = Greedy.Greedy(map.world_info)
 
     # 市民の除くエージェント＆避難所をリストアップ
     for scenario in scenarios:

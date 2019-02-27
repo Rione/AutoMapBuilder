@@ -9,7 +9,7 @@ from src.Method import TwoOpt
 from src.World import WorldInfo
 import numpy as np
 
-T = 10000
+T = 100000
 t = 0
 M = 10
 MUTANT_RATE = 0.01
@@ -20,7 +20,7 @@ class GeneticAlgorithm:
     def __init__(self, world_info: WorldInfo, cost_table: dict):
         self.world_info = world_info
         self.astar = Astar.Astar(self.world_info.g_nodes)
-        self.two_opt = TwoOpt.TwoOpt(self.world_info)
+        self.two_opt = TwoOpt.TwoOpt(self.world_info, cost_table)
         self.cost_table = cost_table
 
     def set_genome(self, target_ids: list):
