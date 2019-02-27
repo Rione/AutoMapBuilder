@@ -43,10 +43,7 @@ class GeneticAlgorithm:
         # ルートを閉じる
         sample.append(sample[0])
         # 道のり計算
-        total = 0
-        for i in range(len(sample) - 1):
-            total += self.astar.get_cost(self.cost_table, sample[i], sample[i + 1])
-        return total
+        return self.astar.get_route_cost(self.cost_table, sample)
 
     def get_genome_data(self, genomes):
         sum = 0
@@ -218,6 +215,17 @@ class GeneticAlgorithm:
         return result
 
     def mutation(self, genome, probability):
+        # 一定確率で大幅に進化させる
+
+        # 従来の方法と合わせる
+        # 一定サイクルによって大幅に進化させる
+
+        # サイクル数が進むごとに入れ替えが起こりやすくする
+
+        # 従来の方法のみ
+
+        #
+
         # 変異確率
         if np.random.choice([True, False], p=[probability, 1 - probability]):
             # '''

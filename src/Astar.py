@@ -147,3 +147,9 @@ class Astar:
     def get_cost(self, cost_table: dict, start: int, end: int):
         key = self.get_key(start, end)
         return cost_table[key]
+
+    def get_route_cost(self, cost_table: dict, route: list):
+        total = 0
+        for i in range(len(route) - 1):
+            total += self.get_cost(cost_table, route[i], route[i + 1])
+        return total
