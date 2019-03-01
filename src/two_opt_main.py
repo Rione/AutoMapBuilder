@@ -5,7 +5,7 @@ sys.path.append(os.getcwd().replace('/src', ''))
 from src import Astar, GraphDrawer, ScenarioReader, MapReader
 from src.Method import Greedy, TwoOpt
 
-MAP_NAME = 'sakae'
+MAP_NAME = 'kobe'
 
 map = MapReader.MapReader(MAP_NAME)
 world_info = map.build_map()
