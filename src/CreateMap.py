@@ -62,7 +62,7 @@ class CreateMap:
     def can_put_building(self, map_array: np.ndarray, target_x: int, target_y: int):
         # 置けるならid,置けなければすでに入っているid、２つに挟まれている場合は0を返す
         # 指定場所に値が入っているか
-        if not map_array[target_x][target_y] == -1:
+        if not (map_array[target_x][target_y] == -1 or map_array[target_x][target_y] == 0):
             return map_array[target_x][target_y]
 
         building_count = 0
@@ -70,39 +70,45 @@ class CreateMap:
         # xがはみ出していないか
         if target_x - 1 >= 0:
             # 上下左右斜めで確認
-            if not map_array[target_x - 1][target_y] == -1:
+            if not (map_array[target_x - 1][target_y] == -1 or map_array[target_x - 1][target_y] == 0):
                 building_count += 1
                 tmp_id = map_array[target_x - 1][target_y]
-            if target_y - 1 >= 0 and not map_array[target_x - 1][target_y - 1] == -1:
-                building_count += 1
+            if target_y - 1 >= 0 and not (
+                    map_array[target_x - 1][target_y - 1] == -1 or map_array[target_x - 1][target_y - 1] == 0):
+                building_count += 2
                 tmp_id = map_array[target_x - 1][target_y - 1]
-            if target_y + 1 < len(map_array) and not map_array[target_x - 1][target_y + 1] == -1:
-                building_count += 1
+            if target_y + 1 < len(map_array) and not (
+                    map_array[target_x - 1][target_y + 1] == -1 or map_array[target_x - 1][target_y + 1] == 0):
+                building_count += 2
                 tmp_id = map_array[target_x - 1][target_y + 1]
 
-        if target_y - 1 >= 0 and not map_array[target_x][target_y - 1] == -1:
+        if target_y - 1 >= 0 and not (
+                map_array[target_x][target_y - 1] == -1 or map_array[target_x][target_y - 1] == 0):
             building_count += 1
             tmp_id = map_array[target_x][target_y - 1]
-        if target_y + 1 < len(map_array) and not map_array[target_x][target_y + 1] == -1:
+        if target_y + 1 < len(map_array) and not (
+                map_array[target_x][target_y + 1] == -1 or map_array[target_x][target_y + 1] == 0):
             building_count += 1
             tmp_id = map_array[target_x][target_y + 1]
 
         if target_x + 1 < len(map_array):
-            if not map_array[target_x + 1][target_y] == -1:
+            if not (map_array[target_x + 1][target_y] == -1 or map_array[target_x + 1][target_y] == 0):
                 building_count += 1
                 tmp_id = map_array[target_x + 1][target_y]
-            if target_y - 1 >= 0 and not map_array[target_x + 1][target_y - 1] == -1:
-                building_count += 1
+            if target_y - 1 >= 0 and not (
+                    map_array[target_x + 1][target_y - 1] == -1 or map_array[target_x + 1][target_y - 1] == 0):
+                building_count += 2
                 tmp_id = map_array[target_x + 1][target_y - 1]
-            if target_y + 1 < len(map_array) and not map_array[target_x + 1][target_y + 1] == -1:
-                building_count += 1
+            if target_y + 1 < len(map_array) and not (
+                    map_array[target_x + 1][target_y + 1] == -1 or map_array[target_x + 1][target_y + 1] == 0):
+                building_count += 2
                 tmp_id = map_array[target_x + 1][target_y + 1]
 
         if building_count == 0:
             return -1
         if building_count == 1:
             return tmp_id
-        return 0
+        return tmp_id
 
     def judge_filled(self, array_map: np.ndarray):
         # 全て埋まったか
@@ -132,10 +138,10 @@ class CreateMap:
         while not self.judge_filled(self.map_array):
             for i in range(len(self.map_array)):
                 for j in range(len(self.map_array)):
-                    self.map_array[j][i] = self.can_put_building(self.map_array, i, j)
+                    self.map_array[i][j] = self.can_put_building(self.map_array, i, j)
 
 
 create = CreateMap()
-create.create_array_map(10)
+create.create_array_map(15)
 
 print(create.map_array)
