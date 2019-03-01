@@ -5,7 +5,7 @@ import numpy as np
 
 sys.path.append(os.getcwd().replace('/src', ''))
 
-from src.World import Building, Edge, Node
+from src.World import Building, Edge, Node, Road
 
 MAP_WIDTH = 20
 MAP_HEIGHT = 20
@@ -33,6 +33,22 @@ class CreateMap:
             return 10 ** len(str(start)) * end + start
         else:
             return 10 ** len(str(end)) * start + end
+
+    def get_cross(self, map_array: np.ndarray, target_x: int, target_y: int):
+        result = []
+        if target_x - 1 >= 0:
+            result.append(map_array[target_x - 1][target_y])
+
+        if target_x + 1 < len(map_array):
+            result.append(map_array[target_x + 1][target_y])
+
+        if target_y - 1 >= 0:
+            result.append(map_array[target_x][target_y - 1])
+
+        if target_y + 1 < len(map_array):
+            result.append(map_array[target_x][target_y + 1])
+
+        return result
 
     def judge_neighbor(self, map_array: np.ndarray, distance: int, target_x: int, target_y: int):
         # 値が入っているかどうか確認
@@ -148,6 +164,7 @@ class CreateMap:
         return edge_id, Edge.Edge(edge_id, node1, node2)
 
     def get_edges(self, target_x: int, target_y: int):
+        # 配列のindexから座標とkeyを生成、そこから更にエッジを生成する
         edge_keys = {}
         tmp = self.insert_edge_data(target_x, target_y, target_x + 1, target_y)
         edge_keys.setdefault(tmp[0], tmp[1])
@@ -158,6 +175,24 @@ class CreateMap:
         tmp = self.insert_edge_data(target_x + 1, target_y + 1, target_x + 1, target_y)
         edge_keys.setdefault(tmp[0], tmp[1])
         return edge_keys
+
+    ###############################################################################################
+    # road系
+    def get_road_neighbor(self, map_array: np.ndarray, target_x: int, target_y: int):
+        result = []
+        if target_x - 1 >= 0 and map_array[target_x - 1][target_y] == 0:
+            result.append(self.get_key(target_x - 1, target_y))
+
+        if target_x + 1 < len(map_array) and map_array[target_x + 1][target_y] == 0:
+            result.append(self.get_key(target_x + 1, target_y))
+
+        if target_y - 1 >= 0 and map_array[target_x][target_y - 1] == 0:
+            result.append(self.get_key(target_x, target_y - 1))
+
+        if target_y + 1 < len(map_array) and map_array[target_x][target_y + 1] == 0:
+            result.append(self.get_key(target_x, target_y + 1))
+
+        return result
 
     ###############################################################################################
 
@@ -184,12 +219,15 @@ class CreateMap:
                     self.map_array[i][j] = self.can_put_building(self.map_array, i, j)
 
         # gml形式に落としこむ
+        # building
         for i in range(len(self.map_array)):
             for j in range(len(self.map_array)):
                 array_id = self.map_array[i][j]
                 # roadの場合
                 if array_id == 0:
-                    continue
+                    road_id = self.get_key(i, j)
+                    self.road_list.setdefault(road_id, Road.Road(road_id, self.get_road_neighbor(self.map_array, i, j)))
+
                 # buildingの場合
                 # idがすでにある場合
                 if array_id in self.building_list:
@@ -197,8 +235,7 @@ class CreateMap:
                 else:
                     self.building_list.setdefault(array_id, Building.Building(array_id))
                     self.building_list[array_id].update_nodes(self.get_edges(i, j))
-
-        print(len(self.building_list[2].edges))
+        # print(self.road_list[512].neighbor_ids)
 
 
 create = CreateMap()
