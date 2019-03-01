@@ -381,6 +381,16 @@ class CreateMap:
             ID += 1
             entrance_edge.setdefault(ID, Edge.Edge(ID, node2, node4))
 
+            # ネイバー再設定
+            # road側のtarget_edge_idを探しだす
+            target_road_id = 0
+            for road_id in self.road_list:
+                if target_edge_id in self.road_list[road_id].edges:
+                    target_road_id = road_id
+                    break
+
+            self.road_list[target_road_id].neighbor_ids.append(building_id)
+
             # edgeの削除
             del self.building_list[building_id].edges[target_edge_id]
 
