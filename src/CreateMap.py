@@ -263,11 +263,16 @@ class CreateMap:
             if first_x == end_x:
                 # エントランスのエッジ作成
                 center = (first_y + end_y) / 2
-                ID += 1
                 y1 = (first_y - center) * np.random.rand() + center
+                y2 = (end_x - center) * np.random.rand() + center
+                if y1 > y2:
+                    tmp = y2
+                    y2 = y1
+                    y1 = tmp
+
+                ID += 1
                 node1 = Node.Node(ID, first_x, y1)
                 ID += 1
-                y2 = (end_x - center) * np.random.rand() + center
                 node2 = Node.Node(ID, end_x, y2)
 
                 # buildingの方へエントランスを作成する
@@ -288,14 +293,41 @@ class CreateMap:
                     ID += 1
                     node4 = Node.Node(ID, end_x - 0.2, y2)
 
+                # エッジ再接続
+                if first_y < end_y:
+                    ID += 1
+                    self.building_list[building_id].edges.setdefault(ID, Edge.Edge(ID, node3, self.building_list[
+                        building_id].edges[target_edge_id].first))
+                    ID += 1
+                    self.building_list[building_id].edges.setdefault(ID, Edge.Edge(ID, node4, self.building_list[
+                        building_id].edges[target_edge_id].end))
+                else:
+                    ID += 1
+                    self.building_list[building_id].edges.setdefault(ID, Edge.Edge(ID, node4, self.building_list[
+                        building_id].edges[target_edge_id].first))
+                    ID += 1
+                    self.building_list[building_id].edges.setdefault(ID, Edge.Edge(ID, node3, self.building_list[
+                        building_id].edges[target_edge_id].end))
+
+                self.building_list[building_id].edges.setdefault(ID, Edge.Edge(ID,
+                                                                               self.building_list[building_id].edges[
+                                                                                   target_edge_id].first,
+                                                                               self.building_list[building_id].edges[
+                                                                                   target_edge_id].end))
+
             else:
                 # エントランスのエッジ作成
                 center = (first_x + end_x) / 2
-                ID += 1
                 x1 = (first_x - center) * np.random.rand() + center
+                x2 = (end_x - center) * np.random.rand() + center
+                if x1 > x2:
+                    tmp = x2
+                    x2 = x1
+                    x1 = tmp
+
+                ID += 1
                 node1 = Node.Node(ID, x1, first_y)
                 ID += 1
-                x2 = (end_x - center) * np.random.rand() + center
                 node2 = Node.Node(ID, x2, end_y)
 
                 # buildingの方へエントランスを作成する
@@ -316,6 +348,30 @@ class CreateMap:
                     ID += 1
                     node4 = Node.Node(ID, x2, end_y - 0.2)
 
+                # エッジ再接続
+                if first_x < end_x:
+                    ID += 1
+                    self.building_list[building_id].edges.setdefault(ID, Edge.Edge(ID, node3, self.building_list[
+                        building_id].edges[target_edge_id].first))
+                    ID += 1
+                    self.building_list[building_id].edges.setdefault(ID, Edge.Edge(ID, node4, self.building_list[
+                        building_id].edges[target_edge_id].end))
+                else:
+                    ID += 1
+                    self.building_list[building_id].edges.setdefault(ID, Edge.Edge(ID, node4, self.building_list[
+                        building_id].edges[target_edge_id].first))
+                    ID += 1
+                    self.building_list[building_id].edges.setdefault(ID, Edge.Edge(ID, node3, self.building_list[
+                        building_id].edges[target_edge_id].end))
+
+                self.building_list[building_id].edges.setdefault(ID, Edge.Edge(ID,
+                                                                               self.building_list[
+                                                                                   building_id].edges[
+                                                                                   target_edge_id].first,
+                                                                               self.building_list[
+                                                                                   building_id].edges[
+                                                                                   target_edge_id].end))
+
             ID += 1
             entrance_edge.setdefault(ID, Edge.Edge(ID, node1, node2))
             ID += 1
@@ -325,14 +381,8 @@ class CreateMap:
             ID += 1
             entrance_edge.setdefault(ID, Edge.Edge(ID, node2, node4))
 
-            # エッジ再接続
-            
-
             # edgeの削除
             del self.building_list[building_id].edges[target_edge_id]
-
-
-
 
 
 create = CreateMap()
