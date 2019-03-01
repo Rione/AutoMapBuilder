@@ -76,6 +76,9 @@ class GeneticAlgorithm:
                     result.append(genome[1])
         return result
 
+    #######################################################################################################
+    # 交叉系
+
     def one_order_fusion(self, sample1, sample2):
         # 切断箇所設定
         limit1 = random.randint(0, len(sample1))
@@ -214,6 +217,21 @@ class GeneticAlgorithm:
 
         return result
 
+    ###################################################################################################
+    # 突然変異系
+    def differ_route(self, route, a_first, a_end, b_first, b_end):
+        before = self.astar.get_cost(self.cost_table, route[a_first], route[a_end]) + \
+                 self.astar.get_cost(self.cost_table, route[b_first], route[b_end])
+        after = self.astar.get_cost(self.cost_table, route[a_first], route[b_first]) + \
+                self.astar.get_cost(self.cost_table, route[a_end], route[b_end])
+        if before > after:
+            return True
+        return False
+
+    def change_route(self, route, a_first, a_end, b_first, b_end):
+        new_path = route[a_end:b_first + 1]
+        route[a_end:b_first + 1] = new_path[::-1]
+
     def two_opt_mutation(self, route: list):
         # 入れ替えが一度もなくなるまでループ
         count = 1
@@ -277,34 +295,12 @@ class GeneticAlgorithm:
                 if b_end == len(route) - 1 and a_first == 0:
                     continue
                 # 距離を比べる
-                before = self.astar.get_cost(self.cost_table, route[a_first], route[a_end]) + \
-                         self.astar.get_cost(self.cost_table, route[b_first], route[b_end])
-                after = self.astar.get_cost(self.cost_table, route[a_first], route[b_first]) + \
-                        self.astar.get_cost(self.cost_table, route[a_end], route[b_end])
-
-                change_flag = np.random.choice([True, False], p=[change_rate, 1 - change_rate])
-                if before > after and change_flag:
-                    # 入れ替え
-                    new_path = route[a_end:b_first + 1]
-                    route[a_end:b_first + 1] = new_path[::-1]
-                elif before < after and change_flag:
+                if self.differ_route(route, a_first, a_end, b_first, b_end):
                     # 入れ替え
                     new_path = route[a_end:b_first + 1]
                     route[a_end:b_first + 1] = new_path[::-1]
 
         return route
-
-    def differ_route(self, route, a_first, a_end, b_first, b_end):
-        before = self.astar.get_cost(self.cost_table, route[a_first], route[a_end]) + \
-                 self.astar.get_cost(self.cost_table, route[b_first], route[b_end])
-        after = self.astar.get_cost(self.cost_table, route[a_first], route[b_first]) + \
-                self.astar.get_cost(self.cost_table, route[a_end], route[b_end])
-        if before > after:
-            return True
-        return False
-
-    def change_route(self, route, a_first, a_end, b_first, b_end):
-        pass
 
     def mutation(self, genome, probability):
         # 一定確率で大幅に進化させる
@@ -319,9 +315,10 @@ class GeneticAlgorithm:
         #
 
         # 変異確率
-        rate = probability * ((T - t) / T)
+        ##変異確率をサイクルごとに減少させる
+        rate = probability * (1 - (t / T))
         if np.random.choice([True, False], p=[rate, 1 - rate]):
-            '''
+            # '''
             # 交換するインデックスを決定
             i1 = random.randint(0, len(genome) - 1)
             i2 = random.randint(0, len(genome) - 1)
@@ -331,9 +328,11 @@ class GeneticAlgorithm:
             genome[i1] = genome[i2]
             genome[i2] = tmp
             # '''
-        if t % 100 == 0:
-            genome = self.two_opt_mutation(genome)
+        # if t % 100 == 0:
+        #    genome = self.two_opt_mutation(genome)
         return genome
+
+    ###################################################################################################
 
     def generate_next(self, current_genomes):
         next_genomes = []
@@ -345,11 +344,20 @@ class GeneticAlgorithm:
         while len(next_genomes) < M:
             if np.random.choice([1, 0], p=[0.5, 0.5]):  # 交配確率
                 sample = random.sample(selected, 2)
+
+                #####################################################################
+                # 交叉
                 # result = self.greedy_fusion(sample[0], sample[1])
                 # result = self.partially_mapped_fusion(sample[0], sample[1])
                 result = self.one_order_fusion(sample[0], sample[1])
                 # result = self.character_fusion(sample[0], sample[1])
-                next_genomes.append(self.mutation(result, MUTANT_RATE))
+
+                #####################################################################
+                # 突然変異
+                mutated_genome = self.mutation(result, MUTANT_RATE)
+
+                #####################################################################
+                next_genomes.append(mutated_genome)
         return next_genomes
 
     def calc(self, targets: list):

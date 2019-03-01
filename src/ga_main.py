@@ -8,7 +8,7 @@ from src import MapReader, ScenarioReader, GraphDrawer, Astar
 from src.Method import Greedy, TwoOpt
 from src.Method import GeneticAlgorithm
 
-MAP_NAME = 'kobe'
+MAP_NAME = 'sakae'
 
 map = MapReader.MapReader(MAP_NAME)
 reader = ScenarioReader.ScenarioReader(MAP_NAME)
