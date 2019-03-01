@@ -415,8 +415,3 @@ class CreateMap:
             del self.building_list[building_id].edges[target_edge_id]
 
         return self.building_list, self.road_list
-
-
-create = CreateMap()
-
-print(create.create_world_map(25))
