@@ -7,8 +7,8 @@ sys.path.append(os.getcwd().replace('/src', ''))
 
 from src.World import Building
 
-MAP_WIDTH = 10
-MAP_HEIGHT = 10
+MAP_WIDTH = 20
+MAP_HEIGHT = 20
 
 
 # 空白:-1
@@ -62,53 +62,69 @@ class CreateMap:
     def can_put_building(self, map_array: np.ndarray, target_x: int, target_y: int):
         # 置けるならid,置けなければすでに入っているid、２つに挟まれている場合は0を返す
         # 指定場所に値が入っているか
-        if not (map_array[target_x][target_y] == -1 or map_array[target_x][target_y] == 0):
+        if not map_array[target_x][target_y] == -1:
             return map_array[target_x][target_y]
 
         building_count = 0
         tmp_id = 0
-        # xがはみ出していないか
+
+        # はじめに十字に見る
         if target_x - 1 >= 0:
-            # 上下左右斜めで確認
-            if not (map_array[target_x - 1][target_y] == -1 or map_array[target_x - 1][target_y] == 0):
+            if not (map_array[target_x - 1][target_y] == -1 or map_array[target_x - 1][target_y] == 0 or
+                    map_array[target_x - 1][target_y] == tmp_id):
                 building_count += 1
                 tmp_id = map_array[target_x - 1][target_y]
-            if target_y - 1 >= 0 and not (
-                    map_array[target_x - 1][target_y - 1] == -1 or map_array[target_x - 1][target_y - 1] == 0):
-                building_count += 2
-                tmp_id = map_array[target_x - 1][target_y - 1]
-            if target_y + 1 < len(map_array) and not (
-                    map_array[target_x - 1][target_y + 1] == -1 or map_array[target_x - 1][target_y + 1] == 0):
-                building_count += 2
-                tmp_id = map_array[target_x - 1][target_y + 1]
-
-        if target_y - 1 >= 0 and not (
-                map_array[target_x][target_y - 1] == -1 or map_array[target_x][target_y - 1] == 0):
-            building_count += 1
-            tmp_id = map_array[target_x][target_y - 1]
-        if target_y + 1 < len(map_array) and not (
-                map_array[target_x][target_y + 1] == -1 or map_array[target_x][target_y + 1] == 0):
-            building_count += 1
-            tmp_id = map_array[target_x][target_y + 1]
 
         if target_x + 1 < len(map_array):
-            if not (map_array[target_x + 1][target_y] == -1 or map_array[target_x + 1][target_y] == 0):
+            if not (map_array[target_x + 1][target_y] == -1 or map_array[target_x + 1][target_y] == 0 or
+                    map_array[target_x + 1][target_y] == tmp_id):
                 building_count += 1
                 tmp_id = map_array[target_x + 1][target_y]
-            if target_y - 1 >= 0 and not (
-                    map_array[target_x + 1][target_y - 1] == -1 or map_array[target_x + 1][target_y - 1] == 0):
-                building_count += 2
-                tmp_id = map_array[target_x + 1][target_y - 1]
-            if target_y + 1 < len(map_array) and not (
-                    map_array[target_x + 1][target_y + 1] == -1 or map_array[target_x + 1][target_y + 1] == 0):
-                building_count += 2
-                tmp_id = map_array[target_x + 1][target_y + 1]
 
+        if target_y - 1 >= 0:
+            if not (map_array[target_x][target_y - 1] == -1 or map_array[target_x][target_y - 1] == 0 or
+                    map_array[target_x][target_y - 1] == tmp_id):
+                building_count += 1
+                tmp_id = map_array[target_x][target_y - 1]
+
+        if target_y + 1 < len(map_array):
+            if not (map_array[target_x][target_y + 1] == -1 or map_array[target_x][target_y + 1] == 0 or
+                    map_array[target_x][target_y + 1] == tmp_id):
+                building_count += 1
+                tmp_id = map_array[target_x][target_y + 1]
+
+        if not building_count == 1:
+            return 0
+
+        # 斜め
+        diagonal_count = 0
+        if target_y - 1 >= 0:
+            if target_x - 1 >= 0:
+                if not (map_array[target_x - 1][target_y - 1] == -1 or map_array[target_x - 1][target_y - 1] == 0 or
+                        map_array[target_x - 1][target_y - 1] == tmp_id):
+                    diagonal_count += 1
+            if target_x + 1 < len(map_array):
+                if not (map_array[target_x + 1][target_y - 1] == -1 or map_array[target_x + 1][target_y - 1] == 0 or
+                        map_array[target_x + 1][target_y - 1] == tmp_id):
+                    diagonal_count += 1
+
+        if target_y + 1 < len(map_array):
+            if target_x - 1 >= 0:
+                if not (map_array[target_x - 1][target_y + 1] == -1 or map_array[target_x - 1][target_y + 1] == 0 or
+                        map_array[target_x - 1][target_y + 1] == tmp_id):
+                    diagonal_count += 1
+            if target_x + 1 < len(map_array):
+                if not (map_array[target_x + 1][target_y + 1] == -1 or map_array[target_x + 1][target_y + 1] == 0 or
+                        map_array[target_x + 1][target_y + 1] == tmp_id):
+                    diagonal_count += 1
+
+        if building_count == 0 and diagonal_count == 4:
+            return 0
         if building_count == 0:
             return -1
-        if building_count == 1:
+        if diagonal_count == 0:
             return tmp_id
-        return tmp_id
+        return 0
 
     def judge_filled(self, array_map: np.ndarray):
         # 全て埋まったか
@@ -124,8 +140,8 @@ class CreateMap:
         while building_count < building_number:
             # 配列にランダムに拠点を設定(ただし隣接は禁止)
             # x,yをランダムで選択
-            target_x = np.random.randint(10)
-            target_y = np.random.randint(10)
+            target_x = np.random.randint(len(self.map_array))
+            target_y = np.random.randint(len(self.map_array))
 
             # 隣接がないか確認
             if self.judge_neighbor(self.map_array, 1, target_x, target_y):
@@ -140,8 +156,11 @@ class CreateMap:
                 for j in range(len(self.map_array)):
                     self.map_array[i][j] = self.can_put_building(self.map_array, i, j)
 
+        # 道の生成
+        # 横
+
 
 create = CreateMap()
-create.create_array_map(15)
+create.create_array_map(25)
 
 print(create.map_array)
