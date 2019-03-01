@@ -228,6 +228,14 @@ class GeneticAlgorithm:
             return True
         return False
 
+    def differ_route_data(self, route, a_first, a_end, b_first, b_end):
+        before = self.astar.get_cost(self.cost_table, route[a_first], route[a_end]) + \
+                 self.astar.get_cost(self.cost_table, route[b_first], route[b_end])
+        after = self.astar.get_cost(self.cost_table, route[a_first], route[b_first]) + \
+                self.astar.get_cost(self.cost_table, route[a_end], route[b_end])
+
+        return before - after
+
     def change_route(self, route, a_first, a_end, b_first, b_end):
         new_path = route[a_end:b_first + 1]
         route[a_end:b_first + 1] = new_path[::-1]
@@ -258,48 +266,53 @@ class GeneticAlgorithm:
                         continue
                     if b_end == len(route) - 1 and a_first == 0:
                         continue
-                    # 距離を比べる
-                    before = self.astar.get_cost(self.cost_table, route[a_first], route[a_end]) + \
-                             self.astar.get_cost(self.cost_table, route[b_first], route[b_end])
-                    after = self.astar.get_cost(self.cost_table, route[a_first], route[b_first]) + \
-                            self.astar.get_cost(self.cost_table, route[a_end], route[b_end])
 
-                    if before > after:
+                    # 距離を比べる
+                    if self.differ_route(route, a_first, a_end, b_first, b_end):
                         count += 1
-                        # 入れ替え
-                        new_path = route[a_end:b_first + 1]
-                        route[a_end:b_first + 1] = new_path[::-1]
+                        self.change_route(route, a_first, a_end, b_first, b_end)
         return route
 
-    def change_route_mutation(self, route: list, change_rate: float):
-        # 一周させる
-        # 入れ替え対象ペアの先頭選択(ただし終端は除外)
-        for a in range(len(route) - 1):
-            print(a)
-            # 選択されたindex
-            a_first = a
-            a_end = a + 1
+    def shortest_change_mutation(self, route: list, probability: float):
+        ##変異確率をサイクルごとに減少させる
+        rate = probability * (1 - (t / T))
+        if np.random.choice([True, False], p=[rate, 1 - rate]):
+            max_index = []
+            max_differ = 0
 
-            # もう一方の入れ替え対象ペアの先頭を選択
-            for b in range(a + 2, len(route) - 1):
+            # 入れ替え対象ペアの先頭選択(ただし終端は除外)
+            for a in range(len(route) - 1):
+                print(a)
                 # 選択されたindex
-                b_first = b
-                b_end = b + 1
+                a_first = a
+                a_end = a + 1
 
-                # 同じペア、もしくは連続するペアの場合は除外
-                if a == b or a_end == b_first:
-                    continue
-                # 先頭と終端が同じidの為、連続するケースを除外
-                if a_end == len(route) - 1 and b_first == 0:
-                    continue
-                if b_end == len(route) - 1 and a_first == 0:
-                    continue
-                # 距離を比べる
-                if self.differ_route(route, a_first, a_end, b_first, b_end):
-                    # 入れ替え
-                    new_path = route[a_end:b_first + 1]
-                    route[a_end:b_first + 1] = new_path[::-1]
+                # もう一方の入れ替え対象ペアの先頭を選択
+                for b in range(a + 2, len(route) - 1):
+                    # 選択されたindex
+                    b_first = b
+                    b_end = b + 1
 
+                    # 同じペア、もしくは連続するペアの場合は除外
+                    if a == b or a_end == b_first:
+                        continue
+                    # 先頭と終端が同じidの為、連続するケースを除外
+                    if a_end == len(route) - 1 and b_first == 0:
+                        continue
+                    if b_end == len(route) - 1 and a_first == 0:
+                        continue
+
+                    # 距離を比べる
+                    differ = self.differ_route_data(route, a_first, a_end, b_first, b_end)
+                    if max_differ > differ:
+                        max_differ = differ
+                        max_index.clear()
+                        max_index.append(a_first)
+                        max_index.append(a_end)
+                        max_index.append(b_first)
+                        max_index.append(b_end)
+
+            self.change_route(route, max_index[0], max_index[1], max_index[2], max_index[3])
         return route
 
     def mutation(self, genome, probability):
@@ -342,7 +355,7 @@ class GeneticAlgorithm:
         next_genomes.append(selected[0])
         # M個体できるまでループ
         while len(next_genomes) < M:
-            if np.random.choice([1, 0], p=[0.5, 0.5]):  # 交配確率
+            if np.random.choice([True, False], p=[0.5, 0.5]):  # 交配確率
                 sample = random.sample(selected, 2)
 
                 #####################################################################
@@ -354,7 +367,8 @@ class GeneticAlgorithm:
 
                 #####################################################################
                 # 突然変異
-                mutated_genome = self.mutation(result, MUTANT_RATE)
+                # mutated_genome = self.mutation(result, MUTANT_RATE)
+                mutated_genome = self.shortest_change_mutation(result, 0.1)
 
                 #####################################################################
                 next_genomes.append(mutated_genome)

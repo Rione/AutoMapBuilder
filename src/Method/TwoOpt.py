@@ -53,5 +53,4 @@ class TwoOpt:
                         count += 1
                         self.change_route(route, a_first, a_end, b_first, b_end)
 
-
         return route
