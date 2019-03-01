@@ -2,8 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e903902d-282f-4469-bb0d-c8c0c82a4f6c" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/World/Edge.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/World/Node.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/CreateMap.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/CreateMap.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/World/Building.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/World/Building.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -25,8 +28,17 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/World/Building.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="138">
-              <caret line="6" column="27" lean-forward="true" selection-start-line="6" selection-start-column="27" selection-end-line="6" selection-end-column="27" />
+            <state relative-caret-position="235">
+              <caret line="14" column="34" lean-forward="true" selection-start-line="14" selection-start-column="34" selection-end-line="14" selection-end-column="34" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/World/Node.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="92">
+              <caret line="4" column="18" selection-start-line="4" selection-start-column="18" selection-end-line="4" selection-end-column="18" />
             </state>
           </provider>
         </entry>
@@ -34,11 +46,20 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/CreateMap.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="258">
-              <caret line="73" column="20" lean-forward="true" selection-start-line="73" selection-start-column="20" selection-end-line="73" selection-end-column="20" />
+            <state relative-caret-position="350">
+              <caret line="207" lean-forward="true" selection-start-line="207" selection-end-line="207" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/World/Edge.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="161">
+              <caret line="7" column="22" lean-forward="true" selection-start-line="7" selection-start-column="22" selection-end-line="7" selection-end-column="22" />
             </state>
           </provider>
         </entry>
@@ -125,6 +146,8 @@
         <option value="$PROJECT_DIR$/src/Method/GeneticAlgorithm.py" />
         <option value="$PROJECT_DIR$/src/main.py" />
         <option value="$PROJECT_DIR$/src/World/__init__.py" />
+        <option value="$PROJECT_DIR$/src/World/Node.py" />
+        <option value="$PROJECT_DIR$/src/World/Edge.py" />
         <option value="$PROJECT_DIR$/src/World/Building.py" />
         <option value="$PROJECT_DIR$/src/CreateMap.py" />
       </list>
@@ -132,7 +155,7 @@
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="1365" />
-    <option name="y" value="-11" />
+    <option name="y" value="-779" />
     <option name="width" value="1368" />
     <option name="height" value="780" />
   </component>
@@ -329,7 +352,7 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32868218" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.33488372" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.14263566" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.27131784" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -386,8 +409,6 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/__init__.py" />
     <entry file="file://$PROJECT_DIR$/test/sample1.py" />
-    <entry file="file://$PROJECT_DIR$/src/World/Node.py" />
-    <entry file="file://$PROJECT_DIR$/src/World/Edge.py" />
     <entry file="file://$PROJECT_DIR$/map/kobe/map/map.gml" />
     <entry file="file://$PROJECT_DIR$/src/Graph/G_Node.py" />
     <entry file="file://$PROJECT_DIR$/test/for.py" />
@@ -440,24 +461,38 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/World/Building.py">
+    <entry file="file://$USER_HOME$/.PyCharmCE2018.3/system/python_stubs/-833552021/builtins.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="138">
-          <caret line="6" column="27" lean-forward="true" selection-start-line="6" selection-start-column="27" selection-end-line="6" selection-end-column="27" />
+        <state relative-caret-position="206">
+          <caret line="1049" column="8" selection-start-line="1049" selection-start-column="8" selection-end-line="1049" selection-end-column="8" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/.PyCharmCE2018.3/system/python_stubs/-833552021/builtins.py">
+    <entry file="file://$PROJECT_DIR$/src/World/Node.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="139">
-          <caret line="1049" column="8" selection-start-line="1049" selection-start-column="8" selection-end-line="1049" selection-end-column="8" />
+        <state relative-caret-position="92">
+          <caret line="4" column="18" selection-start-line="4" selection-start-column="18" selection-end-line="4" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/World/Building.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="235">
+          <caret line="14" column="34" lean-forward="true" selection-start-line="14" selection-start-column="34" selection-end-line="14" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/World/Edge.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="161">
+          <caret line="7" column="22" lean-forward="true" selection-start-line="7" selection-start-column="22" selection-end-line="7" selection-end-column="22" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/CreateMap.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="258">
-          <caret line="73" column="20" lean-forward="true" selection-start-line="73" selection-start-column="20" selection-end-line="73" selection-end-column="20" />
+        <state relative-caret-position="350">
+          <caret line="207" lean-forward="true" selection-start-line="207" selection-end-line="207" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
