@@ -26,13 +26,16 @@ class CreateMap:
         self.building_list = {}
         self.road_list = {}
 
-    def get_key(self, x: int, y: int):
-        start = x + 1
-        end = y + 1
+    def create_key(self, start: int, end: int):
         if start > end:
             return 10 ** len(str(start)) * end + start
         else:
             return 10 ** len(str(end)) * start + end
+
+    def create_node_key(self, x: int, y: int):
+        start = x + 1
+        end = y + 1
+        return 10 ** len(str(end)) * start + end
 
     def get_cross(self, map_array: np.ndarray, target_x: int, target_y: int):
         result = []
@@ -158,9 +161,9 @@ class CreateMap:
     ###################################################################################################
 
     def insert_edge_data(self, x1, y1, x2, y2):
-        edge_id = self.get_key(self.get_key(x1, y1), self.get_key(x2, y2))
-        node1 = Node.Node(self.get_key(x1, y1), x1, y1)
-        node2 = Node.Node(self.get_key(x2, y2), x2, y2)
+        edge_id = self.create_key(self.create_node_key(x1, y1), self.create_node_key(x2, y2))
+        node1 = Node.Node(self.create_node_key(x1, y1), x1, y1)
+        node2 = Node.Node(self.create_node_key(x2, y2), x2, y2)
         return edge_id, Edge.Edge(edge_id, node1, node2)
 
     def get_edges(self, target_x: int, target_y: int):
@@ -181,23 +184,22 @@ class CreateMap:
     def get_road_neighbor(self, map_array: np.ndarray, target_x: int, target_y: int):
         result = []
         if target_x - 1 >= 0 and map_array[target_x - 1][target_y] == 0:
-            result.append(self.get_key(target_x - 1, target_y))
+            result.append(self.create_key(target_x - 1, target_y))
 
         if target_x + 1 < len(map_array) and map_array[target_x + 1][target_y] == 0:
-            result.append(self.get_key(target_x + 1, target_y))
+            result.append(self.create_key(target_x + 1, target_y))
 
         if target_y - 1 >= 0 and map_array[target_x][target_y - 1] == 0:
-            result.append(self.get_key(target_x, target_y - 1))
+            result.append(self.create_key(target_x, target_y - 1))
 
         if target_y + 1 < len(map_array) and map_array[target_x][target_y + 1] == 0:
-            result.append(self.get_key(target_x, target_y + 1))
-
+            result.append(self.create_key(target_x, target_y + 1))
         return result
 
     ###############################################################################################
 
     def create_array_map(self, building_number: int):
-        array_id = 1
+        building_id = 1
         building_count = 0
 
         while building_count < building_number:
@@ -208,8 +210,8 @@ class CreateMap:
 
             # 隣接がないか確認
             if self.judge_neighbor(self.map_array, 1, target_x, target_y):
-                self.map_array[target_x][target_y] = array_id
-                array_id += 1
+                self.map_array[target_x][target_y] = building_id
+                building_id += 1
                 building_count += 1
 
         # 占領開始
@@ -222,20 +224,22 @@ class CreateMap:
         # building
         for i in range(len(self.map_array)):
             for j in range(len(self.map_array)):
-                array_id = self.map_array[i][j]
+                building_id = self.map_array[i][j]
                 # roadの場合
-                if array_id == 0:
-                    road_id = self.get_key(i, j)
+                if building_id == 0:
+                    road_id = self.create_key(i, j)
                     self.road_list.setdefault(road_id, Road.Road(road_id, self.get_road_neighbor(self.map_array, i, j)))
+                    edge = self.get_edges(i, j)
+                    self.road_list[road_id].update_nodes(edge)
+                    continue
 
                 # buildingの場合
                 # idがすでにある場合
-                if array_id in self.building_list:
-                    self.building_list[array_id].update_nodes(self.get_edges(i, j))
+                if building_id in self.building_list:
+                    self.building_list[building_id].update_nodes(self.get_edges(i, j))
                 else:
-                    self.building_list.setdefault(array_id, Building.Building(array_id))
-                    self.building_list[array_id].update_nodes(self.get_edges(i, j))
-        # print(self.road_list[512].neighbor_ids)
+                    self.building_list.setdefault(building_id, Building.Building(building_id))
+                    self.building_list[building_id].update_nodes(self.get_edges(i, j))
 
 
 create = CreateMap()
