@@ -277,42 +277,53 @@ class GeneticAlgorithm:
         ##変異確率をサイクルごとに減少させる
         rate = probability * (1 - (t / T))
         if np.random.choice([True, False], p=[rate, 1 - rate]):
-            max_index = []
-            max_differ = 0
+            if np.random.choice([True, False], p=[0.5, 0.5]):  # 交配確率
 
-            # 入れ替え対象ペアの先頭選択(ただし終端は除外)
-            for a in range(len(route) - 1):
-                print(a)
-                # 選択されたindex
-                a_first = a
-                a_end = a + 1
+                max_index = []
+                max_differ = 0
 
-                # もう一方の入れ替え対象ペアの先頭を選択
-                for b in range(a + 2, len(route) - 1):
+                # 入れ替え対象ペアの先頭選択(ただし終端は除外)
+                for a in range(len(route) - 1):
+                    print(a)
                     # 選択されたindex
-                    b_first = b
-                    b_end = b + 1
+                    a_first = a
+                    a_end = a + 1
 
-                    # 同じペア、もしくは連続するペアの場合は除外
-                    if a == b or a_end == b_first:
-                        continue
-                    # 先頭と終端が同じidの為、連続するケースを除外
-                    if a_end == len(route) - 1 and b_first == 0:
-                        continue
-                    if b_end == len(route) - 1 and a_first == 0:
-                        continue
+                    # もう一方の入れ替え対象ペアの先頭を選択
+                    for b in range(a + 2, len(route) - 1):
+                        # 選択されたindex
+                        b_first = b
+                        b_end = b + 1
 
-                    # 距離を比べる
-                    differ = self.differ_route_data(route, a_first, a_end, b_first, b_end)
-                    if max_differ > differ:
-                        max_differ = differ
-                        max_index.clear()
-                        max_index.append(a_first)
-                        max_index.append(a_end)
-                        max_index.append(b_first)
-                        max_index.append(b_end)
+                        # 同じペア、もしくは連続するペアの場合は除外
+                        if a == b or a_end == b_first:
+                            continue
+                        # 先頭と終端が同じidの為、連続するケースを除外
+                        if a_end == len(route) - 1 and b_first == 0:
+                            continue
+                        if b_end == len(route) - 1 and a_first == 0:
+                            continue
 
-            self.change_route(route, max_index[0], max_index[1], max_index[2], max_index[3])
+                        # 距離を比べる
+                        differ = self.differ_route_data(route, a_first, a_end, b_first, b_end)
+                        if max_differ > differ:
+                            max_differ = differ
+                            max_index.clear()
+                            max_index.append(a_first)
+                            max_index.append(a_end)
+                            max_index.append(b_first)
+                            max_index.append(b_end)
+
+                self.change_route(route, max_index[0], max_index[1], max_index[2], max_index[3])
+            else:
+                # 交換するインデックスを決定
+                i1 = random.randint(0, len(route) - 1)
+                i2 = random.randint(0, len(route) - 1)
+
+                # 入れ替え
+                tmp = route[i1]
+                route[i1] = route[i2]
+                route[i2] = tmp
         return route
 
     def mutation(self, genome, probability):
@@ -368,7 +379,7 @@ class GeneticAlgorithm:
                 #####################################################################
                 # 突然変異
                 # mutated_genome = self.mutation(result, MUTANT_RATE)
-                mutated_genome = self.shortest_change_mutation(result, 0.1)
+                mutated_genome = self.shortest_change_mutation(result, MUTANT_RATE)
 
                 #####################################################################
                 next_genomes.append(mutated_genome)
