@@ -1,4 +1,5 @@
 import os
+import random
 import sys
 
 import numpy as np
@@ -9,6 +10,9 @@ from src.World import Building, Edge, Node, Road
 
 MAP_WIDTH = 20
 MAP_HEIGHT = 20
+
+# ネイバー用
+ID = 0
 
 
 # 空白:-1
@@ -161,9 +165,12 @@ class CreateMap:
     ###################################################################################################
 
     def insert_edge_data(self, x1, y1, x2, y2):
+        global ID
         edge_id = self.create_key(self.create_node_key(x1, y1), self.create_node_key(x2, y2))
         node1 = Node.Node(self.create_node_key(x1, y1), x1, y1)
         node2 = Node.Node(self.create_node_key(x2, y2), x2, y2)
+        if ID < edge_id:
+            ID = edge_id
         return edge_id, Edge.Edge(edge_id, node1, node2)
 
     def get_edges(self, target_x: int, target_y: int):
@@ -199,6 +206,7 @@ class CreateMap:
     ###############################################################################################
 
     def create_array_map(self, building_number: int):
+        global ID
         building_id = 1
         building_count = 0
 
@@ -220,7 +228,7 @@ class CreateMap:
                 for j in range(len(self.map_array)):
                     self.map_array[i][j] = self.can_put_building(self.map_array, i, j)
 
-        # gml形式に落としこむ
+        # rescue形式に落としこむ
         # building
         for i in range(len(self.map_array)):
             for j in range(len(self.map_array)):
@@ -240,6 +248,91 @@ class CreateMap:
                 else:
                     self.building_list.setdefault(building_id, Building.Building(building_id))
                     self.building_list[building_id].update_nodes(self.get_edges(i, j))
+
+        # エントランス生成
+        for building_id in self.building_list:
+            target_edge_id = random.choice(list(self.building_list[building_id].edges))
+            # エントランスの座標決定
+            first_x = self.building_list[building_id].edges[target_edge_id].first.x
+            first_y = self.building_list[building_id].edges[target_edge_id].first.y
+            end_x = self.building_list[building_id].edges[target_edge_id].end.x
+            end_y = self.building_list[building_id].edges[target_edge_id].end.y
+
+            # エッジの方向を確認
+            entrance_edge = {}
+            if first_x == end_x:
+                # エントランスのエッジ作成
+                center = (first_y + end_y) / 2
+                ID += 1
+                y1 = (first_y - center) * np.random.rand() + center
+                node1 = Node.Node(ID, first_x, y1)
+                ID += 1
+                y2 = (end_x - center) * np.random.rand() + center
+                node2 = Node.Node(ID, end_x, y2)
+
+                # buildingの方へエントランスを作成する
+                sum = 0
+                count = 0
+                for id in self.building_list[building_id].edges:
+                    sum += self.building_list[building_id].edges[id].first.x
+                    sum += self.building_list[building_id].edges[id].end.x
+                    count += 1
+                if first_x < sum / count:
+                    ID += 1
+                    node3 = Node.Node(ID, first_x + 0.2, y1)
+                    ID += 1
+                    node4 = Node.Node(ID, end_x + 0.2, y2)
+                else:
+                    ID += 1
+                    node3 = Node.Node(ID, first_x - 0.2, y1)
+                    ID += 1
+                    node4 = Node.Node(ID, end_x - 0.2, y2)
+
+            else:
+                # エントランスのエッジ作成
+                center = (first_x + end_x) / 2
+                ID += 1
+                x1 = (first_x - center) * np.random.rand() + center
+                node1 = Node.Node(ID, x1, first_y)
+                ID += 1
+                x2 = (end_x - center) * np.random.rand() + center
+                node2 = Node.Node(ID, x2, end_y)
+
+                # buildingの方へエントランスを作成する
+                sum = 0
+                count = 0
+                for id in self.building_list[building_id].edges:
+                    sum += self.building_list[building_id].edges[id].first.y
+                    sum += self.building_list[building_id].edges[id].end.y
+                    count += 1
+                if first_y < sum / count:
+                    ID += 1
+                    node3 = Node.Node(ID, x1, first_y + 0.2)
+                    ID += 1
+                    node4 = Node.Node(ID, x2, end_y + 0.2)
+                else:
+                    ID += 1
+                    node3 = Node.Node(ID, x1, first_y - 0.2)
+                    ID += 1
+                    node4 = Node.Node(ID, x2, end_y - 0.2)
+
+            ID += 1
+            entrance_edge.setdefault(ID, Edge.Edge(ID, node1, node2))
+            ID += 1
+            entrance_edge.setdefault(ID, Edge.Edge(ID, node3, node4))
+            ID += 1
+            entrance_edge.setdefault(ID, Edge.Edge(ID, node1, node3))
+            ID += 1
+            entrance_edge.setdefault(ID, Edge.Edge(ID, node2, node4))
+
+            # エッジ再接続
+            
+
+            # edgeの削除
+            del self.building_list[building_id].edges[target_edge_id]
+
+
+
 
 
 create = CreateMap()
