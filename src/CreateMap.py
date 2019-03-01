@@ -129,8 +129,13 @@ class CreateMap:
                 building_count += 1
 
         # 占領開始
+        while not self.judge_filled(self.map_array):
+            for i in range(len(self.map_array)):
+                for j in range(len(self.map_array)):
+                    self.map_array[j][i] = self.can_put_building(self.map_array, i, j)
 
 
 create = CreateMap()
 create.create_array_map(10)
+
 print(create.map_array)
