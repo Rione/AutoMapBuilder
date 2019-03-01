@@ -5,7 +5,7 @@ import numpy as np
 
 sys.path.append(os.getcwd().replace('/src', ''))
 
-from World import Building
+from src.World import Building
 
 MAP_WIDTH = 10
 MAP_HEIGHT = 10
@@ -23,12 +23,10 @@ MAP_HEIGHT = 10
 class CreateMap:
     def __init__(self):
         self.map_array = np.full((MAP_WIDTH, MAP_HEIGHT), -1)
+        self.building_list = []
 
     def get_key(self, x: int, y: int):
-        if x > y:
-            return 10 ** len(str(x)) * y + x
-        else:
-            return 10 ** len(str(y)) * x + y
+        return 10 ** len(str(y)) * x + y
 
     def judge_neighbor(self, map_array: np.ndarray, distance: int, target_x: int, target_y: int):
         # 値が入っているかどうか確認
@@ -41,31 +39,83 @@ class CreateMap:
             # 上下左右斜めで確認
             if not map_array[target_x - distance][target_y] == -1:
                 return False
-            if target_y - distance < 0 and not map_array[target_x - distance][target_y - distance] == -1:
+            if target_y - distance >= 0 and not map_array[target_x - distance][target_y - distance] == -1:
                 return False
-            if target_y + distance > len(map_array) and not map_array[target_x - distance][target_y + distance] == -1:
+            if target_y + distance < len(map_array) and not map_array[target_x - distance][target_y + distance] == -1:
                 return False
 
-        if target_y - distance < 0 and not map_array[target_x][target_y - distance] == -1:
+        if target_y - distance >= 0 and not map_array[target_x][target_y - distance] == -1:
             return False
-        if target_y + distance > len(map_array) and not map_array[target_x][target_y + distance] == -1:
+        if target_y + distance < len(map_array) and not map_array[target_x][target_y + distance] == -1:
             return False
 
         if target_x + distance < len(map_array):
             if not map_array[target_x + distance][target_y] == -1:
                 return False
-            if target_y - distance < 0 and not map_array[target_x + distance][target_y - distance] == -1:
+            if target_y - distance >= 0 and not map_array[target_x + distance][target_y - distance] == -1:
                 return False
-            if target_y + distance > len(map_array) and not map_array[target_x + distance][target_y + distance] == -1:
+            if target_y + distance < len(map_array) and not map_array[target_x + distance][target_y + distance] == -1:
                 return False
 
         return True
 
-    def create_array_map(self):
+    def can_put_building(self, map_array: np.ndarray, target_x: int, target_y: int):
+        # 置けるならid,置けなければすでに入っているid、２つに挟まれている場合は0を返す
+        # 指定場所に値が入っているか
+        if not map_array[target_x][target_y] == -1:
+            return map_array[target_x][target_y]
+
+        building_count = 0
+        tmp_id = 0
+        # xがはみ出していないか
+        if target_x - 1 >= 0:
+            # 上下左右斜めで確認
+            if not map_array[target_x - 1][target_y] == -1:
+                building_count += 1
+                tmp_id = map_array[target_x - 1][target_y]
+            if target_y - 1 >= 0 and not map_array[target_x - 1][target_y - 1] == -1:
+                building_count += 1
+                tmp_id = map_array[target_x - 1][target_y - 1]
+            if target_y + 1 < len(map_array) and not map_array[target_x - 1][target_y + 1] == -1:
+                building_count += 1
+                tmp_id = map_array[target_x - 1][target_y + 1]
+
+        if target_y - 1 >= 0 and not map_array[target_x][target_y - 1] == -1:
+            building_count += 1
+            tmp_id = map_array[target_x][target_y - 1]
+        if target_y + 1 < len(map_array) and not map_array[target_x][target_y + 1] == -1:
+            building_count += 1
+            tmp_id = map_array[target_x][target_y + 1]
+
+        if target_x + 1 < len(map_array):
+            if not map_array[target_x + 1][target_y] == -1:
+                building_count += 1
+                tmp_id = map_array[target_x + 1][target_y]
+            if target_y - 1 >= 0 and not map_array[target_x + 1][target_y - 1] == -1:
+                building_count += 1
+                tmp_id = map_array[target_x + 1][target_y - 1]
+            if target_y + 1 < len(map_array) and not map_array[target_x + 1][target_y + 1] == -1:
+                building_count += 1
+                tmp_id = map_array[target_x + 1][target_y + 1]
+
+        if building_count == 0:
+            return -1
+        if building_count == 1:
+            return tmp_id
+        return 0
+
+    def judge_filled(self, array_map: np.ndarray):
+        # 全て埋まったか
+        for i in range(len(array_map)):
+            if -1 in array_map[i]:
+                return False
+        return True
+
+    def create_array_map(self, building_number: int):
         building_id = 1
         building_count = 0
-        # 仮に１０個
-        while building_count <= 3:
+
+        while building_count < building_number:
             # 配列にランダムに拠点を設定(ただし隣接は禁止)
             # x,yをランダムで選択
             target_x = np.random.randint(10)
@@ -74,10 +124,13 @@ class CreateMap:
             # 隣接がないか確認
             if self.judge_neighbor(self.map_array, 1, target_x, target_y):
                 self.map_array[target_x][target_y] = building_id
+                self.building_list.append(Building.Building(building_id, target_x, target_y))
                 building_id += 1
                 building_count += 1
 
+        # 占領開始
+
 
 create = CreateMap()
-create.create_array_map()
+create.create_array_map(10)
 print(create.map_array)
