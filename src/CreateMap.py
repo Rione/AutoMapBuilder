@@ -7,8 +7,8 @@ sys.path.append(os.getcwd().replace('/src', ''))
 
 from World import Building
 
-MAP_WIDTH = 100
-MAP_HEIGHT = 100
+MAP_WIDTH = 10
+MAP_HEIGHT = 10
 
 
 # 空白:-1
@@ -30,33 +30,54 @@ class CreateMap:
         else:
             return 10 ** len(str(y)) * x + y
 
-    def neighbor_judge(self, map_array: np.ndarray, distance: int, target_x: int, target_y: int):
+    def judge_neighbor(self, map_array: np.ndarray, distance: int, target_x: int, target_y: int):
         # 値が入っているかどうか確認
         # 指定場所に値が入っているか
         if not map_array[target_x][target_y] == -1:
             return False
 
-        # 上下左右斜めで確認
-        if not map_array[target_x - 1][target_y] == -1:
+        # xがはみ出していないか
+        if target_x - distance >= 0:
+            # 上下左右斜めで確認
+            if not map_array[target_x - distance][target_y] == -1:
+                return False
+            if target_y - distance < 0 and not map_array[target_x - distance][target_y - distance] == -1:
+                return False
+            if target_y + distance > len(map_array) and not map_array[target_x - distance][target_y + distance] == -1:
+                return False
+
+        if target_y - distance < 0 and not map_array[target_x][target_y - distance] == -1:
             return False
-        if not map_array[target_x + 1][target_y] == -1:
+        if target_y + distance > len(map_array) and not map_array[target_x][target_y + distance] == -1:
             return False
-        if not map_array[target_x][target_y - 1] == -1:
-            return False
-        if not map_array[target_x][target_y + 1] == -1:
-            return False
-        if not map_array[target_x - 1][target_y - 1] == -1:
-            return False
-        if not map_array[target_x + 1][target_y - 1] == -1:
-            return False
-        if not map_array[target_x - 1][target_y + 1] == -1:
-            return False
-        if not map_array[target_x + 1][target_y + 1] == -1:
-            return False
+
+        if target_x + distance < len(map_array):
+            if not map_array[target_x + distance][target_y] == -1:
+                return False
+            if target_y - distance < 0 and not map_array[target_x + distance][target_y - distance] == -1:
+                return False
+            if target_y + distance > len(map_array) and not map_array[target_x + distance][target_y + distance] == -1:
+                return False
 
         return True
 
+    def create_array_map(self):
+        building_id = 1
+        building_count = 0
+        # 仮に１０個
+        while building_count <= 3:
+            # 配列にランダムに拠点を設定(ただし隣接は禁止)
+            # x,yをランダムで選択
+            target_x = np.random.randint(10)
+            target_y = np.random.randint(10)
+
+            # 隣接がないか確認
+            if self.judge_neighbor(self.map_array, 1, target_x, target_y):
+                self.map_array[target_x][target_y] = building_id
+                building_id += 1
+                building_count += 1
+
 
 create = CreateMap()
-print(type(create.map_array))
-# 配列にランダムに拠点を設定(ただし隣接は禁止)
+create.create_array_map()
+print(create.map_array)
