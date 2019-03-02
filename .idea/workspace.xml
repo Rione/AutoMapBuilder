@@ -3,8 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="e903902d-282f-4469-bb0d-c8c0c82a4f6c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/src/AutoMapBuilder.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/AutoMapBuilder.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/World/Building.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/World/Building.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GMLWriter.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/GMLWriter.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -17,8 +16,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="36">
-              <caret line="3" column="11" lean-forward="true" selection-start-line="3" selection-start-column="11" selection-end-line="3" selection-end-column="11" />
+            <state relative-caret-position="44">
+              <caret line="4" column="19" selection-start-line="4" selection-start-column="19" selection-end-line="4" selection-end-column="19" />
             </state>
           </provider>
         </entry>
@@ -26,8 +25,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/AutoMapBuilder.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="169">
-              <caret line="265" selection-start-line="265" selection-end-line="265" />
+            <state relative-caret-position="200">
+              <caret line="265" column="23" selection-start-line="265" selection-start-column="12" selection-end-line="265" selection-end-column="23" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -77,8 +76,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/GMLWriter.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1104">
-              <caret line="48" column="45" lean-forward="true" selection-start-line="48" selection-start-column="45" selection-end-line="48" selection-end-column="45" />
+            <state relative-caret-position="263">
+              <caret line="48" lean-forward="true" selection-start-line="48" selection-end-line="48" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -106,14 +105,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>9510</find>
-      <find>949</find>
-      <find>buil</find>
-      <find>200641</find>
-      <find>200657</find>
-      <find>199165</find>
-      <find>200983</find>
-      <find>neighbour_ids</find>
       <find>53536</find>
       <find>targets</find>
       <find>get_genome_data</find>
@@ -136,6 +127,14 @@
       <find>Building(</find>
       <find>Building.Building(</find>
       <find>edge_distance</find>
+      <find>13111411</find>
+      <find>13101410</find>
+      <find>12111311</find>
+      <find>12101211</find>
+      <find>12101310</find>
+      <find>15101511</find>
+      <find>14111511</find>
+      <find>14101510</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -190,10 +189,10 @@
         <option value="$PROJECT_DIR$/src/CreateMap.py" />
         <option value="$PROJECT_DIR$/src/World/Edge.py" />
         <option value="$PROJECT_DIR$/src/World/Road.py" />
-        <option value="$PROJECT_DIR$/src/GMLWriter.py" />
-        <option value="$PROJECT_DIR$/src/AutoMapBuilder.py" />
         <option value="$PROJECT_DIR$/src/World/Building.py" />
         <option value="$PROJECT_DIR$/src/main.py" />
+        <option value="$PROJECT_DIR$/src/AutoMapBuilder.py" />
+        <option value="$PROJECT_DIR$/src/GMLWriter.py" />
       </list>
     </option>
   </component>
@@ -396,7 +395,7 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32868218" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.16434109" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.3116279" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.27131784" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -532,6 +531,13 @@
         </state>
       </provider>
     </entry>
+    <entry file="file:///usr/lib/python3.5/xml/dom/minidom.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="1650" column="8" selection-start-line="1650" selection-start-column="8" selection-end-line="1650" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/CreateMap.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="46">
@@ -549,27 +555,27 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="44">
+          <caret line="4" column="19" selection-start-line="4" selection-start-column="19" selection-end-line="4" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/AutoMapBuilder.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="169">
-          <caret line="265" selection-start-line="265" selection-end-line="265" />
+        <state relative-caret-position="200">
+          <caret line="265" column="23" selection-start-line="265" selection-start-column="12" selection-end-line="265" selection-end-column="23" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="36">
-          <caret line="3" column="11" lean-forward="true" selection-start-line="3" selection-start-column="11" selection-end-line="3" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/GMLWriter.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1104">
-          <caret line="48" column="45" lean-forward="true" selection-start-line="48" selection-start-column="45" selection-end-line="48" selection-end-column="45" />
+        <state relative-caret-position="263">
+          <caret line="48" lean-forward="true" selection-start-line="48" selection-end-line="48" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>

@@ -247,6 +247,7 @@ class AutoMapBuilder:
                     road_id = self.create_road_key()
                     # roadのedgeをリストアップ
                     self.roads.setdefault(road_id, Road.Road(road_id, self.get_edges(i, j)))
+                    continue
 
                 # buildingの場合
                 building_id = self.create_building_key(map_array_id)
