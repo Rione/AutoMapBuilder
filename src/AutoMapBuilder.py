@@ -287,3 +287,22 @@ class AutoMapBuilder:
                         if edge_id == sample_edge_id:
                             road.neighbor.setdefault(edge_id, sample_road_id)
                             sample_road.neighbor.setdefault(edge_id, road_id)
+
+    def calc_building_neighbor(self):
+        for building_id in self.buildings:
+            building = self.buildings[building_id]
+
+            check = False
+
+            while not check:
+                # buildingのエッジをひとつだけ選ぶ
+                edge_id = np.random.choice(building.edge_ids)
+                # 選んだエッジが含まれるroadを取得(ない場合もある
+                for road_id in self.roads:
+                    # 全てのroadを回す
+                    road = self.roads[road_id]
+                    for road_edge_id in road.edge_ids:
+                        if edge_id == road_edge_id:
+                            check = True
+                            building.neighbor.setdefault(edge_id, road_id)
+                            road.neighbor.setdefault(edge_id, building_id)

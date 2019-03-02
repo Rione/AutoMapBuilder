@@ -4,7 +4,7 @@ from src.World import Node
 class Building:
     def __init__(self, id: int, edge_ids: list):
         self.id = id
-        self.neighbor_id = {}
+        self.neighbor = {}
         self.edge_ids = edge_ids
 
     def update_nodes(self, edge_ids: list):

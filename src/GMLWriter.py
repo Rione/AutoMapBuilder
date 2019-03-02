@@ -170,7 +170,7 @@ class GMLWrite:
             for i in range(len(draw_edge_data)):
                 edge_id = draw_edge_data[i][0]
                 vector = draw_edge_data[i][1]
-                if edge_id in self.buildings[building_id].neighbor_id:
+                if edge_id in self.buildings[building_id].neighbor:
                     directedEdge = doc.createElement(
                         'gml:directedEdge orientation="' + str(vector) + '" xlink:href="#' + str(
                             edge_id) + '" rcr:neighbour="' + str(self.buildings[building_id].neighbor[edge_id]) + '"')
