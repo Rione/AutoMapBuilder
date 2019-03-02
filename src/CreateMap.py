@@ -224,6 +224,7 @@ class CreateMap:
     def create_world_map(self, building_number: int):
         building_id = 1
         building_count = 0
+        road_neighbor_edge = {}
 
         while building_count < building_number:
             # 配列にランダムに拠点を設定(ただし隣接は禁止)
@@ -251,7 +252,8 @@ class CreateMap:
                 # roadの場合
                 if building_id == 0:
                     road_id = self.create_road_key()
-                    self.road_list.setdefault(road_id, Road.Road(road_id, self.get_road_neighbor(self.map_array, i, j)))
+                    road_neighbor_edge.setdefault(road_id, self.get_road_neighbor(self.map_array, i, j))
+                    self.road_list.setdefault(road_id, Road.Road(road_id))
                     edge = self.get_edges(i, j)
                     self.road_list[road_id].update_nodes(edge)
                     continue
@@ -405,13 +407,32 @@ class CreateMap:
                     target_road_id = road_id
                     break
 
-            self.road_list[target_road_id].neighbor_ids.append(building_id)
-            id = self.create_road_key()
-            self.road_list.setdefault(id, Road.Road(id, [target_road_id, building_id]))
+            entrance_id = self.create_road_key()
+            self.road_list.setdefault(entrance_id, Road.Road(entrance_id))
+            # {self.create_edge_key(node3.id, node4.id): building_id,                                                              self.create_edge_key(node1.id,
+            # node2.id): target_edge_id}
+            self.road_list[target_road_id].neighbor_ids.setdefault(target_edge_id, entrance_id)
 
-            self.building_list[building_id].neighbor_id = id
+            self.building_list[building_id].neighbor_id.setdefault(self.create_edge_key(node3.id, node4.id),
+                                                                   entrance_id)
 
             # edgeの削除
             del self.building_list[building_id].edges[target_edge_id]
+
+            # roadのネイバー設定
+            for road_id in road_neighbor_edge:
+                # 一つのroadを選択
+                neighbors = road_neighbor_edge[road_id]
+
+                # 他のroadのエッジを参照(自分と同じidはpass
+                for neighbor_road in road_neighbor_edge:
+                    if road_id == neighbor_road:
+                        continue
+                    neighbor_targets = road_neighbor_edge[neighbor_road]
+
+                    for neighbor in neighbors:
+                        if neighbor in neighbor_targets:
+                            self.road_list[road_id].neighbor_ids.setdefault(neighbor, neighbor_road)
+                print(self.road_list[road_id].neighbor_ids)
 
         return self.building_list, self.road_list

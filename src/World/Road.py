@@ -1,7 +1,7 @@
 class Road:
-    def __init__(self, id: int, neighbor_ids: list):
+    def __init__(self, id: int):
         self.id = id
-        self.neighbor_ids = neighbor_ids
+        self.neighbor_ids = {}
         self.edges = {}
 
     def update_nodes(self, edge_keys: dict):

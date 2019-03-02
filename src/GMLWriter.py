@@ -58,4 +58,13 @@ class GMLWrite:
             directedNode = doc.createElement('orientation="+" xlink:href="#' + str(edges[edge_id].end.id) + '"')
             Edge.appendChild(directedNode)
 
-        print(doc.toprettyxml())
+        buildinglist = doc.createElement('rcr: buildinglist')
+        root.appendChild(buildinglist)
+        # building書き出し
+        for building_id in building_list:
+            building = doc.createElement('gml:building gml:id="' + str(building_id) + '"')
+            buildinglist.appendChild(building)
+            Face = doc.createElement('gml: Face rcr: floors = "1" rcr: buildingcode = "0" rcr: importance = "1"')
+            building.appendChild(Face)
+
+        #print(doc.toprettyxml())
