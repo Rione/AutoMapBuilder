@@ -8,6 +8,8 @@ def main():
     print(world[0])
     print(world[1])
 
+    gml_write.write(world[0], world[1])
+
 
 if __name__ == '__main__':
     main()
