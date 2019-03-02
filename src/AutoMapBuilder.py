@@ -158,8 +158,8 @@ class AutoMapBuilder:
             node1 = self.nodes[id1]
             node2 = self.nodes[id2]
 
-            # x座標の大小を保証
-            if node1.x > node2.x:
+            # IDの大小を保証
+            if node1.id > node2.id:
                 tmp_node = node2
                 node2 = node1
                 node1 = tmp_node

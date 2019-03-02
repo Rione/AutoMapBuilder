@@ -42,9 +42,9 @@ class GMLWrite:
         start = self.create_node_key(x1, y1)
         end = self.create_node_key(x2, y2)
         if start > end:
-            return 10 ** len(str(start)) * end + start, start > end
+            return 10 ** len(str(start)) * end + start, "-"
         else:
-            return 10 ** len(str(end)) * start + end, start > end
+            return 10 ** len(str(end)) * start + end, "+"
 
     def get_draw_edges(self, edge_ids: list):
         draw_edge_ids = []
@@ -53,6 +53,8 @@ class GMLWrite:
         for edge_id in edge_ids:
             road_node_ids.append(self.edges[edge_id].first_id)
             road_node_ids.append(self.edges[edge_id].end_id)
+        # 重複を削除
+        road_node_ids = list(set(road_node_ids))
 
         # 近いノードを優先にたどっていく
         draw_node_ids = []
@@ -68,11 +70,17 @@ class GMLWrite:
                     min_index = i
             # 一番近いノードのidを格納
             draw_node_ids.append(road_node_ids.pop(min_index))
+        print(draw_node_ids)
 
         # ノードリストからエッジを出す
-        for i in range(len(draw_node_ids) - 1):
-            node1 = self.nodes[draw_node_ids[i]]
-            node2 = self.nodes[draw_node_ids[i + 1]]
+        for i in range(len(draw_node_ids)):
+            if i == len(draw_node_ids) - 1:
+                node1 = self.nodes[draw_node_ids[i]]
+                node2 = self.nodes[draw_node_ids[0]]
+            else:
+                node1 = self.nodes[draw_node_ids[i]]
+                node2 = self.nodes[draw_node_ids[i + 1]]
+
             # 第二引数にベクトルの向きが入っている
             draw_edge_ids.append(self.create_edge_key(node1.x, node1.y, node2.x, node2.y))
         return draw_edge_ids
@@ -131,14 +139,12 @@ class GMLWrite:
                 'gml:directedNode orientation="+" xlink:href="#' + str(self.edges[edge_id].end_id) + '"')
             Edge.appendChild(directedNode)
 
+        '''
         buildinglist = doc.createElement('rcr:buildinglist')
         root.appendChild(buildinglist)
-        f1 = open(self.path, 'w')
-        f1.write(doc.toprettyxml())
-        f1.close()
         # building書き出し
         for building_id in self.buildings:
-            building = doc.createElement('gml:building')
+            building = doc.createElement('rcr:building')
             subnode_attr1 = doc.createAttribute('gml:id')
             subnode_attr1.value = str(building_id)
             building.setAttributeNode(subnode_attr1)
@@ -175,34 +181,19 @@ class GMLWrite:
                 else:
                     directedEdge = doc.createElement(
                         'gml:directedEdge orientation="+" xlink:href="#' + str(edge_id) + '"')
-                    Face.appendChild(directedEdge)
+                    Face.appendChild(directedEdge)'''
 
         roadlist = doc.createElement('rcr:roadlist')
         root.appendChild(roadlist)
         # road書き出し
         for road_id in self.roads:
-            road = doc.createElement('gml:road')
+            road = doc.createElement('rcr:road')
             subnode_attr1 = doc.createAttribute('gml:id')
             subnode_attr1.value = str(road_id)
             road.setAttributeNode(subnode_attr1)
-            buildinglist.appendChild(road)
+            roadlist.appendChild(road)
 
             Face = doc.createElement('gml:Face')
-            subnode_attr1 = doc.createAttribute('rcr:floors')
-            subnode_attr1.value = str(1)
-            Face.setAttributeNode(subnode_attr1)
-
-            subnode_attr2 = doc.createAttribute('rcr:buildingcode')
-            subnode_attr2.value = str(0)
-            Face.setAttributeNode(subnode_attr2)
-
-            subnode_attr2 = doc.createAttribute('rcr:importance')
-            subnode_attr2.value = str(1)
-            Face.setAttributeNode(subnode_attr2)
-
-            subnode_attr3 = doc.createAttribute('rcr:importance')
-            subnode_attr3.value = str(1)
-            Face.setAttributeNode(subnode_attr3)
 
             roadlist.appendChild(Face)
 
@@ -211,8 +202,11 @@ class GMLWrite:
             # edgeを描画できるようにする
             edge_ids = self.roads[road_id].edge_ids
 
-            # roadのedgeを回す
-            for edge_id in self.get_draw_edges(edge_ids):
+            # roadの描画用edgeを回す
+            draw_edge_data = self.get_draw_edges(edge_ids)
+            for i in range(len(draw_edge_data)):
+                edge_id = draw_edge_data[i][0]
+                vector = draw_edge_data[i][1]
                 if edge_id in self.roads[road_id].neighbor:
                     directedEdge = doc.createElement(
                         'gml:directedEdge orientation="+" xlink:href="#' + str(
@@ -221,7 +215,7 @@ class GMLWrite:
                     Face.appendChild(directedEdge)
                 else:
                     directedEdge = doc.createElement(
-                        'gml:directedEdge orientation="+" xlink:href="#' + str(edge_id) + '"')
+                        'gml:directedEdge orientation="' + str(vector) + '" xlink:href="#' + str(edge_id) + '"')
                     Face.appendChild(directedEdge)
 
         f1 = open(self.path, 'w')
