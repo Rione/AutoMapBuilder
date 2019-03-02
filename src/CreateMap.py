@@ -29,6 +29,7 @@ class CreateMap:
         self.node_list = {}
         self.road_id = 100000
         self.entrance_id = 500000
+        self.building_id = 900000
 
     def create_road_key(self):
         self.road_id += 1
@@ -43,6 +44,9 @@ class CreateMap:
             return 10 ** len(str(start)) * end + start
         else:
             return 10 ** len(str(end)) * start + end
+
+    def create_building_key(self, array_index: int):
+        return self.building_id + array_index
 
     def create_node_key(self, x: int, y: int):
         start = x + 1
@@ -433,6 +437,5 @@ class CreateMap:
                     for neighbor in neighbors:
                         if neighbor in neighbor_targets:
                             self.road_list[road_id].neighbor_ids.setdefault(neighbor, neighbor_road)
-                print(self.road_list[road_id].neighbor_ids)
 
         return self.building_list, self.road_list
