@@ -1,12 +1,24 @@
+import math
+
 import numpy as np
+
+from src.World import Node, Edge, Road
 
 
 class AutoMapBuilder:
     def __init__(self):
+        self.road_id = 100000
         self.nodes = {}
         self.edges = {}
-        self.building = {}
-        self.road = {}
+        self.buildings = {}
+        self.roads = {}
+
+    def edge_distance(self, id: int):
+        x1 = self.nodes[self.edges[id].first_id].x
+        y1 = self.nodes[self.edges[id].first_id].y
+        x2 = self.nodes[self.edges[id].end_id].x
+        y2 = self.nodes[self.edges[id].end_id].y
+        print(math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2))
 
     def judge_neighbor(self, map_array: np.ndarray, distance: int, target_x: int, target_y: int):
         # 値が入っているかどうか確認
@@ -113,6 +125,69 @@ class AutoMapBuilder:
                 return False
         return True
 
+    def create_node_key(self, x: int, y: int):
+        start = x + 1
+        end = y + 1
+
+        if len(str(end)) == 1:
+            id = 10 ** (len(str(end)) + 1) * start + end
+        else:
+            id = 10 ** len(str(end)) * start + end
+        return id
+
+    def create_edge_key(self, x1: int, y1: int, x2: int, y2: int):
+        start = self.create_node_key(x1, y1)
+        end = self.create_node_key(x2, y2)
+        if start > end:
+            return 10 ** len(str(start)) * end + start
+        else:
+            return 10 ** len(str(end)) * start + end
+
+    def create_road_key(self):
+        self.road_id += 1
+        return self.road_id
+
+    def create_edges(self, target_x: int, target_y: int):
+
+        def insert_edge_data(x1, y1, x2, y2):
+            edge_id = self.create_edge_key(x1, y1, x2, y2)
+            id1 = self.create_node_key(x1, y1)
+            id2 = self.create_node_key(x2, y2)
+
+            node1 = self.nodes[id1]
+            node2 = self.nodes[id2]
+
+            # x座標の大小を保証
+            if node1.x > node2.x:
+                tmp_node = node2
+                node2 = node1
+                node1 = tmp_node
+
+            return edge_id, Edge.Edge(edge_id, node1.id, node2.id)
+
+        # 配列のindexから座標とkeyを生成、そこから更にエッジを生成する
+        edge_keys = {}
+        tmp = insert_edge_data(target_x, target_y, target_x + 1, target_y)
+        edge_keys.setdefault(tmp[0], tmp[1])
+        tmp = insert_edge_data(target_x, target_y, target_x, target_y + 1)
+        edge_keys.setdefault(tmp[0], tmp[1])
+        tmp = insert_edge_data(target_x, target_y + 1, target_x + 1, target_y + 1)
+        edge_keys.setdefault(tmp[0], tmp[1])
+        tmp = insert_edge_data(target_x + 1, target_y + 1, target_x + 1, target_y)
+        edge_keys.setdefault(tmp[0], tmp[1])
+
+        return edge_keys
+
+    def get_edges(self, target_x: int, target_y: int):
+        edge_ids = []
+        edge_ids.append(self.create_edge_key(target_x, target_y, target_x + 1, target_y))
+        edge_ids.append(self.create_edge_key(target_x, target_y, target_x, target_y + 1))
+        edge_ids.append(self.create_edge_key(target_x, target_y + 1, target_x + 1, target_y + 1))
+        edge_ids.append(self.create_edge_key(target_x + 1, target_y + 1, target_x + 1, target_y))
+        return edge_ids
+
+    ##################################################################################
+
     def make_map_array(self, number_of_buildings: int, map_width: int, map_height: int):
         building_count = 0
         building_id = 1
@@ -136,3 +211,47 @@ class AutoMapBuilder:
                     map_array[i][j] = self.can_put_building(map_array, i, j)
 
         return map_array
+
+    def calc_nodes(self, map_array):
+        # rescue形式に落としこむ
+        # node
+        for i in range(len(map_array) + 1):
+            for j in range(len(map_array) + 1):
+                node_id = self.create_node_key(i, j)
+                # 追加
+                self.nodes.setdefault(node_id, Node.Node(node_id, i, j))
+
+    def calc_edges(self, map_array):
+        # rescue形式に落としこむ
+        # edges
+        for i in range(len(map_array)):
+            for j in range(len(map_array)):
+                edges = self.create_edges(i, j)
+                for edge_id in edges:
+                    # 追加
+                    self.edges.setdefault(edge_id, edges[edge_id])
+        print(self.edges)
+
+    def calc_world(self, map_array):
+        # rescue形式に落としこむ
+        for i in range(len(map_array)):
+            for j in range(len(map_array)):
+                map_array_id = map_array[i][j]
+                # roadの場合
+                if map_array_id == 0:
+                    road_id = self.create_road_key()
+                    # roadのedgeをリストアップ
+                    self.roads.setdefault(road_id, Road.Road(road_id, self.get_edges(i, j)))
+
+                '''
+                building_id = self.create_building_key(map_array_id)
+
+                # buildingの場合
+                # idがすでにある場合
+                if building_id in self.building_list:
+                    self.building_list[building_id].update_nodes(self.create_edges(i, j))
+                else:
+                    self.building_list.setdefault(building_id, Building.Building(building_id))
+                    self.building_list[building_id].update_nodes(self.create_edges(i, j))
+                    '''
+        print(self.roads)

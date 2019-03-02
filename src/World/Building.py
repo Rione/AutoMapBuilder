@@ -2,10 +2,10 @@ from src.World import Node
 
 
 class Building:
-    def __init__(self, id: int):
+    def __init__(self, id: int, edges: list):
         self.id = id
         self.neighbor_id = {}
-        self.edges = {}
+        self.edges = edges
 
     def update_nodes(self, edge_keys: dict):
         for key in edge_keys:
