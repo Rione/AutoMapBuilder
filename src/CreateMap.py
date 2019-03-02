@@ -252,15 +252,17 @@ class CreateMap:
         # building
         for i in range(len(self.map_array)):
             for j in range(len(self.map_array)):
-                building_id = self.map_array[i][j]
+                map_array_id = self.map_array[i][j]
                 # roadの場合
-                if building_id == 0:
+                if map_array_id == 0:
                     road_id = self.create_road_key()
                     road_neighbor_edge.setdefault(road_id, self.get_road_neighbor(self.map_array, i, j))
                     self.road_list.setdefault(road_id, Road.Road(road_id))
                     edge = self.get_edges(i, j)
                     self.road_list[road_id].update_nodes(edge)
                     continue
+
+                building_id = self.create_building_key(map_array_id)
 
                 # buildingの場合
                 # idがすでにある場合
@@ -270,7 +272,8 @@ class CreateMap:
                     self.building_list.setdefault(building_id, Building.Building(building_id))
                     self.building_list[building_id].update_nodes(self.get_edges(i, j))
 
-        # エントランス生成
+            '''
+             # エントランス生成
         for building_id in self.building_list:
             while True:
                 target_edge_id = random.choice(list(self.building_list[building_id].edges))
@@ -421,10 +424,11 @@ class CreateMap:
                                                                    entrance_id)
 
             # edgeの削除
-            del self.building_list[building_id].edges[target_edge_id]
+            del self.building_list[building_id].edges[target_edge_id]'''
 
             # roadのネイバー設定
-            for road_id in road_neighbor_edge:
+            '''
+                        for road_id in road_neighbor_edge:
                 # 一つのroadを選択
                 neighbors = road_neighbor_edge[road_id]
 
@@ -436,6 +440,6 @@ class CreateMap:
 
                     for neighbor in neighbors:
                         if neighbor in neighbor_targets:
-                            self.road_list[road_id].neighbor_ids.setdefault(neighbor, neighbor_road)
+                            self.road_list[road_id].neighbor_ids.setdefault(neighbor, neighbor_road)'''
 
         return self.building_list, self.road_list
