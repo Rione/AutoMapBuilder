@@ -3,12 +3,13 @@ import math
 
 import numpy as np
 
-from src.World import Node, Edge, Road
+from src.World import Node, Edge, Road, Building
 
 
 class AutoMapBuilder:
     def __init__(self):
         self.road_id = 100000
+        self.building_id = 900000
         self.nodes = {}
         self.edges = {}
         self.buildings = {}
@@ -148,6 +149,9 @@ class AutoMapBuilder:
         self.road_id += 1
         return self.road_id
 
+    def create_building_key(self, array_index: int):
+        return self.building_id + array_index
+
     def create_edges(self, target_x: int, target_y: int):
 
         def insert_edge_data(x1, y1, x2, y2):
@@ -244,22 +248,22 @@ class AutoMapBuilder:
                     # roadのedgeをリストアップ
                     self.roads.setdefault(road_id, Road.Road(road_id, self.get_edges(i, j)))
 
-                '''
-                building_id = self.create_building_key(map_array_id)
-
                 # buildingの場合
+                building_id = self.create_building_key(map_array_id)
                 # idがすでにある場合
-                if building_id in self.building_list:
-                    self.building_list[building_id].update_nodes(self.create_edges(i, j))
+                if building_id in self.buildings:
+                    self.buildings[building_id].update_nodes(self.get_edges(i, j))
                 else:
-                    self.building_list.setdefault(building_id, Building.Building(building_id))
-                    self.building_list[building_id].update_nodes(self.create_edges(i, j))
-                    '''
-        print(self.roads)
+                    self.buildings.setdefault(building_id, Building.Building(building_id, self.get_edges(i, j)))
+
+        print(self.buildings)
 
         new_edges = {}
         for road_id in self.roads:
             for edge_id in self.roads[road_id].edge_ids:
+                new_edges.setdefault(edge_id, self.edges[edge_id])
+        for building_id in self.buildings:
+            for edge_id in self.buildings[building_id].edge_ids:
                 new_edges.setdefault(edge_id, self.edges[edge_id])
         # エッジリスト更新
         self.edges.clear()
