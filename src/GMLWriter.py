@@ -172,9 +172,8 @@ class GMLWrite:
                 vector = draw_edge_data[i][1]
                 if edge_id in self.buildings[building_id].neighbor_id:
                     directedEdge = doc.createElement(
-                        'gml:directedEdge orientation="+" xlink:href="#' + str(
-                            edge_id) + '" rcr:neighbour="' + str(
-                            self.buildings[building_id].neighbor_id[edge_id]) + '"')
+                        'gml:directedEdge orientation="' + str(vector) + '" xlink:href="#' + str(
+                            edge_id) + '" rcr:neighbour="' + str(self.buildings[building_id].neighbor[edge_id]) + '"')
                     Face.appendChild(directedEdge)
                 else:
                     directedEdge = doc.createElement(
@@ -209,9 +208,8 @@ class GMLWrite:
                 vector = draw_edge_data[i][1]
                 if edge_id in self.roads[road_id].neighbor:
                     directedEdge = doc.createElement(
-                        'gml:directedEdge orientation="+" xlink:href="#' + str(
-                            edge_id) + '" rcr:neighbour = "' + str(
-                            self.roads[road_id].neighbor_ids[edge_id]) + '"')
+                        'gml:directedEdge orientation="' + str(vector) + '" xlink:href="#' + str(
+                            edge_id) + '" rcr:neighbour = "' + str(self.roads[road_id].neighbor[edge_id]) + '"')
                     Face.appendChild(directedEdge)
                 else:
                     directedEdge = doc.createElement(

@@ -7,6 +7,7 @@ def main():
     builder.calc_nodes(map_array)
     builder.calc_edges(map_array)
     builder.calc_world(map_array)
+    builder.calc_road_neighbor()
     writer = GMLWriter.GMLWrite('/home/migly/git/rcrs-server/maps/gml/original/map/map.gml', builder.nodes,
                                 builder.edges,
                                 builder.buildings, builder.roads)

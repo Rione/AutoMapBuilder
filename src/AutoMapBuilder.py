@@ -269,3 +269,21 @@ class AutoMapBuilder:
         # エッジリスト更新
         self.edges.clear()
         self.edges = copy.deepcopy(new_edges)
+
+    def calc_road_neighbor(self):
+        # 同じエッジを持っているroadを接続
+        for road_id in self.roads:
+            # 全てのroadを回す
+            road = self.roads[road_id]
+            for edge_id in road.edge_ids:
+
+                for sample_road_id in self.roads:
+                    sample_road = self.roads[sample_road_id]
+                    for sample_edge_id in sample_road.edge_ids:
+                        if road_id == sample_road_id:
+                            continue
+
+                        # 同じedge_idの場合
+                        if edge_id == sample_edge_id:
+                            road.neighbor.setdefault(edge_id, sample_road_id)
+                            sample_road.neighbor.setdefault(edge_id, road_id)
