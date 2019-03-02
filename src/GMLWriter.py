@@ -20,6 +20,17 @@ class GMLWrite:
         y2 = self.nodes[self.edges[id].end_id].y
         print(math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2))
 
+    def node_distance(self, id1: int, id2: int):
+        x1 = self.nodes[id1].x
+        y1 = self.nodes[id1].y
+        x2 = self.nodes[id2].x
+        y2 = self.nodes[id2].y
+        return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+
+    def get_draw_edges(self, edges):
+        draw_edge_ids = []
+        # 一番近いノードをたどっていく
+
     def write(self):
         doc = xml.dom.minidom.Document()
 
@@ -79,7 +90,6 @@ class GMLWrite:
         f1 = open(self.path, 'w')
         f1.write(doc.toprettyxml())
         f1.close()
-        w
         # building書き出し
         for building_id in self.buildings:
             building = doc.createElement('gml:building')
@@ -152,9 +162,20 @@ class GMLWrite:
 
             road.appendChild(Face)
 
+            # edgeを描画できるようにする
+            edge_ids = self.roads[road_id].edge_ids
+
+            # ノードをリストアップ
+            road_node_ids = []
+            for edge_id in edge_ids:
+                road_node_ids.append(self.nodes[self.edges[edge_id].first_id])
+                road_node_ids.append(self.nodes[self.edges[edge_id].end_id])
+
+            # 近いノードを優先にたどっていく
+
             # roadのedgeを回す
-            for edge_id in self.roads[road_id].edges:
-                if edge_id in self.roads[road_id].neighbor_ids:
+            for edge_id in self.roads[road_id].edge_ids:
+                if edge_id in self.roads[road_id].neighbor:
                     directedEdge = doc.createElement(
                         'gml:directedEdge orientation="+" xlink:href="#' + str(
                             edge_id) + '" rcr:neighbour = "' + str(

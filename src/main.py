@@ -12,7 +12,6 @@ def main():
                                 builder.edges,
                                 builder.buildings, builder.roads)
     writer.write()
-    # gml_write = GMLWriter.GMLWrite('/home/migly/git/rcrs-server/maps/gml/original/map/map.gml')
     # world = create_map.create_world_map(25)
     # print(world[0])
     # print(world[1])

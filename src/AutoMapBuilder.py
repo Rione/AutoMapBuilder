@@ -1,3 +1,4 @@
+import copy
 import math
 
 import numpy as np
@@ -255,3 +256,11 @@ class AutoMapBuilder:
                     self.building_list[building_id].update_nodes(self.create_edges(i, j))
                     '''
         print(self.roads)
+
+        new_edges = {}
+        for road_id in self.roads:
+            for edge_id in self.roads[road_id].edge_ids:
+                new_edges.setdefault(edge_id, self.edges[edge_id])
+        # エッジリスト更新
+        self.edges.clear()
+        self.edges = copy.deepcopy(new_edges)
