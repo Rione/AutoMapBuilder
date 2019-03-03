@@ -3,12 +3,13 @@ import sys
 
 sys.path.append(os.getcwd().replace('/src', ''))
 
-from src import CreateMap, GMLWriter, AutoMapBuilder
+from src import CreateMap, GMLWriter, AutoMapBuilder, CreateMapArray
 
 
 def main():
     builder = AutoMapBuilder.AutoMapBuilder()
-    map_array = builder.make_map_array(15, 10, 10)
+    create_map_array = CreateMapArray.CreateMapArray(10, 10)
+    map_array = create_map_array.create(15)
     builder.calc_nodes(map_array)
     builder.calc_edges(map_array)
     builder.calc_world(map_array)
