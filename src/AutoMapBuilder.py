@@ -23,6 +23,8 @@ class AutoMapBuilder:
         print(math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2))
 
     def judge_neighbor(self, map_array: np.ndarray, distance: int, target_x: int, target_y: int):
+        width = map_array.shape[0]
+        height = map_array.shape[1]
         # 値が入っているかどうか確認
         # 指定場所に値が入っているか
         if not map_array[target_x][target_y] == -1:
@@ -35,25 +37,27 @@ class AutoMapBuilder:
                 return False
             if target_y - distance >= 0 and not map_array[target_x - distance][target_y - distance] == -1:
                 return False
-            if target_y + distance < len(map_array) and not map_array[target_x - distance][target_y + distance] == -1:
+            if target_y + distance < height and not map_array[target_x - distance][target_y + distance] == -1:
                 return False
 
         if target_y - distance >= 0 and not map_array[target_x][target_y - distance] == -1:
             return False
-        if target_y + distance < len(map_array) and not map_array[target_x][target_y + distance] == -1:
+        if target_y + distance < height and not map_array[target_x][target_y + distance] == -1:
             return False
 
-        if target_x + distance < len(map_array):
+        if target_x + distance < width:
             if not map_array[target_x + distance][target_y] == -1:
                 return False
             if target_y - distance >= 0 and not map_array[target_x + distance][target_y - distance] == -1:
                 return False
-            if target_y + distance < len(map_array) and not map_array[target_x + distance][target_y + distance] == -1:
+            if target_y + distance < height and not map_array[target_x + distance][target_y + distance] == -1:
                 return False
 
         return True
 
     def can_put_building(self, map_array: np.ndarray, target_x: int, target_y: int):
+        width = map_array.shape[0]
+        height = map_array.shape[1]
         # 置けるならid,置けなければすでに入っているid、２つに挟まれている場合は0を返す
         # 指定場所に値が入っているか
         if not map_array[target_x][target_y] == -1:
@@ -69,7 +73,7 @@ class AutoMapBuilder:
                 building_count += 1
                 tmp_id = map_array[target_x - 1][target_y]
 
-        if target_x + 1 < len(map_array):
+        if target_x + 1 < width:
             if not (map_array[target_x + 1][target_y] == -1 or map_array[target_x + 1][target_y] == 0 or
                     map_array[target_x + 1][target_y] == tmp_id):
                 building_count += 1
@@ -81,7 +85,7 @@ class AutoMapBuilder:
                 building_count += 1
                 tmp_id = map_array[target_x][target_y - 1]
 
-        if target_y + 1 < len(map_array):
+        if target_y + 1 < height:
             if not (map_array[target_x][target_y + 1] == -1 or map_array[target_x][target_y + 1] == 0 or
                     map_array[target_x][target_y + 1] == tmp_id):
                 building_count += 1
@@ -97,17 +101,17 @@ class AutoMapBuilder:
                 if not (map_array[target_x - 1][target_y - 1] == -1 or map_array[target_x - 1][target_y - 1] == 0 or
                         map_array[target_x - 1][target_y - 1] == tmp_id):
                     diagonal_count += 1
-            if target_x + 1 < len(map_array):
+            if target_x + 1 < width:
                 if not (map_array[target_x + 1][target_y - 1] == -1 or map_array[target_x + 1][target_y - 1] == 0 or
                         map_array[target_x + 1][target_y - 1] == tmp_id):
                     diagonal_count += 1
 
-        if target_y + 1 < len(map_array):
+        if target_y + 1 < height:
             if target_x - 1 >= 0:
                 if not (map_array[target_x - 1][target_y + 1] == -1 or map_array[target_x - 1][target_y + 1] == 0 or
                         map_array[target_x - 1][target_y + 1] == tmp_id):
                     diagonal_count += 1
-            if target_x + 1 < len(map_array):
+            if target_x + 1 < width:
                 if not (map_array[target_x + 1][target_y + 1] == -1 or map_array[target_x + 1][target_y + 1] == 0 or
                         map_array[target_x + 1][target_y + 1] == tmp_id):
                     diagonal_count += 1
@@ -201,8 +205,8 @@ class AutoMapBuilder:
         while building_count < number_of_buildings:
             # 配列にランダムに拠点を設定(ただし隣接は禁止)
             # x,yをランダムで選択
-            target_x = np.random.randint(len(map_array))
-            target_y = np.random.randint(len(map_array))
+            target_x = np.random.randint(map_width)
+            target_y = np.random.randint(map_height)
             # 隣接がないか確認
             if self.judge_neighbor(map_array, 1, target_x, target_y):
                 map_array[target_x][target_y] = building_id
@@ -211,9 +215,9 @@ class AutoMapBuilder:
 
         # 占領開始
         while not self.judge_filled(map_array):
-            for i in range(len(map_array)):
-                for j in range(len(map_array)):
-                    map_array[i][j] = self.can_put_building(map_array, i, j)
+            for w in range(map_width):
+                for h in range(map_height):
+                    map_array[w][h] = self.can_put_building(map_array, w, h)
 
         return map_array
 
@@ -238,24 +242,26 @@ class AutoMapBuilder:
         print(self.edges)
 
     def calc_world(self, map_array):
+        width = map_array.shape[0]
+        height = map_array.shape[1]
         # rescue形式に落としこむ
-        for i in range(len(map_array)):
-            for j in range(len(map_array)):
-                map_array_id = map_array[i][j]
+        for w in range(width):
+            for h in range(height):
+                map_array_id = map_array[w][h]
                 # roadの場合
                 if map_array_id == 0:
                     road_id = self.create_road_key()
                     # roadのedgeをリストアップ
-                    self.roads.setdefault(road_id, Road.Road(road_id, self.get_edges(i, j)))
+                    self.roads.setdefault(road_id, Road.Road(road_id, self.get_edges(w, h)))
                     continue
 
                 # buildingの場合
                 building_id = self.create_building_key(map_array_id)
                 # idがすでにある場合
                 if building_id in self.buildings:
-                    self.buildings[building_id].update_nodes(self.get_edges(i, j))
+                    self.buildings[building_id].update_nodes(self.get_edges(w, h))
                 else:
-                    self.buildings.setdefault(building_id, Building.Building(building_id, self.get_edges(i, j)))
+                    self.buildings.setdefault(building_id, Building.Building(building_id, self.get_edges(w, h)))
 
         print(self.buildings)
 
