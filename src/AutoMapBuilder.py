@@ -55,7 +55,7 @@ class AutoMapBuilder:
 
         return True
 
-    def can_put_building(self, map_array: np.ndarray, target_x: int, target_y: int):
+    def fill_building_id(self, map_array: np.ndarray, target_x: int, target_y: int):
         width = map_array.shape[0]
         height = map_array.shape[1]
         # 置けるならid,置けなければすでに入っているid、２つに挟まれている場合は0を返す
@@ -217,8 +217,8 @@ class AutoMapBuilder:
         while not self.judge_filled(map_array):
             for w in range(map_width):
                 for h in range(map_height):
-                    map_array[w][h] = self.can_put_building(map_array, w, h)
-
+                    data = self.fill_building_id(map_array, w, h)
+                    map_array[w][h] = data
         return map_array
 
     def calc_nodes(self, map_array):
@@ -263,7 +263,7 @@ class AutoMapBuilder:
                 else:
                     self.buildings.setdefault(building_id, Building.Building(building_id, self.get_edges(w, h)))
 
-        print(self.buildings)
+        print(self.roads)
 
         new_edges = {}
         for road_id in self.roads:

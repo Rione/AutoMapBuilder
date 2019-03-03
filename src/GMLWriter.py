@@ -53,7 +53,7 @@ class GMLWrite:
         draw_edge_ids = []
 
         # スタート地点を設定
-        draw_edge_ids.append([sample_edge_ids.pop(0), '+'])
+        draw_edge_ids.append([sample_edge_ids.pop(0), '-'])
         # 全てのエッジを辿るまでループ
         next_node_id = self.edges[draw_edge_ids[-1][0]].first_id
         while len(sample_edge_ids) > 0:
@@ -61,15 +61,16 @@ class GMLWrite:
             for i in range(len(sample_edge_ids)):
                 edge_id = sample_edge_ids[i]
                 if self.edges[edge_id].first_id == next_node_id:
-                    draw_edge_ids.append([edge_id, '-'])
+                    draw_edge_ids.append([edge_id, '+'])
                     next_node_id = self.edges[edge_id].end_id
                     sample_edge_ids.pop(i)
                     break
                 elif self.edges[edge_id].end_id == next_node_id:
-                    draw_edge_ids.append([edge_id, '+'])
+                    draw_edge_ids.append([edge_id, '-'])
                     next_node_id = self.edges[edge_id].first_id
                     sample_edge_ids.pop(i)
                     break
+        print(draw_edge_ids)
         return draw_edge_ids
 
     def write(self):
@@ -133,6 +134,7 @@ class GMLWrite:
         buildinglist = doc.createElement('rcr:buildinglist')
         root.appendChild(buildinglist)
         # building書き出し
+        print("draw building")
         for building_id in self.buildings:
             building = doc.createElement('rcr:building')
             subnode_attr1 = doc.createAttribute('gml:id')
@@ -164,7 +166,7 @@ class GMLWrite:
             # edgeを描画できるようにする
             edge_ids = self.buildings[building_id].edge_ids
             draw_edge_data = self.get_draw_edges(edge_ids)
-            print(draw_edge_data)
+            # print(draw_edge_data)
 
             # buildingの描画用edgeを回す
             for i in range(len(draw_edge_data)):
@@ -185,6 +187,7 @@ class GMLWrite:
         roadlist = doc.createElement('rcr:roadlist')
         root.appendChild(roadlist)
         # road書き出し
+        print("draw road")
         for road_id in self.roads:
             road = doc.createElement('rcr:road')
             subnode_attr1 = doc.createAttribute('gml:id')

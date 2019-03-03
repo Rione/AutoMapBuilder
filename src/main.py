@@ -8,7 +8,7 @@ from src import CreateMap, GMLWriter, AutoMapBuilder
 
 def main():
     builder = AutoMapBuilder.AutoMapBuilder()
-    map_array = builder.make_map_array(100, 100, 100)
+    map_array = builder.make_map_array(15, 10, 10)
     builder.calc_nodes(map_array)
     builder.calc_edges(map_array)
     builder.calc_world(map_array)
