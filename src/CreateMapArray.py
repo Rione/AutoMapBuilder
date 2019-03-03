@@ -6,6 +6,41 @@ class CreateMapArray:
         self.width = width
         self.height = height
 
+    def get_cross_array_data(self, array_map: np.ndarray, x: int, y: int):
+        # 配列外の場合-2と空リストを返す
+        # 上下左右のみ
+        width = array_map.shape[0]
+        height = array_map.shape[1]
+
+        def index_out(x: int, y: int):
+            if x >= width or x < 0:
+                return True
+            if y >= height or y < 0:
+                return True
+            return False
+
+        def register_array_data(x: int, y: int):
+            if not index_out(x, y):
+                return [-2, []]
+            else:
+                data = array_map[x][y]
+                return [data, [x, y]]
+
+        if index_out(x, y):
+            return None
+
+        result = []
+        # 上
+        result.append(register_array_data(x, y - 1))
+        # 右
+        result.append(register_array_data(x + 1, y))
+        # 下
+        result.append(register_array_data(x, y + 1))
+        # 左
+        result.append(register_array_data(x - 1, y))
+
+        return result
+
     def judge_neighbor(self, map_array: np.ndarray, distance: int, target_x: int, target_y: int):
         width = map_array.shape[0]
         height = map_array.shape[1]
