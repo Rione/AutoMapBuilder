@@ -3,7 +3,7 @@ import sys
 
 sys.path.append(os.getcwd().replace('/src', ''))
 
-from src import CreateMap, GMLWriter, AutoMapBuilder, CreateMapArray
+from src import GMLWriter, AutoMapBuilder, CreateMapArray
 
 # 20:3
 MAP_WIDTH = 50
