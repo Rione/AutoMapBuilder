@@ -5,14 +5,18 @@ sys.path.append(os.getcwd().replace('/src', ''))
 
 from src import CreateMap, GMLWriter, AutoMapBuilder, CreateMapArray
 
-MAP_WIDTH = 100
-MAP_HEIGHT = 100
-BUILDING_NUMBER = 150
+# 20:3
+MAP_WIDTH = 50
+MAP_HEIGHT = 30
+ROAD_WIDTH = 1
+# BUILDING_NUMBER = 30
+
+BUILDING_NUMBER = int(MAP_WIDTH * MAP_HEIGHT * 3 / 20)
 
 
 def main():
     builder = AutoMapBuilder.AutoMapBuilder(MAP_WIDTH, MAP_HEIGHT)
-    create_map_array = CreateMapArray.CreateMapArray(MAP_WIDTH, MAP_HEIGHT)
+    create_map_array = CreateMapArray.CreateMapArray(MAP_WIDTH, MAP_HEIGHT, ROAD_WIDTH)
     map_array = create_map_array.create(BUILDING_NUMBER)
     builder.calc_nodes(map_array)
     builder.calc_edges(map_array)

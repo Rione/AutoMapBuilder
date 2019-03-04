@@ -2,9 +2,10 @@ import numpy as np
 
 
 class CreateMapArray:
-    def __init__(self, width: int, height: int):
+    def __init__(self, width: int, height: int, road_width: int):
         self.width = width
         self.height = height
+        self.road_width = road_width
 
     def get_cross_array_data(self, array_map: np.ndarray, x: int, y: int):
         # 配列外の場合-2と空リストを返す
@@ -161,7 +162,7 @@ class CreateMapArray:
             target_x = np.random.randint(self.width)
             target_y = np.random.randint(self.height)
             # 隣接がないか確認
-            if self.judge_neighbor(map_array, 1, target_x, target_y):
+            if self.judge_neighbor(map_array, self.road_width, target_x, target_y):
                 map_array[target_x][target_y] = building_id
                 building_id += 1
                 building_count += 1
