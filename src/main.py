@@ -3,7 +3,7 @@ import sys
 
 sys.path.append(os.getcwd().replace('/src', ''))
 
-from src import GMLWriter, AutoMapBuilder, CreateMapArray
+from src import GMLWriter, AutoMapBuilder, CreateMapArray, ScenarioWriter
 
 # 20:3
 MAP_WIDTH = 50
@@ -23,10 +23,16 @@ def main():
     builder.calc_world(map_array)
     builder.calc_road_neighbor()
     builder.calc_building_neighbor()
-    writer = GMLWriter.GMLWrite('/home/migly/git/rcrs-server/maps/gml/original/map/map.gml', builder.nodes,
-                                builder.edges,
-                                builder.buildings, builder.roads)
-    writer.write()
+    gml_writer = GMLWriter.GMLWrite('/home/migly/git/rcrs-server/maps/gml/original/map/map.gml', builder.nodes,
+                                    builder.edges,
+                                    builder.buildings, builder.roads)
+    gml_writer.write()
+    scenario_writer = ScenarioWriter.ScenarioWriter('/home/migly/git/rcrs-server/maps/gml/original/map/scenario.xml',
+                                                    builder.nodes,
+                                                    builder.edges,
+                                                    builder.buildings, builder.roads)
+
+    scenario_writer.write()
 
 
 if __name__ == '__main__':
