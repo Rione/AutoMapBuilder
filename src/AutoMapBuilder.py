@@ -7,13 +7,16 @@ from src.World import Node, Edge, Road, Building
 
 
 class AutoMapBuilder:
-    def __init__(self):
-        self.road_id = 100000
-        self.building_id = 900000
+    def __init__(self, map_width: int, map_height: int):
+        self.map_width = map_width
+        self.map_height = map_height
         self.nodes = {}
         self.edges = {}
         self.buildings = {}
         self.roads = {}
+        self.id_table = {}
+        self.building_id_table = {}
+        self.last_id = 0
 
     def edge_distance(self, id: int):
         x1 = self.nodes[self.edges[id].first_id].x
@@ -22,37 +25,57 @@ class AutoMapBuilder:
         y2 = self.nodes[self.edges[id].end_id].y
         print(math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2))
 
-    def create_node_key(self, x: int, y: int):
+    def get_node_key(self, x: int, y: int):
         start = x + 1
         end = y + 1
 
-        if len(str(end)) == 1:
-            id = 10 ** (len(str(end)) + 1) * start + end
+        # idの重複が発生しないよう、桁を確認する。
+        if self.map_height > self.map_width:
+            digit = len(str(self.map_width)) - 1
+        else:
+            digit = len(str(self.map_height)) - 1
+
+        if len(str(end)) == digit:
+            id = 10 ** (len(str(end)) + digit) * start + end
         else:
             id = 10 ** len(str(end)) * start + end
-        return id
 
-    def create_edge_key(self, x1: int, y1: int, x2: int, y2: int):
-        start = self.create_node_key(x1, y1)
-        end = self.create_node_key(x2, y2)
+        if not id in self.id_table:
+            self.last_id += 1
+            self.id_table.setdefault(id, self.last_id)
+
+        return self.id_table[id]
+
+    def get_edge_key(self, x1: int, y1: int, x2: int, y2: int):
+        start = self.get_node_key(x1, y1)
+        end = self.get_node_key(x2, y2)
         if start > end:
-            return 10 ** len(str(start)) * end + start
+            id = 10 ** len(str(start)) * end + start
         else:
-            return 10 ** len(str(end)) * start + end
+            id = 10 ** len(str(end)) * start + end
+
+        if not id in self.id_table:
+            self.last_id += 1
+            self.id_table.setdefault(id, self.last_id)
+
+        return self.id_table[id]
 
     def create_road_key(self):
-        self.road_id += 1
-        return self.road_id
+        self.last_id += 1
+        return self.last_id
 
     def create_building_key(self, array_index: int):
-        return self.building_id + array_index
+        if not array_index in self.building_id_table:
+            self.last_id += 1
+            self.building_id_table.setdefault(array_index, self.last_id)
+        return self.building_id_table[array_index]
 
     def create_edges(self, target_x: int, target_y: int):
 
         def insert_edge_data(x1, y1, x2, y2):
-            edge_id = self.create_edge_key(x1, y1, x2, y2)
-            id1 = self.create_node_key(x1, y1)
-            id2 = self.create_node_key(x2, y2)
+            edge_id = self.get_edge_key(x1, y1, x2, y2)
+            id1 = self.get_node_key(x1, y1)
+            id2 = self.get_node_key(x2, y2)
 
             node1 = self.nodes[id1]
             node2 = self.nodes[id2]
@@ -80,10 +103,10 @@ class AutoMapBuilder:
 
     def get_edges(self, target_x: int, target_y: int):
         edge_ids = []
-        edge_ids.append(self.create_edge_key(target_x, target_y, target_x + 1, target_y))
-        edge_ids.append(self.create_edge_key(target_x, target_y, target_x, target_y + 1))
-        edge_ids.append(self.create_edge_key(target_x, target_y + 1, target_x + 1, target_y + 1))
-        edge_ids.append(self.create_edge_key(target_x + 1, target_y + 1, target_x + 1, target_y))
+        edge_ids.append(self.get_edge_key(target_x, target_y, target_x + 1, target_y))
+        edge_ids.append(self.get_edge_key(target_x, target_y, target_x, target_y + 1))
+        edge_ids.append(self.get_edge_key(target_x, target_y + 1, target_x + 1, target_y + 1))
+        edge_ids.append(self.get_edge_key(target_x + 1, target_y + 1, target_x + 1, target_y))
         return edge_ids
 
     ##################################################################################
@@ -93,7 +116,7 @@ class AutoMapBuilder:
         # node
         for i in range(len(map_array) + 1):
             for j in range(len(map_array) + 1):
-                node_id = self.create_node_key(i, j)
+                node_id = self.get_node_key(i, j)
                 # 追加
                 self.nodes.setdefault(node_id, Node.Node(node_id, i, j))
 
