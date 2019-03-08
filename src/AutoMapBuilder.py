@@ -40,6 +40,7 @@ class AutoMapBuilder:
         else:
             id = 10 ** len(str(end)) * start + end
 
+        # idを座標由来から絶対値IDに変換
         if not id in self.id_table:
             self.last_id += 1
             self.id_table.setdefault(id, self.last_id)
@@ -54,6 +55,7 @@ class AutoMapBuilder:
         else:
             id = 10 ** len(str(end)) * start + end
 
+        # idを座標由来から絶対値IDに変換
         if not id in self.id_table:
             self.last_id += 1
             self.id_table.setdefault(id, self.last_id)

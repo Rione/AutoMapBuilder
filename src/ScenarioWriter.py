@@ -36,7 +36,7 @@ class ScenarioWriter:
         root.setAttributeNode(subnode_attr)
 
         # refuge書き出し
-        for building_id in self.choice_buildings(1, int(2 * rate)):
+        for building_id in self.choice_buildings(1, int(1 * rate)):
             refuge = doc.createElement('scenario:refuge')
             subnode_attr = doc.createAttribute('scenario:location')
             subnode_attr.value = str(building_id)
