@@ -6,8 +6,8 @@ sys.path.append(os.getcwd().replace('/src', ''))
 from src import GMLWriter, AutoMapBuilder, CreateMapArray, ScenarioWriter
 
 # 20:3
-MAP_WIDTH = 50
-MAP_HEIGHT = 30
+MAP_WIDTH = 20
+MAP_HEIGHT = 20
 ROAD_WIDTH = 1
 # BUILDING_NUMBER = 30
 
@@ -32,7 +32,7 @@ def main():
                                                     builder.edges,
                                                     builder.buildings, builder.roads)
 
-    scenario_writer.write()
+    scenario_writer.write((MAP_WIDTH * MAP_HEIGHT) / 100)
 
 
 if __name__ == '__main__':
