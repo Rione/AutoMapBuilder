@@ -6,6 +6,7 @@ sys.path.append(os.getcwd().replace('/src', ''))
 from src import GMLWriter, AutoMapBuilder, CreateMapArray, ScenarioWriter
 
 # 20:3
+#ステータス
 MAP_WIDTH = 20
 MAP_HEIGHT = 20
 ROAD_WIDTH = 1
