@@ -187,11 +187,17 @@ class AutoMapBuilder:
                             sample_road.neighbor.setdefault(edge_id, road_id)
 
     def calc_building_neighbor(self):
+        '''
+        エントランスの計算
+        :return:
+        '''
         for building_id in self.buildings:
             building = self.buildings[building_id]
 
             check = False
-
+            target_road_id = 0
+            target_building_id = 0
+            target_edge_id = 0
             while not check:
                 # buildingのエッジをひとつだけ選ぶ
                 edge_id = np.random.choice(building.edge_ids)
@@ -204,3 +210,39 @@ class AutoMapBuilder:
                             check = True
                             building.neighbor.setdefault(edge_id, road_id)
                             road.neighbor.setdefault(edge_id, building_id)
+                            # 目標となるエントランスを保持
+                            target_road_id = road_id
+                            target_building_id = building_id
+                            target_edge_id = edge_id
+
+            # エントランス作成
+            # roadとbuildingが共有しているedgeのベクトル方向を確認
+            edge_ids = self.buildings[target_building_id].edge_ids
+            sample_edge_ids = copy.deepcopy(edge_ids)
+
+            vector = ''
+
+            # スタート地点を設定
+            start_edge_id = sample_edge_ids.pop(0)
+            if start_edge_id == target_edge_id:
+                vector = '-'
+            # edgeの方向が確認できるまでループ
+            next_node_id = self.edges[start_edge_id].first_id
+            while len(vector) == 0:
+                # ノードidが含まれるエッジidを探す
+                for i in range(len(sample_edge_ids)):
+                    edge_id = sample_edge_ids[i]
+                    if self.edges[edge_id].first_id == next_node_id:
+                        next_node_id = self.edges[edge_id].end_id
+                        sample_edge_ids.pop(i)
+                        if edge_id == target_edge_id:
+                            vector = '+'
+                        break
+                    elif self.edges[edge_id].end_id == next_node_id:
+                        next_node_id = self.edges[edge_id].first_id
+                        sample_edge_ids.pop(i)
+                        if edge_id == target_edge_id:
+                            vector = '-'
+                        break
+
+            print(vector)

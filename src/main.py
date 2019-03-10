@@ -31,7 +31,7 @@ def main():
                                                     builder.nodes,
                                                     builder.edges,
                                                     builder.buildings, builder.roads)
-
+    # 10*10のマップを1とした時のシナリオ
     scenario_writer.write((MAP_WIDTH * MAP_HEIGHT) / 100)
 
 
