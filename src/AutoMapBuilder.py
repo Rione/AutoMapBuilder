@@ -131,7 +131,6 @@ class AutoMapBuilder:
                 for edge_id in edges:
                     # 追加
                     self.edges.setdefault(edge_id, edges[edge_id])
-        print(self.edges)
 
     def calc_world(self, map_array):
         width = map_array.shape[0]
@@ -154,8 +153,6 @@ class AutoMapBuilder:
                     self.buildings[building_id].update_nodes(self.get_edges(w, h))
                 else:
                     self.buildings.setdefault(building_id, Building.Building(building_id, self.get_edges(w, h)))
-
-        print(self.roads)
 
         new_edges = {}
         for road_id in self.roads:

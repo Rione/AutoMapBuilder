@@ -70,7 +70,6 @@ class GMLWrite:
                     next_node_id = self.edges[edge_id].first_id
                     sample_edge_ids.pop(i)
                     break
-        print(draw_edge_ids)
         return draw_edge_ids
 
     def write(self):
