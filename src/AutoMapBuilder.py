@@ -189,6 +189,10 @@ class AutoMapBuilder:
 			self.last_id += 1
 			return Node.Node(self.last_id, x / 10, y / 10)
 
+		def create_edge(start_id: int, end_id: int):
+			self.last_id += 1
+			return Edge.Edge(self.last_id, start_id, end_id)
+
 		def node_adder(start_id: int, end_id: int, vector: str):
 			'''
 			:param start_id:
@@ -205,8 +209,9 @@ class AutoMapBuilder:
 			start_node_point = [self.nodes[start_id].x, self.nodes[start_id].y]
 			end_node_point = [self.nodes[end_id].x, self.nodes[end_id].y]
 
-			start_node = None
-			end_node = None
+			sub_start_node = None
+			sub_end_node = None
+			entrance_edges = []
 
 			# Xが等しい場合
 			if start_node_point[0] == end_node_point[0]:
@@ -214,29 +219,51 @@ class AutoMapBuilder:
 				if start_node_point[1] > end_node_point[1]:
 					# X+0.1
 					# Node追加
-					start_node = create_node(start_node_point[0] + 1.5, start_node_point[1] - 2.5)
-					end_node = create_node(end_node_point[0] + 1.5, end_node_point[1] + 2.5)
+					sub_start_node = create_node(start_node_point[0] + 1.5, start_node_point[1] - 2.5)
+					sub_end_node = create_node(end_node_point[0] + 1.5, end_node_point[1] + 2.5)
+					# Edge追加
+					entrance_edges.append(create_edge(self.edges[target_edge_id].first_id, sub_end_node.id))
+					entrance_edges.append(create_edge(sub_start_node.id, sub_end_node.id))
+					entrance_edges.append(create_edge(sub_start_node.id, self.edges[target_edge_id].end_id))
 				else:
 					# X-0.1
-					start_node = create_node(start_node_point[0] - 1.5, start_node_point[1] + 2.5)
-					end_node = create_node(end_node_point[0] - 1.5, end_node_point[1] - 2.5)
+					# Node追加
+					sub_start_node = create_node(start_node_point[0] - 1.5, start_node_point[1] + 2.5)
+					sub_end_node = create_node(end_node_point[0] - 1.5, end_node_point[1] - 2.5)
+					# Edge追加
+					entrance_edges.append(create_edge(self.edges[target_edge_id].first_id, sub_start_node.id))
+					entrance_edges.append(create_edge(sub_start_node.id, sub_end_node.id))
+					entrance_edges.append(create_edge(sub_end_node.id, self.edges[target_edge_id].end_id))
 
 			# Yが等しい場合
 			if start_node_point[1] == end_node_point[1]:
 				# どちらのX座標が大きいか
 				if start_node_point[0] > end_node_point[0]:
 					# Y-0.1
-					start_node = create_node(start_node_point[0] - 2.5, start_node_point[1] - 1.5)
-					end_node = create_node(end_node_point[0] + 2.5, end_node_point[1] - 1.5)
+					sub_start_node = create_node(start_node_point[0] - 2.5, start_node_point[1] - 1.5)
+					sub_end_node = create_node(end_node_point[0] + 2.5, end_node_point[1] - 1.5)
+					# Edge追加
+					entrance_edges.append(create_edge(self.edges[target_edge_id].first_id, sub_end_node.id))
+					entrance_edges.append(create_edge(sub_start_node.id, sub_end_node.id))
+					entrance_edges.append(create_edge(sub_start_node.id, self.edges[target_edge_id].end_id))
 
 				else:
 					# Y+0.1
-					start_node = create_node(start_node_point[0] + 2.5, start_node_point[1] + 1.5)
-					end_node = create_node(end_node_point[0] - 2.5, end_node_point[1] + 1.5)
-			print(start_node.x)
-			self.nodes.setdefault(start_node.id, start_node)
-			self.nodes.setdefault(end_node.id, end_node)
-			return start_node.id, end_node.id
+					sub_start_node = create_node(start_node_point[0] + 2.5, start_node_point[1] + 1.5)
+					sub_end_node = create_node(end_node_point[0] - 2.5, end_node_point[1] + 1.5)
+					# Edge追加
+					entrance_edges.append(create_edge(self.edges[target_edge_id].first_id, sub_start_node.id))
+					entrance_edges.append(create_edge(sub_start_node.id, sub_end_node.id))
+					entrance_edges.append(create_edge(sub_end_node.id, self.edges[target_edge_id].end_id))
+
+			# Node登録
+			self.nodes.setdefault(sub_start_node.id, sub_start_node)
+			self.nodes.setdefault(sub_end_node.id, sub_end_node)
+
+			# Edge登録
+			for edge in entrance_edges:
+				self.edges.setdefault(edge.id, edge)
+			return entrance_edges[0].id, entrance_edges[1].id, entrance_edges[2].id
 
 		'''
 		エントランスの計算
@@ -297,4 +324,5 @@ class AutoMapBuilder:
 						break
 
 			print(vector)
-			print(node_adder(self.edges[target_edge_id].first_id, self.edges[target_edge_id].end_id, vector))
+			new_node_ids = node_adder(self.edges[target_edge_id].first_id, self.edges[target_edge_id].end_id, vector)
+			print(new_node_ids)
