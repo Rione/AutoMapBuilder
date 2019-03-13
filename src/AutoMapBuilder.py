@@ -327,12 +327,25 @@ class AutoMapBuilder:
 			# road登録
 			self.last_id += 1
 			entrance = Road.Road(self.last_id, new_edge_ids)
+			# neighbor追加
+			entrance.neighbor.setdefault(new_edge_ids[1], target_building_id)
+			entrance.neighbor.setdefault(new_edge_ids[3], target_road_id)
 			self.roads.setdefault(entrance.id, entrance)
-			print(entrance.id)
+
 			# target_building再構築
-			target_building_edges = self.buildings[target_building_id].edge_ids
+			target_building = self.buildings[target_building_id]
 			# 余分なEdgeを削除
-			target_building_edges.remove(target_edge_id)
+			target_building.edge_ids.remove(target_edge_id)
 			# 新たなEdgeを追加
 			for i in range(len(new_edge_ids) - 1):
-				target_building_edges.append(new_edge_ids[i])
+				target_building.edge_ids.append(new_edge_ids[i])
+
+			# target_road再構築
+			target_road = self.roads[target_road_id]
+			target_road.neighbor = {}
+			target_road.neighbor.setdefault(new_edge_ids[3], entrance.id)
+
+			# neighbor追加
+			target_building.neighbor = {}
+			target_building.neighbor.setdefault(new_edge_ids[1], entrance.id)
+			print(target_building.neighbor)

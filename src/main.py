@@ -7,8 +7,8 @@ from src import GMLWriter, AutoMapBuilder, CreateMapArray, ScenarioWriter
 
 # 20:3
 # ステータス
-MAP_WIDTH = 10
-MAP_HEIGHT = 10
+MAP_WIDTH = 50
+MAP_HEIGHT = 50
 ROAD_WIDTH = 1
 # BUILDING_NUMBER = 30
 
@@ -22,8 +22,8 @@ def main():
 	builder.calc_nodes(map_array)
 	builder.calc_edges(map_array)
 	builder.calc_world(map_array)
-	builder.calc_road_neighbor()
 	builder.calc_building_neighbor()
+	builder.calc_road_neighbor()
 	gml_writer = GMLWriter.GMLWrite('/home/migly/git/rcrs-server/maps/gml/original/map/map.gml', builder.nodes,
 									builder.edges,
 									builder.buildings, builder.roads)
