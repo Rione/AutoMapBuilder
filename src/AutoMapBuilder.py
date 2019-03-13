@@ -185,7 +185,17 @@ class AutoMapBuilder:
 
 	def calc_building_neighbor(self):
 
+		def create_node(x: float, y: float):
+			self.last_id += 1
+			return Node.Node(self.last_id, x, y)
+
 		def node_adder(start_id: int, end_id: int, vector: str):
+			'''
+			:param start_id:
+			:param end_id:
+			:param vector:
+			:return: node_ids
+			'''
 			# 入れ替え
 			if vector == '+':
 				tmp = start_id
@@ -195,26 +205,38 @@ class AutoMapBuilder:
 			start_node_point = [self.nodes[start_id].x, self.nodes[start_id].y]
 			end_node_point = [self.nodes[end_id].x, self.nodes[end_id].y]
 
+			start_node = None
+			end_node = None
+
 			# Xが等しい場合
 			if start_node_point[0] == end_node_point[0]:
 				# どちらのY座標が大きいか
 				if start_node_point[1] > end_node_point[1]:
 					# X+0.1
 					# Node追加
-					pass
+					start_node = create_node(start_node_point[0] + 0.05, start_node_point[1])
+					end_node = create_node(end_node_point[0] + 0.05, end_node_point[1])
 				else:
 					# X-0.1
-					pass
+					start_node = create_node(start_node_point[0] - 0.05, start_node_point[1])
+					end_node = create_node(end_node_point[0] - 0.05, end_node_point[1])
 
 			# Yが等しい場合
 			if start_node_point[1] == end_node_point[1]:
 				# どちらのX座標が大きいか
 				if start_node_point[0] > end_node_point[0]:
 					# Y-0.1
-					pass
+					start_node = create_node(start_node_point[0], start_node_point[1] - 0.05)
+					end_node = create_node(end_node_point[0], end_node_point[1] - 0.05)
+
 				else:
 					# Y+0.1
-					pass
+					start_node = create_node(start_node_point[0], start_node_point[1] + 0.05)
+					end_node = create_node(end_node_point[0], end_node_point[1] + 0.05)
+
+			self.nodes.setdefault(start_node.id, start_node)
+			self.nodes.setdefault(end_node.id, end_node)
+			return start_node.id, end_node.id
 
 		'''
 		エントランスの計算
@@ -275,3 +297,4 @@ class AutoMapBuilder:
 						break
 
 			print(vector)
+			print(node_adder(self.edges[target_edge_id].first_id, self.edges[target_edge_id].end_id, vector))
