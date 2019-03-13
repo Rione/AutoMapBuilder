@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/rionerescue.iml" filepath="$PROJECT_DIR$/.idea/rionerescue.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/AutoMapBuilder.iml" filepath="$PROJECT_DIR$/.idea/AutoMapBuilder.iml" />
     </modules>
   </component>
 </project>
