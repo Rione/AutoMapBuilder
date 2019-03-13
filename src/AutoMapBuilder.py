@@ -263,7 +263,7 @@ class AutoMapBuilder:
 			# Edge登録
 			for edge in entrance_edges:
 				self.edges.setdefault(edge.id, edge)
-			return entrance_edges[0].id, entrance_edges[1].id, entrance_edges[2].id
+			return [entrance_edges[0].id, entrance_edges[1].id, entrance_edges[2].id, target_edge_id]
 
 		'''
 		エントランスの計算
@@ -323,6 +323,16 @@ class AutoMapBuilder:
 							vector = '-'
 						break
 
-			print(vector)
-			new_node_ids = node_adder(self.edges[target_edge_id].first_id, self.edges[target_edge_id].end_id, vector)
-			print(new_node_ids)
+			new_edge_ids = node_adder(self.edges[target_edge_id].first_id, self.edges[target_edge_id].end_id, vector)
+			# road登録
+			self.last_id += 1
+			entrance = Road.Road(self.last_id, new_edge_ids)
+			self.roads.setdefault(entrance.id, entrance)
+			print(entrance.id)
+			# target_building再構築
+			target_building_edges = self.buildings[target_building_id].edge_ids
+			# 余分なEdgeを削除
+			target_building_edges.remove(target_edge_id)
+			# 新たなEdgeを追加
+			for i in range(len(new_edge_ids) - 1):
+				target_building_edges.append(new_edge_ids[i])
